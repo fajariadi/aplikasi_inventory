@@ -272,7 +272,7 @@ const RootQuery = new GraphQLObjectType({
 				return Karyawan.find({});
 			}
 		},
-		Akun:{
+		akun:{
 			type: AkunType,
 			args: {
 					username:{type:GraphQLString},
@@ -282,7 +282,7 @@ const RootQuery = new GraphQLObjectType({
 				return Akun.findOne({username: args.username, password: args.password});
 			}
 		},
-		Akuns:{
+		akuns:{
 			type: new GraphQLList(AkunType),
 			args: {id:{type:GraphQLID}},
 			resolve(parent,args){
