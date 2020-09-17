@@ -1,0 +1,22 @@
+{
+  "name": "aplikasi_inventory",
+  "version": "1.0.0",
+  "description": "inventory app with react & graphQL",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "server": "nodemon server.js"
+  },
+  "author": "Akbar Fajariadi",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1",
+    "express-graphql": "^0.11.0",
+    "graphql": "^15.3.0",
+    "lodash": "^4.17.20",
+    "mongoose": "^5.10.5"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4"
+  }
+}
