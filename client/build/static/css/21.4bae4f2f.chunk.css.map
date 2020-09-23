@@ -1,1 +1,0 @@
-{"version":3,"sources":["laporan.css"],"names":[],"mappings":"AAAA,WACA,UAAU,CACV,SACA,CAEA,YACA,WAAW,CACX,SAAS,CACT,gBACA","file":"21.4bae4f2f.chunk.css","sourcesContent":[".floatleft {\r\nfloat:left;\r\nwidth:50%;\r\n}\r\n\r\n.floatright {\r\nfloat:right;\r\nwidth:50%;\r\ntext-align: right;\r\n}\r\n"]}
