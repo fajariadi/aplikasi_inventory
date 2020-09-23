@@ -16,13 +16,13 @@ export default {
           icon: 'icon-puzzle',
         },
         {
-          name: 'Inventaris',
-          url: '/peralatan/inventaris',
+          name: 'Peralatan',
+          url: '/peralatan/peralatan',
           icon: 'icon-wrench',
         },
         {
           name: 'Vendor',
-          url: '/vendor/listVendor',
+          url: '/vendor/vendor',
           icon: 'icon-home',
         },
         {

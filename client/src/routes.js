@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 
 const Breadcrumbs = React.lazy(() => import('./views/Base/Breadcrumbs'));
 const Cards = React.lazy(() => import('./views/Base/Cards'));
@@ -38,7 +38,8 @@ const User = React.lazy(() => import('./views/Users/User'));
 
 const Barang = React.lazy(() => import('./views/Logistik/Barang/Barang'));
 const EditBarang = React.lazy(() => import('./views/Logistik/Barang/EditBarang'));
-const Inventaris = React.lazy(() => import('./views/Logistik/Peralatan/Inventaris'));
+const Peralatan = React.lazy(() => import('./views/Logistik/Peralatan/Peralatan'));
+const EditPeralatan = React.lazy(() => import('./views/Logistik/Peralatan/EditPeralatan'));
 const Pemeliharaan = React.lazy(() => import('./views/Logistik/Peralatan/Pemeliharaan'));
 const Request = React.lazy(() => import('./views/Logistik/Request/Request'));
 const DetailRequest = React.lazy(() => import('./views/Logistik/Request/DetailRequest'));
@@ -49,7 +50,8 @@ const CreateOrder = React.lazy(() => import('./views/Logistik/Order/CreateOrder'
 const DetailOrder = React.lazy(() => import('./views/Logistik/Order/DetailOrder'));
 const PenerimaanBarang = React.lazy(() => import('./views/Logistik/Order/PenerimaanBarang'));
 const PengambilanBarang = React.lazy(() => import('./views/Logistik/Order/PengambilanBarang'));
-const ListVendor = React.lazy(() => import('./views/Logistik/Vendor/ListVendor'));
+const Vendor = React.lazy(() => import('./views/Logistik/Vendor/Vendor'));
+const EditVendor = React.lazy(() => import('./views/Logistik/Vendor/EditVendor'));
 const OfferRoom = React.lazy(() => import('./views/Logistik/Users/OfferRoom'));
 const Karyawan = React.lazy(() => import('./views/Logistik/Users/Karyawan'));
 const DashboardLogistik = React.lazy(() => import('./views/Logistik/DashboardLogistik/DashboardLogistik'));
@@ -108,7 +110,8 @@ const routes = [
 
   { path: '/barang/barang', exact: true, name: 'Barang', component: Barang },
   { path: '/barang/editBarang/:id', exact: true, name: 'Edit Barang', component: EditBarang },
-  { path: '/peralatan/inventaris', exact: true, name: 'Inventaris', component: Inventaris },
+  { path: '/peralatan/peralatan', exact: true, name: 'Peralatan', component: Peralatan },
+  { path: '/peralatan/editPeralatan/:id', exact: true, name: 'Edit Peralatan', component: EditPeralatan },
   { path: '/peralatan/pemeliharaan', exact: true, name: 'Pemeliharaan', component: Pemeliharaan },
   { path: '/request/request', exact: true, name: 'Permintaan Barang', component: Request },
   { path: '/request/detailRequest/:id', exact: true, name: 'Detail Permintaan', component: DetailRequest },
@@ -119,7 +122,8 @@ const routes = [
   { path: '/order/detailOrder', exact: true, name: 'Detail Order', component: DetailOrder },
   { path: '/order/penerimaanBarang', exact: true, name: 'Penermaan Barang Order', component: PenerimaanBarang },
   { path: '/order/pengambilanBarang', exact: true, name: 'Pengambilan Barang Order', component: PengambilanBarang },
-  { path: '/vendor/listVendor', exact: true, name: 'List Vendor', component: ListVendor },
+  { path: '/vendor/vendor', exact: true, name: 'List Vendor', component: Vendor },
+  { path: '/vendor/editVendor/:id', exact: true, name: 'Edit Vendor', component: EditVendor },
 
   { path: '/user/offerRoom', exact: true, name: 'Offer Room', component: OfferRoom },
   { path: '/user/karyawan', exact: true, name: 'Users', component: Karyawan },

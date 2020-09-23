@@ -5,16 +5,21 @@ const getVendorsQuery = gql`
 	vendors {
 		nama
 		jenis_usaha
+		alamat
+		email
+		noTlp
 		id
 	}
 }
 `
 
-const getAlatsQuery = gql`
+const getPeralatansQuery = gql`
 {
-	alats {
+	peralatans {
 		nama
 		jumlah
+		harga
+		sewa
 		id
 	}
 }
@@ -102,21 +107,42 @@ const getKaryawansQuery = gql`
 }
 `
 
-const addAlatMutation = gql`
-	mutation($nama:String!, $jumlah:Int!){
-		addAlat(nama: $nama, jumlah: $jumlah){
+const addPeralatanMutation = gql`
+	mutation($nama:String!, $jumlah:Int!, $harga:Int!, $sewa:Int!){
+		addPeralatan(nama: $nama, jumlah: $jumlah, harga: $harga, sewa: $sewa){
 			nama
 			jumlah
+			harga
+			sewa
+			id
+		}
+	}
+`
+const hapusPeralatanMutation = gql`
+	mutation($id:ID!){
+		hapusPeralatan(id: $id){
+			nama
 			id
 		}
 	}
 `
 
 const addVendorMutation = gql`
-	mutation($nama:String!, $jenis_usaha:String!){
-		addVendor(nama: $nama, jenis_usaha: $jenis_usaha){
+	mutation($nama:String!, $jenis_usaha:String!, $alamat:String!, $email:String!, $noTlp:String!){
+		addVendor(nama: $nama, jenis_usaha: $jenis_usaha, alamat:$alamat, email:$email, noTlp:$noTlp){
 			nama
 			jenis_usaha
+			alamat
+			email
+			noTlp
+			id
+		}
+	}
+`
+const hapusVendorMutation = gql`
+	mutation($id:ID!){
+		hapusVendor(id: $id){
+			nama
 			id
 		}
 	}
@@ -204,6 +230,13 @@ const addBarangMutation = gql`
 		}
 	}
 `
+const hapusBarangMutation = gql`
+	mutation($id:ID!){
+		hapusBarang(id: $id){
+			id
+		}
+	}
+`
 
 const addAkunMutation = gql`
 	mutation($username:String!, $password:String!, $karyawan_id:ID!){
@@ -249,6 +282,31 @@ const getBarangQuery = gql`
 	}
 `
 
+const getPeralatanQuery = gql`
+	query($id: ID){
+		peralatan(id: $id) {
+			nama
+			jumlah
+			harga
+			sewa
+			id
+		}
+	}
+`
+
+const getVendorQuery = gql`
+	query($id: ID){
+		vendor(id: $id) {
+			nama
+			jenis_usaha
+			alamat
+			email
+			noTlp
+			id
+		}
+	}
+`
+
 const getRequestQuery = gql`
 	query($id:ID){
 		request(id: $id) {
@@ -272,7 +330,7 @@ const getRequestQuery = gql`
 
 export {
 	getVendorsQuery, 
-	getAlatsQuery,
+	getPeralatansQuery,
 	getDivisisQuery,
 	getRequestsQuery,
 	getRequestQuery,
@@ -280,8 +338,9 @@ export {
 	getOrdersQuery,
 	getBarangsQuery,
 	getBarangQuery,
+	getPeralatanQuery,
 	addDivisiMutation, 
-	addAlatMutation, 
+	addPeralatanMutation, 
 	addVendorMutation,
 	addRequestMutation,
 	addListRequestMutation,
@@ -289,8 +348,12 @@ export {
 	hapusDivisiMutation,
 	hapusRequestMutation,
 	hapusListRequestMutation,
+	hapusBarangMutation,
+	hapusPeralatanMutation,
+	hapusVendorMutation,
 	getKaryawansQuery,
 	addAkunMutation,
 	getAkunQuery,
+	getVendorQuery,
 	hapusManyListRequestMutation
 };

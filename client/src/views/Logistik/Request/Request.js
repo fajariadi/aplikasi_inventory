@@ -58,16 +58,22 @@ class Request extends Component {
             <td key={request.id}>{request.status}</td>
             <td key={request.id}>
               <Link to={ `/request/detailRequest/${request.id}` }>
+              <Button color="primary" size="sm">
                 <i className="fa fa-file"></i>
+                </Button>
               </Link>
             </td>
             <td key={request.id}>
               <Link to={ `/request/editRequest/${request.id}` }>
-                Edit
+              <Button color="success" size="sm">
+                <i className="fa fa-pencil"></i>
+                </Button>
               </Link>
             </td>
             <td key={request.id}>
-                <Button onClick={this.onDelete.bind(this, request.id)}>Hapus</Button>
+                <Button onClick={this.onDelete.bind(this, request.id)} color="danger" size="sm">
+                <i className="fa fa-trash"></i>
+                </Button>
             </td>
           </tr>
         );

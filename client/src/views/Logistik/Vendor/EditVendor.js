@@ -2,28 +2,21 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import {graphql} from 'react-apollo';
 import * as compose from 'lodash.flowright';
-import {getBarangQuery, addBarangMutation} from '../queries/queries';
+import {getVendorQuery} from '../queries/queries';
 import { 
   Card, 
   CardBody, 
   CardHeader, 
-  Col, 
-  Pagination, 
-  PaginationItem, 
-  PaginationLink, 
+  Col,  
   Row, 
-  Table, 
   Button,
   FormGroup,
   Label,
   Input,
-  Modal,
-  ModalHeader,
-  ModalBody,
   Form,
 } from 'reactstrap';
 
-class EditBarang extends Component {
+class EditVendor extends Component {
 
   constructor(props) {
     super(props);
@@ -37,12 +30,6 @@ class EditBarang extends Component {
     };
   }
 
-  toggleModal(){
-    this.setState({
-      modalIsOpen: ! this.state.modalIsOpen
-    });
-  }
-
   submitForm(e){
     e.preventDefault();
     this.props.addBarangMutation({
@@ -52,7 +39,7 @@ class EditBarang extends Component {
         satuan: this.state.satuan,
         harga:parseInt(this.state.harga),
       },
-      refetchQueries:[{query:getBarangQuery}]
+      refetchQueries:[{query:getVendorQuery}]
     });
   }
 
@@ -85,8 +72,8 @@ class EditBarang extends Component {
           <Col>
             <Card>
               <CardHeader>
-                <i className="fa fa-align-justify"></i> Form Edit Data Barang
-                <Link to="/barang/barang" className={'float-right mb-0'}> 
+                <i className="fa fa-align-justify"></i> Form Edit Data Vendor
+                <Link to="/vendor/vendor" className={'float-right mb-0'}> 
                   <Button label color="primary">
                       Kembali
                   </Button>
@@ -120,7 +107,6 @@ class EditBarang extends Component {
                 <Input type="number" id="harga" onChange={this.inputHandle.bind(this)}  required />
                 </FormGroup>
                 <Button type="submit" color="primary">Submit</Button>
-                <Button color="danger" onClick={this.toggleModal.bind(this)}>Batal</Button>
             </Form>
                 </CardBody>
             </Card>
@@ -133,7 +119,7 @@ class EditBarang extends Component {
 }
 
 export default compose(
-    graphql(getBarangQuery, {
+    graphql(getVendorQuery, {
         options:(props) => {
           return{
             variables:{
@@ -142,8 +128,7 @@ export default compose(
           }
         }
       }),
-  graphql(addBarangMutation, {name:"addBarangMutation"})
-)(EditBarang);
+)(EditVendor);
 
 
 

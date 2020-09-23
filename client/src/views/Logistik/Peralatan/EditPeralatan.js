@@ -2,28 +2,21 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import {graphql} from 'react-apollo';
 import * as compose from 'lodash.flowright';
-import {getBarangQuery, addBarangMutation} from '../queries/queries';
+import {getPeralatanQuery} from '../queries/queries';
 import { 
   Card, 
   CardBody, 
   CardHeader, 
-  Col, 
-  Pagination, 
-  PaginationItem, 
-  PaginationLink, 
+  Col,  
   Row, 
-  Table, 
   Button,
   FormGroup,
   Label,
   Input,
-  Modal,
-  ModalHeader,
-  ModalBody,
   Form,
 } from 'reactstrap';
 
-class EditBarang extends Component {
+class EditPeralatan extends Component {
 
   constructor(props) {
     super(props);
@@ -52,7 +45,7 @@ class EditBarang extends Component {
         satuan: this.state.satuan,
         harga:parseInt(this.state.harga),
       },
-      refetchQueries:[{query:getBarangQuery}]
+      refetchQueries:[{query:getPeralatanQuery}]
     });
   }
 
@@ -85,7 +78,7 @@ class EditBarang extends Component {
           <Col>
             <Card>
               <CardHeader>
-                <i className="fa fa-align-justify"></i> Form Edit Data Barang
+                <i className="fa fa-align-justify"></i> Form Edit Data Peralatan
                 <Link to="/barang/barang" className={'float-right mb-0'}> 
                   <Button label color="primary">
                       Kembali
@@ -133,7 +126,7 @@ class EditBarang extends Component {
 }
 
 export default compose(
-    graphql(getBarangQuery, {
+    graphql(getPeralatanQuery, {
         options:(props) => {
           return{
             variables:{
@@ -142,8 +135,7 @@ export default compose(
           }
         }
       }),
-  graphql(addBarangMutation, {name:"addBarangMutation"})
-)(EditBarang);
+)(EditPeralatan);
 
 
 

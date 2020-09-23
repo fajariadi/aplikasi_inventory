@@ -1,7 +1,7 @@
 const graphql = require ('graphql');
 const _ = require('lodash');
 const Vendor = require('./models/VendorModel');
-const Alat = require('./models/AlatModel');
+const Peralatan = require('./models/PeralatanModel');
 const Divisi = require('./models/DivisiModel');
 const Request = require('./models/RequestModel');
 const ListRequest = require('./models/ListRequestModel');
@@ -30,6 +30,9 @@ const VendorType = new GraphQLObjectType({
 		id: {type: GraphQLID},
 		nama: {type:GraphQLString},
 		jenis_usaha: {type: GraphQLString},
+		alamat: {type: GraphQLString},
+		email: {type: GraphQLString},
+		noTlp: {type: GraphQLString},
 		order: {
 			type: new GraphQLList(OrderType),
 			resolve(parent, args){
@@ -39,12 +42,14 @@ const VendorType = new GraphQLObjectType({
 	})
 });
 
-const AlatType = new GraphQLObjectType({
-	name: 'Alat',
+const PeralatanType = new GraphQLObjectType({
+	name: 'Peralatan',
 	fields: () => ({
 		id: {type: GraphQLID},
 		nama: {type:GraphQLString},
-		jumlah: {type: GraphQLInt}
+		jumlah: {type: GraphQLInt},
+		harga: {type: GraphQLInt},
+		sewa: {type: GraphQLInt},
 	})
 });
 
@@ -176,17 +181,17 @@ const RootQuery = new GraphQLObjectType({
 				return Vendor.find({});
 			}
 		},
-		alat:{
-			type: AlatType,
+		peralatan:{
+			type: PeralatanType,
 			args: {id:{type:GraphQLID}},
 			resolve(parent,args){
-				return Alat.findById(args.id);
+				return Peralatan.findById(args.id);
 			}
 		},
-		alats:{
-			type: new GraphQLList(AlatType),
+		peralatans:{
+			type: new GraphQLList(PeralatanType),
 			resolve(parent,args){
-				return Alat.find({});
+				return Peralatan.find({});
 			}
 		},
 		divisi:{
@@ -300,28 +305,52 @@ const Mutation = new GraphQLObjectType({
 			type: VendorType,
 			args:{
 				nama: {type: new GraphQLNonNull(GraphQLString)},
-				jenis_usaha: {type: new GraphQLNonNull(GraphQLString)}
+				jenis_usaha: {type: new GraphQLNonNull(GraphQLString)},
+				alamat: {type: new GraphQLNonNull(GraphQLString)},
+				email: {type: new GraphQLNonNull(GraphQLString)},
+				noTlp: {type: new GraphQLNonNull(GraphQLString)}
 			},
 			resolve(parent,args){
 				let vendor = new Vendor({
 					nama: args.nama,
-					jenis_usaha: args.jenis_usaha
+					jenis_usaha: args.jenis_usaha,
+					alamat: args.alamat,
+					email: args.email,
+					noTlp: args.noTlp
 				});
 				return vendor.save();
 			}
 		},
-		addAlat:{
-			type: AlatType,
+		hapusVendor:{
+			type: VendorType,
+			args: {id:{type:GraphQLID}},
+			resolve(parent,args){
+				return Vendor.deleteOne({_id:args.id});
+			}
+		},
+		addPeralatan:{
+			type: PeralatanType,
 			args:{
 				nama: {type: new GraphQLNonNull(GraphQLString)},
-				jumlah: {type: new GraphQLNonNull(GraphQLInt)}
+				jumlah: {type: new GraphQLNonNull(GraphQLInt)},
+				harga: {type: new GraphQLNonNull(GraphQLInt)},
+				sewa: {type: new GraphQLNonNull(GraphQLInt)}
 			},
 			resolve(parent,args){
-				let alat = new Alat({
+				let peralatan = new Peralatan({
 					nama: args.nama,
-					jumlah: args.jumlah
+					jumlah: args.jumlah,
+					harga : args.harga,
+					sewa: args.sewa
 				});
-				return alat.save();
+				return peralatan.save();
+			}
+		},
+		hapusPeralatan:{
+			type: PeralatanType,
+			args: {id:{type:GraphQLID}},
+			resolve(parent,args){
+				return Peralatan.deleteOne({_id:args.id});
 			}
 		},
 		addDivisi:{
@@ -436,6 +465,13 @@ const Mutation = new GraphQLObjectType({
 					harga:  args.harga,
 				});
 				return barang.save();
+			}
+		},
+		hapusBarang:{
+			type: BarangType,
+			args: {id:{type:GraphQLID}},
+			resolve(parent,args){
+				return Barang.deleteOne({_id:args.id});
 			}
 		},
 		addKaryawan:{

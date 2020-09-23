@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import {graphql} from 'react-apollo';
 import * as compose from 'lodash.flowright';
-import {getBarangsQuery, addBarangMutation} from '../queries/queries';
+import {getBarangsQuery, addBarangMutation, hapusBarangMutation} from '../queries/queries';
 import { 
   Card, 
   CardBody, 
@@ -56,6 +56,15 @@ class Barang extends Component {
     });
   }
 
+  onDelete(barang_id){
+    this.props.hapusBarangMutation({
+      variables:{
+        id: barang_id,        
+      },
+      refetchQueries:[{query:getBarangsQuery}],
+    });
+  }
+
   displayBarang(){
     var data = this.props.getBarangsQuery;
     var no = 0;
@@ -73,13 +82,15 @@ class Barang extends Component {
             <td key={barang.id}>{barang.harga}</td>
             <td key={barang.id}>
               <Link to={`/barang/editBarang/${barang.id}`}>
+              <Button color="success" size="sm">
                 <i className="fa fa-pencil"></i>
+              </Button>
               </Link>
             </td>
             <td>
-              <Link to="/barang/hapusBarang">
+              <Button onClick={this.onDelete.bind(this, barang.id)} color="danger" size="sm">
                 <i className="fa fa-trash"></i>
-              </Link>
+              </Button>
             </td>
           </tr>
         );
@@ -101,7 +112,7 @@ class Barang extends Component {
               </CardHeader>
               <CardBody>
                 <Table hover bordered striped responsive size="sm">
-                  <thead>
+                  <thead align="center">
                   <tr>
                     <th>No</th>
                     <th>Nama Barang</th>
@@ -112,7 +123,7 @@ class Barang extends Component {
                     <th>Hapus</th>
                   </tr>
                   </thead>
-                  <tbody>
+                  <tbody align="center">
                     {this.displayBarang()}
                   </tbody>
                 </Table>
@@ -174,5 +185,6 @@ class Barang extends Component {
 
 export default compose(
   graphql(getBarangsQuery, {name:"getBarangsQuery"}),
-  graphql(addBarangMutation, {name:"addBarangMutation"})
+  graphql(addBarangMutation, {name:"addBarangMutation"}),
+  graphql(hapusBarangMutation, {name:"hapusBarangMutation"})
 )(Barang);
