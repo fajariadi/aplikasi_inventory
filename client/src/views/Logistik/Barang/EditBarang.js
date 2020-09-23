@@ -1,0 +1,147 @@
+import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
+import {graphql} from 'react-apollo';
+import * as compose from 'lodash.flowright';
+import {getBarangQuery, addBarangMutation} from '../queries/queries';
+import { 
+  Card, 
+  CardBody, 
+  CardHeader, 
+  Col, 
+  Pagination, 
+  PaginationItem, 
+  PaginationLink, 
+  Row, 
+  Table, 
+  Button,
+  FormGroup,
+  Label,
+  Input,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  Form,
+} from 'reactstrap';
+
+class EditBarang extends Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+        id:'',
+      nama_barang:'',
+      jenis_barang: '',
+      satuan: '',
+      harga: '',
+      modalIsOpen: false,  
+    };
+  }
+
+  toggleModal(){
+    this.setState({
+      modalIsOpen: ! this.state.modalIsOpen
+    });
+  }
+
+  submitForm(e){
+    e.preventDefault();
+    this.props.addBarangMutation({
+      variables:{
+        nama_barang:this.state.nama_barang,
+        jenis_barang: this.state.jenis_barang,
+        satuan: this.state.satuan,
+        harga:parseInt(this.state.harga),
+      },
+      refetchQueries:[{query:getBarangQuery}]
+    });
+  }
+
+  displayBarang(){
+    const {barang} = this.props.data;
+    var nama = '' ;
+    var jenis = '' ;
+    var sat = '';
+    var har = '';
+    if(barang){
+        console.log(barang.nama_barang);
+    }
+  }
+
+  inputHandle(e){
+    const target = e.target;
+    const value = target.value;
+    const name = target.name;
+
+    this.setState({
+        [name] : value
+    })
+  }
+
+  render() {
+    return (
+      <div className="animated fadeIn">
+          {this.displayBarang()}
+        <Row>
+          <Col>
+            <Card>
+              <CardHeader>
+                <i className="fa fa-align-justify"></i> Form Edit Data Barang
+                <Button size="sm" color="primary" className="float-right mb-0" onClick={this.toggleModal.bind(this)}>
+                  <i className="fa fa-left"></i> Kembali
+                </Button>
+              </CardHeader>
+              <CardBody>
+                <Form onSubmit={(e) => {this.submitForm(e)}}>
+                <FormGroup>
+                <Label htmlFor="name">Nama Barang</Label>
+                <Input type="text" id="name"  onChange={this.inputHandle.bind(this)} required />
+                </FormGroup>
+                <FormGroup>
+                <Label htmlFor="name">Jenis Barang</Label>
+                <Input type="text" id="jenis" onChange={this.inputHandle.bind(this)}  required />
+                </FormGroup>
+                <FormGroup>
+                <Label htmlFor="name">Satuan</Label>
+                <Input type="select" name="satuan" id="satuan" onChange={this.inputHandle.bind(this)} >
+                    <option>Satuan</option>
+                    <option value="Kg">Kg</option>
+                    <option value="Buah">Buah</option>
+                    <option value="Meter">Meter</option>
+                    <option value="Lembar">Lembar</option>
+                    <option value="Liter">Liter</option>
+                    <option value="Sak">Sak</option>
+                    <option value="m3">m3</option>
+                </Input>
+                </FormGroup>
+                <FormGroup>
+                <Label htmlFor="name">Harga Barang</Label>
+                <Input type="number" id="harga" onChange={this.inputHandle.bind(this)}  required />
+                </FormGroup>
+                <Button type="submit" color="primary">Submit</Button>
+                <Button color="danger" onClick={this.toggleModal.bind(this)}>Batal</Button>
+            </Form>
+                </CardBody>
+            </Card>
+          </Col>
+        </Row>
+      </div>
+
+    );
+  }
+}
+
+export default compose(
+    graphql(getBarangQuery, {
+        options:(props) => {
+          return{
+            variables:{
+              id: props.match.params.id
+            }
+          }
+        }
+      }),
+  graphql(addBarangMutation, {name:"addBarangMutation"})
+)(EditBarang);
+
+
+

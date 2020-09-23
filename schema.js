@@ -124,6 +124,7 @@ const BarangType = new GraphQLObjectType({
 		nama_barang: {type:GraphQLString},
 		jenis_barang: {type:GraphQLString},
 		satuan: {type:GraphQLString},
+		harga: {type: GraphQLInt},
 	})
 });
 const KaryawanType = new GraphQLObjectType({
@@ -425,12 +426,14 @@ const Mutation = new GraphQLObjectType({
 				nama_barang: {type: new GraphQLNonNull(GraphQLString)},
 				jenis_barang: {type: new GraphQLNonNull(GraphQLString)},
 				satuan: {type: new GraphQLNonNull(GraphQLString)},
+				harga: {type: new GraphQLNonNull(GraphQLInt)},
 			},
 			resolve(parent, args){
 				let barang = new Barang({
 					nama_barang: args.nama_barang,
 					jenis_barang: args.jenis_barang,
 					satuan:  args.satuan,
+					harga:  args.harga,
 				});
 				return barang.save();
 			}

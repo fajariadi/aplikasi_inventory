@@ -31,6 +31,7 @@ class Barang extends Component {
       nama_barang:'',
       jenis_barang: '',
       satuan: '',
+      harga: '',
       modalIsOpen: false,  
     };
   }
@@ -49,6 +50,7 @@ class Barang extends Component {
         nama_barang:this.state.nama_barang,
         jenis_barang: this.state.jenis_barang,
         satuan: this.state.satuan,
+        harga:parseInt(this.state.harga),
       },
       refetchQueries:[{query:getBarangsQuery}]
     });
@@ -68,8 +70,9 @@ class Barang extends Component {
             <td key={barang.id}>{barang.nama_barang}</td>
             <td key={barang.id}>{barang.jenis_barang}</td>
             <td key={barang.id}>{barang.satuan}</td>
+            <td key={barang.id}>{barang.harga}</td>
             <td key={barang.id}>
-              <Link to="/barang/editBarang">
+              <Link to={`/barang/editBarang/${barang.id}`}>
                 <i className="fa fa-pencil"></i>
               </Link>
             </td>
@@ -104,6 +107,7 @@ class Barang extends Component {
                     <th>Nama Barang</th>
                     <th>Jenis Barang</th>
                     <th>Satuan</th>
+                    <th>Harga (Rp)</th>
                     <th>Edit</th>
                     <th>Hapus</th>
                   </tr>
@@ -152,6 +156,10 @@ class Barang extends Component {
                   <option value="Sak">Sak</option>
                   <option value="m3">m3</option>
                 </Input>
+              </FormGroup>
+              <FormGroup>
+                <Label htmlFor="name">Harga Barang</Label>
+                <Input type="number" id="harga" placeholder="Masukkan Harga Barang" onChange={(e) =>this.setState({harga:e.target.value})} required />
               </FormGroup>
               <Button type="submit" color="primary">Submit</Button>
               <Button color="danger" onClick={this.toggleModal.bind(this)}>Batal</Button>

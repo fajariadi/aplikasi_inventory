@@ -37,6 +37,7 @@ const Users = React.lazy(() => import('./views/Users/Users'));
 const User = React.lazy(() => import('./views/Users/User'));
 
 const Barang = React.lazy(() => import('./views/Logistik/Barang/Barang'));
+const EditBarang = React.lazy(() => import('./views/Logistik/Barang/EditBarang'));
 const Inventaris = React.lazy(() => import('./views/Logistik/Peralatan/Inventaris'));
 const Pemeliharaan = React.lazy(() => import('./views/Logistik/Peralatan/Pemeliharaan'));
 const Request = React.lazy(() => import('./views/Logistik/Request/Request'));
@@ -57,14 +58,6 @@ const Penyewaan = React.lazy(() => import('./views/Logistik/Penyewaan/Penyewaan'
 const BuatPenyewaan = React.lazy(() => import('./views/Logistik/Penyewaan/BuatPenyewaan'));
 const DetailPenyewaan = React.lazy(() => import('./views/Logistik/Penyewaan/DetailPenyewaan'));
 
-
-const Pengeluaran = React.lazy(() => import('./views/Finance/Transaksi/Pengeluaran'));
-const BuatPengeluaran = React.lazy(() => import('./views/Finance/Transaksi/BuatPengeluaran'));
-const Pemasukan = React.lazy(() => import('./views/Finance/Transaksi/Pemasukan'));
-const BuatPemasukan = React.lazy(() => import('./views/Finance/Transaksi/BuatPemasukan'));
-const JurnalUmum = React.lazy(() => import('./views/Finance/Laporan/JurnalUmum'));
-const BukuBesar = React.lazy(() => import('./views/Finance/Laporan/BukuBesar'));
-const Neraca = React.lazy(() => import('./views/Finance/Laporan/Neraca'));
 
 const DataKaryawan = React.lazy(() => import('./views/HumanResource/Karyawan/DataKaryawan'));
 const TambahKaryawan = React.lazy(() => import('./views/HumanResource/Karyawan/TambahKaryawan'));
@@ -114,6 +107,7 @@ const routes = [
 
 
   { path: '/barang/barang', exact: true, name: 'Barang', component: Barang },
+  { path: '/barang/editBarang/:id', exact: true, name: 'Edit Barang', component: EditBarang },
   { path: '/peralatan/inventaris', exact: true, name: 'Inventaris', component: Inventaris },
   { path: '/peralatan/pemeliharaan', exact: true, name: 'Pemeliharaan', component: Pemeliharaan },
   { path: '/request/request', exact: true, name: 'Permintaan Barang', component: Request },

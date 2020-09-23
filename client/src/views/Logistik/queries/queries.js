@@ -80,6 +80,7 @@ const getBarangsQuery = gql`
 		nama_barang
 		jenis_barang
 		satuan
+		harga
 		id
 	}
 }
@@ -193,11 +194,12 @@ const hapusListRequestMutation = gql`
 `
 
 const addBarangMutation = gql`
-	mutation($nama_barang:String!, $jenis_barang:String!, $satuan:String!){
-		addBarang(nama_barang: $nama_barang, jenis_barang: $jenis_barang, satuan:$satuan){
+	mutation($nama_barang:String!, $jenis_barang:String!, $satuan:String!, $harga:Int!){
+		addBarang(nama_barang: $nama_barang, jenis_barang: $jenis_barang, satuan:$satuan, harga:$harga){
 			nama_barang
 			jenis_barang
 			satuan
+			harga
 			id
 		}
 	}
@@ -241,6 +243,7 @@ const getBarangQuery = gql`
 			nama_barang
 			jenis_barang
 			satuan
+			harga
 			id
 		}
 	}
