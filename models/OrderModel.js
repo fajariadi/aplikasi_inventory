@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const OrderSchema = new Schema({
 	kode: String,
 	tanggal: String,
-	vendor_id: String,
+	vendor: String,
 	jenis: String,
 	status: String,
 });

@@ -1,17 +1,13 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import {graphql} from 'react-apollo';
 import * as compose from 'lodash.flowright';
 import { getDivisisQuery, getKaryawansQuery, addAkunMutation} from '../queries/queries';
 import {  
   Card, 
   CardBody, 
-  CardHeader,
-  CardFooter, 
   Col, 
   Button, 
   Row, 
-  Table,
   FormGroup,
   Form,
   Label,
@@ -21,15 +17,12 @@ import {
   ModalHeader,
   TabContent, TabPane, Nav, NavItem, NavLink
 } from 'reactstrap';
-import ImageUploader from 'react-images-upload';
 
 class Profile extends Component {
   constructor(props){
     super(props);
     this.toggle = this.toggle.bind(this);
     this.state = {
-      username:'',
-      password:'',
       karyawan_id:'',
       modalIsOpen: false,
       nama: localStorage.getItem("nama"),
@@ -93,7 +86,7 @@ class Profile extends Component {
              <h5>:</h5>
           </Col>
           <Col md='4'>
-            <h5></h5>
+            <h5> </h5>
           </Col>
         </Row>
         <Row>
@@ -104,7 +97,7 @@ class Profile extends Component {
              <h5>:</h5>
           </Col>
           <Col md='4'>
-            <h5></h5>
+            <h5> </h5>
           </Col>
         </Row>
         <Row>

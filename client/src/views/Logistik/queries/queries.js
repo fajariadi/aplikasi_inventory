@@ -32,14 +32,21 @@ const getDivisisQuery = gql`
 	}
 }
 `
-const getRequestsQuery = gql`
+const getPermintaanBarangsQuery = gql`
 {
-	requests {
+	permintaanBarangs {
 		tanggal
 		status
 		id
-		divisi{
-			nama
+		kode
+		akun{
+			username
+			karyawan{
+				nama
+				divisi{
+					nama
+				}
+			}
 		}
 	}
 }
@@ -52,7 +59,7 @@ const getListRequestsQuery = gql`
 		jenis
 		satuan
 		id
-		request{
+		permintaanBarang{
 			status
 			tanggal
 			divisi{
@@ -166,18 +173,19 @@ const hapusDivisiMutation = gql`
 	}
 `
 
-const addRequestMutation = gql`
-	mutation($tanggal:String!, $status:String!, $divisi_id: ID!){
-		addRequest(tanggal: $tanggal, status: $status, divisi_id: $divisi_id){
+const addPermintaanBarangMutation = gql`
+	mutation($tanggal:String!, $status:String!, $kode: String!, $akun_id: String!){
+		addPermintaanBarang(tanggal: $tanggal, status: $status, kode: $kode, akun_id: $akun_id){
 			tanggal
 			status
+			kode
 			id
 		}
 	}
 `
-const hapusRequestMutation = gql`
+const hapusPermintaanBarangMutation = gql`
 	mutation($id:ID!){
-		hapusRequest(id: $id){
+		hapusPermintaanBarang(id: $id){
 			status
 			id
 		}
@@ -307,14 +315,21 @@ const getVendorQuery = gql`
 	}
 `
 
-const getRequestQuery = gql`
+const getPermintaanBarangQuery = gql`
 	query($id:ID){
-		request(id: $id) {
+		permintaanBarang(id: $id) {
 			tanggal
 			status
+			kode
 			id
-			divisi{
-				nama
+			akun{
+				username
+				karyawan{
+					nama
+					divisi{
+						nama
+					}
+				}
 			}
 			listRequest{
 				nama_barang
@@ -332,8 +347,8 @@ export {
 	getVendorsQuery, 
 	getPeralatansQuery,
 	getDivisisQuery,
-	getRequestsQuery,
-	getRequestQuery,
+	getPermintaanBarangsQuery,
+	getPermintaanBarangQuery,
 	getListRequestsQuery,
 	getOrdersQuery,
 	getBarangsQuery,
@@ -342,11 +357,11 @@ export {
 	addDivisiMutation, 
 	addPeralatanMutation, 
 	addVendorMutation,
-	addRequestMutation,
+	addPermintaanBarangMutation,
 	addListRequestMutation,
 	addBarangMutation,
 	hapusDivisiMutation,
-	hapusRequestMutation,
+	hapusPermintaanBarangMutation,
 	hapusListRequestMutation,
 	hapusBarangMutation,
 	hapusPeralatanMutation,

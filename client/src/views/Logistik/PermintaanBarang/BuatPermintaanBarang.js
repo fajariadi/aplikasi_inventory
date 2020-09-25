@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import {graphql} from 'react-apollo';
 import * as compose from 'lodash.flowright';
-import { hapusManyListRequestMutation, getRequestsQuery, getBarangsQuery, getListRequestsQuery, addListRequestMutation, getRequestQuery} from '../queries/queries';
+import { hapusPermintaanBarangMutation, getPermintaanBarangsQuery, getBarangsQuery, getListRequestsQuery, addListRequestMutation} from '../queries/queries';
 import {  
   Card, 
   CardBody, 
@@ -20,7 +20,7 @@ import {
   ModalBody,
 } from 'reactstrap';
 
-class EditRequest extends Component {
+class BuatPermintaanBarang extends Component {
   constructor(props){
     super(props);
     const username= localStorage.getItem("username")
@@ -36,91 +36,108 @@ class EditRequest extends Component {
       jumlah:'',
       satuan:'',
       jenis:'',
+      req_id:'',
       redirect: true,
       selected: null,
-      loggedIn,
+      loggedIn
     }
   }
 
-
-
-  displayRequestDetail(){
-    const {request} = this.props.data;
-    if(request){
-
+  displayNewRequest(){
+    var data = this.props.getPermintaanBarangsQuery;
+    var tanggal = '';
+    var status = '';
+    var divisi='';
+    var kode='';
+    var nama='';
+    data.permintaanBarangs.map(request => {
       return(
-        <CardBody>
-          <Row>
-            <Col md="4">
-              <h5>Divisi : {request.divisi.nama}</h5>
-            </Col>
-            <Col md="4">
-              <h5>Tanggal : {request.tanggal}</h5>
-            </Col>
-            <Col md="4">
-              <h5>Status : {request.status}</h5>
-            </Col>
-          </Row>
-          
-              {
-                request.listRequest.map(item => {
-                 if(this.state.requestItems.length === 0){
-                    const newItem = { nama: item.nama_barang, jumlah: item.jumlah_barang, satuan: item.satuan, jenis: item.jenis, status: this.state.status};
-                    this.setState(state => {
-                      state.requestItems.push(newItem);
-                    });
-                  }
-                })
-              }
-           
-        </CardBody>
-      )
-    }
-  }
-
-  onEdit(e){
-    e.preventDefault();
-    this.setState({
-      modalEdit: ! this.state.modalEdit
-    });
-    var index = this.state.requestItems.findIndex(x => x.nama === this.state.nama);
-    this.state.requestItems[index].jumlah = this.state.jumlah;
-  }
-
-   onDelete(e){
-    e.preventDefault();
-    this.setState({
-      modalDelete: ! this.state.modalDelete
-    });
-    var index = this.state.requestItems.findIndex(x => x.nama === this.state.nama);
-    this.setState( state => {
-      state.requestItems.splice(index, 1);
-    });
-  }
-
-  onUpdate(){
-    var req_id = this.props.match.params.id;
-    this.props.hapusManyListRequestMutation({
-      variables:{
-        id: req_id,        
-      },
-      refetchQueries:[{query:getRequestsQuery}],
-    });
-    this.state.requestItems.map(item => {
-      return(
-        this.props.addListRequestMutation({
-          variables:{
-            nama_barang: item.nama,
-            jumlah_barang: parseInt(item.jumlah),
-            satuan: item.satuan,
-            jenis: item.jenis,
-            request_id: req_id,
-          },
-          refetchQueries:[{query:getListRequestsQuery}],
-        })
+        tanggal = request.tanggal,
+        status = request.status,
+        divisi = request.akun.karyawan.divisi.nama,
+        kode = request.kode,
+        nama = request.akun.karyawan.nama
       );
     });
+    return(
+      <div>
+        <Form className="form-horizontal">
+          <Row> 
+            <Col md="4">
+              <FormGroup row>
+                <Col md="6">
+                  <Label htmlFor="name">Kode Permintaan</Label>
+                </Col>
+                <Col md="6">
+                <Input type="text" name="kode" id="kode" value={kode} disabled></Input> 
+                </Col>
+              </FormGroup>
+            </Col>  
+            <Col md="4">
+              <FormGroup row>
+              <Col md="3">
+                  <Label htmlFor="name">Status</Label>
+                </Col>
+                <Col md="9">
+                <Input type="text" name="kode" id="kode" value={status} disabled></Input> 
+                </Col> 
+              </FormGroup>
+            </Col>  
+          </Row>
+          <Row>
+            <Col md="4">
+            <FormGroup row>
+            <Col md="6">
+                  <Label htmlFor="name">Dibuat Oleh</Label>
+                </Col>
+                <Col md="6">
+                <Input type="text" name="kode" id="kode" value={nama} disabled></Input> 
+                </Col>
+              </FormGroup>
+            </Col>
+            <Col md="4">
+            <FormGroup row>
+               <Col md="3">
+                  <Label htmlFor="name">Divisi</Label>
+                </Col>
+                <Col md="9">
+                <Input type="text" name="kode" id="kode" value={divisi} disabled></Input> 
+                </Col>  
+              </FormGroup>
+            </Col>
+            <Col md="4">
+            <FormGroup row>  
+            <Col md="3">
+                  <Label htmlFor="name">Tanggal</Label>
+                </Col>
+                <Col md="9">
+                <Input type="text" name="kode" id="kode" value={tanggal} disabled></Input> 
+                </Col>
+              </FormGroup>
+            </Col>
+          </Row>
+        </Form>
+      </div>
+      
+    );
   }
+
+  onDelete(){
+    var data = this.props.getPermintaanBarangsQuery;
+    var request_id = '';
+    data.permintaanBarangs.map(request => {
+      return(
+        request_id = request.id
+      );
+    });
+    this.props.hapusPermintaanBarangMutation({
+      variables:{
+        id: request_id,        
+      },
+      refetchQueries:[{query:getPermintaanBarangsQuery}],
+    });
+  }
+
 
   displayBarang(){
     var data = this.props.getBarangsQuery;
@@ -141,24 +158,6 @@ class EditRequest extends Component {
     });
   }
 
-  toggleModalEdit(name){
-    this.setState({
-      nama : name
-    });
-    this.setState({
-      modalEdit: ! this.state.modalEdit
-    });
-  }
-
-  toggleModalDelete(name){
-    this.setState({
-      nama : name
-    });
-    this.setState({
-      modalDelete: ! this.state.modalDelete
-    });
-  }
-
   addItem(e){
     e.preventDefault();
     this.toggleModal();
@@ -170,9 +169,9 @@ class EditRequest extends Component {
 
 
   submitRequest = (e) => {
-      var data = this.props.getRequestsQuery;
+      var data = this.props.getPermintaanBarangsQuery;
       var request_id = '';
-      data.requests.map(request => {
+      data.permintaanBarangs.map(request => {
           return(
              request_id = request.id
           );
@@ -194,7 +193,7 @@ class EditRequest extends Component {
   }
   
   render() {
-     if(this.state.loggedIn === false){
+    if(this.state.loggedIn === false){
       return <Redirect to="/login" />
     }
     return (
@@ -203,17 +202,35 @@ class EditRequest extends Component {
           <Col>
             <Card>
               <CardHeader>
-                Form Edit Permintaan Barang
-                <Link to="/request/request" className={'float-right mb-0'}>
-                  <Button label color="danger">
+                Form Permintaan Barang
+                <Link to="/permintaanBarang/permintaanBarang" className={'float-right mb-0'}>
+                  <Button label color="danger" onClick={this.onDelete.bind(this)}>
                       Batal
                   </Button>
                 </Link>
               </CardHeader>
               <CardBody>
-               {this.displayRequestDetail()}
-               <Button onClick={this.toggleModal.bind(this)} size="sm" color="success" className={'float-right mb-0'}><i className="fa fa-plus-circle"></i> Tambah Barang</Button>
-                <Table hover bordered striped responsive size="sm" className="mt-3">
+               <Form onSubmit={(e) => {this.addItem(e)}}>
+                <Row form>
+                  <Col className="text-center">
+                    {this.displayNewRequest()}
+                  </Col>
+                  <Col md="2">
+                    
+                  </Col>
+                </Row>
+                
+                </Form>
+                <hr />
+                <Row>
+                  <Col>
+                    <h5>Daftar Barang</h5>
+                  </Col>
+                  <Col >
+                    <Button onClick={this.toggleModal.bind(this)} size="sm" color="success" className={'float-right mb-0'}><i className="fa fa-plus-circle"></i> Tambah Barang</Button>
+                  </Col>
+                </Row>
+                  <Table hover bordered striped responsive size="sm">
                     <thead>
                     <tr>
                       <th>Nama Barang</th>
@@ -221,8 +238,6 @@ class EditRequest extends Component {
                       <th>Satuan</th>
                       <th>Jenis Barang</th>
                       <th>status</th>
-                      <th>Edit</th>
-                      <th>Hapus</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -235,22 +250,17 @@ class EditRequest extends Component {
                               <td>{item.satuan}</td>
                               <td>{item.jenis}</td>
                               <td>{item.status}</td>
-                              <td>
-                                <Button onClick={(e) => {this.toggleModalEdit(item.nama)}}>Edit</Button>
-                              </td>
-                              <td>
-                                <Button onClick={(e) => {this.toggleModalDelete(item.nama)}}>Hapus</Button>
-                              </td>
                             </tr>
                           ) 
                          })
                       }
                     </tbody>
                   </Table>
+                  <br />
+                  <Link to="/permintaanBarang/permintaanBarang">
+                    <Button onClick={(e) => {this.submitRequest(e)}} color="primary">Submit</Button>
+                  </Link>
               </CardBody>
-              <Link to='/request/request' className={'text-center mb-3'}>
-                <Button onClick={this.onUpdate.bind(this)} color="primary" >Simpan</Button>
-              </Link>
             </Card>
           </Col>
         </Row>
@@ -299,47 +309,16 @@ class EditRequest extends Component {
             </Form>
           </ModalBody>  
         </Modal>
-        <Modal isOpen={this.state.modalEdit}>
-          <ModalHeader>Edit Jumlah Barang</ModalHeader>
-          <ModalBody>
-            <Form onSubmit={(e) => {this.onEdit(e)}}>
-              <FormGroup>
-                <Label htmlFor="name">Jumlah Barang</Label>
-                <Input type="number" id="jumlah" onChange={(e) =>this.setState({jumlah:e.target.value})} placeholder="Jumlah Barang" required />
-              </FormGroup>
-              <Button type="submit" color="primary">Tambah</Button>
-              <Button color="danger" onClick={this.toggleModalEdit.bind(this)}>Batal</Button>
-            </Form>
-          </ModalBody>  
-        </Modal>
-        <Modal isOpen={this.state.modalDelete}>
-          <ModalBody className="text-center">
-            <Form onSubmit={(e) => {this.onDelete(e)}}>
-              <h5> APAKAH ANDA YAKIN MENGHAPUS ITEM INI ? </h5>
-              <Button type="submit" color="primary" className="mr-3">IYA</Button>
-              <Button color="danger" onClick={this.toggleModalDelete.bind(this)}>TIDAK</Button>
-            </Form>
-          </ModalBody>  
-        </Modal>
       </div>
     );
   }
 }
 
 export default compose( 
-  graphql(getRequestQuery, {
-    options:(props) => {
-      return{
-        variables:{
-          id: props.match.params.id
-        }
-      }
-    }
-  }),
   graphql(getBarangsQuery, {name:"getBarangsQuery"}),
-  graphql(getRequestsQuery, {name:"getRequestsQuery"}),
+  graphql(getPermintaanBarangsQuery, {name:"getPermintaanBarangsQuery"}),
   graphql(getListRequestsQuery, {name:"getListRequestsQuery"}),
   graphql(addListRequestMutation, {name:"addListRequestMutation"}),
-  graphql(hapusManyListRequestMutation, {name:"hapusManyListRequestMutation"}),
+  graphql(hapusPermintaanBarangMutation, {name:"hapusPermintaanBarangMutation"}),
   
-)(EditRequest);
+)(BuatPermintaanBarang);

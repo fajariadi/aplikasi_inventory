@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import {graphql} from 'react-apollo';
 import * as compose from 'lodash.flowright';
-import { getVendorsQuery, getOrdersQuery, getListRequestsQuery, addRequestMutation, addListRequestMutation} from '../queries/queries';
+import { getVendorsQuery, getOrdersQuery, getPermintaanBarangsQuery, getListRequestsQuery, addListRequestMutation} from '../queries/queries';
 import {  
   Card, 
   CardBody, 
@@ -96,7 +96,7 @@ class CreateOrder extends Component {
   }*/
 
   submitRequest(e){
-    var data = this.props.getRequestsQuery;
+    var data = this.props.getPermintaanBarangsQuery;
     var request_id = '';
     data.requests.map(request => {
         return(
@@ -272,7 +272,7 @@ export default compose(
   graphql(getVendorsQuery, {name:"getVendorsQuery"}),
   graphql(getOrdersQuery, {name:"getOrdersQuery"}),
   graphql(getListRequestsQuery, {name:"getListRequestsQuery"}),
-  graphql(addRequestMutation, {name:"addRequestMutation"}),
+  graphql(getPermintaanBarangsQuery, {name:"getPermintaanBarangsQuery"}),
   graphql(addListRequestMutation, {name:"addListRequestMutation"}),
   
 )(CreateOrder);

@@ -3,7 +3,7 @@ const _ = require('lodash');
 const Vendor = require('./models/VendorModel');
 const Peralatan = require('./models/PeralatanModel');
 const Divisi = require('./models/DivisiModel');
-const Request = require('./models/RequestModel');
+const PermintaanBarang = require('./models/PermintaanBarangModel');
 const ListRequest = require('./models/ListRequestModel');
 const Order = require('./models/OrderModel');
 const Barang = require('./models/BarangModel');
@@ -20,7 +20,6 @@ const {
 	GraphQLList,
 	GraphQLSchema,
 	GraphQLNonNull,
-	GraphQLScalarType
 } = graphql;
 
 
@@ -58,25 +57,20 @@ const DivisiType = new GraphQLObjectType({
 	fields: () => ({
 		id: {type: GraphQLID},
 		nama: {type:GraphQLString},
-		request: {
-			type: new GraphQLList(RequestType),
-			resolve(parent, args){
-				return Request.find({divisi_id: parent.id});
-			}
-		}
 	})
 });
 
-const RequestType = new GraphQLObjectType({
-	name: 'Request',
+const PermintaanBarangType = new GraphQLObjectType({
+	name: 'PermintaanBarang',
 	fields: () => ({
 		id: {type: GraphQLID},
 		tanggal: {type:GraphQLString},
 		status: {type:GraphQLString},
-		divisi: {
-			type: DivisiType,
-			resolve(parent, args){
-				return Divisi.findById(parent.divisi_id);
+		kode: {type:GraphQLString},
+		akun: {
+			type: AkunType,
+			resolve(parent,args){
+				return Akun.findById(parent.akun_id);
 			}
 		},
 		listRequest: {
@@ -96,10 +90,10 @@ const ListRequestType = new GraphQLObjectType({
 		jumlah_barang: { type: GraphQLInt},
 		satuan: {type: GraphQLString},
 		jenis: {type: GraphQLString},
-		request: {
-			type: RequestType,
+		permintaanBarang: {
+			type: PermintaanBarangType,
 			resolve(parent,args){
-				return Request.findById(parent.request_id);
+				return PermintaanBarang.findById(parent.request_id);
 			}
 		}
 	})
@@ -161,7 +155,7 @@ const AkunType = new GraphQLObjectType({
 			resolve(parent,args){
 				return Karyawan.findById(parent.karyawan_id);
 			}
-		}
+		},
 	})
 });
 
@@ -208,18 +202,18 @@ const RootQuery = new GraphQLObjectType({
 				return Divisi.find({});
 			}
 		},
-		request:{
-			type: RequestType,
+		permintaanBarang:{
+			type: PermintaanBarangType,
 			args: {id:{type:GraphQLID}},
 			resolve(parent,args){
-				return Request.findById(args.id);
+				return PermintaanBarang.findById(args.id);
 			}
 		},
-		requests:{
-			type: new GraphQLList(RequestType),
+		permintaanBarangs:{
+			type: new GraphQLList(PermintaanBarangType),
 			args: {id:{type:GraphQLID}},
 			resolve(parent,args){
-				return Request.find({});
+				return PermintaanBarang.find({});
 			}
 		},
 		listrequest:{
@@ -372,27 +366,29 @@ const Mutation = new GraphQLObjectType({
 				return Divisi.deleteOne({_id:args.id});
 			}
 		},
-		addRequest:{
-			type: RequestType,
+		addPermintaanBarang:{
+			type: PermintaanBarangType,
 			args:{
 				tanggal: {type: new GraphQLNonNull(GraphQLString)},
 				status: {type: new GraphQLNonNull(GraphQLString)},
-				divisi_id: {type: new GraphQLNonNull(GraphQLID)}
+				kode: {type: new GraphQLNonNull(GraphQLString)},
+				akun_id: {type: new GraphQLNonNull(GraphQLString)},
 			},
 			resolve(parent, args){
-				let request = new Request({
+				let permintaanBarang = new PermintaanBarang({
 					tanggal: args.tanggal,
 					status:args.status,
-					divisi_id: args.divisi_id
+					kode: args.kode,
+					akun_id: args.akun_id,
 				});
-				return request.save();
+				return permintaanBarang.save();
 			}
 		},
-		hapusRequest:{
-			type: RequestType,
+		hapusPermintaanBarang:{
+			type: PermintaanBarangType,
 			args: {id:{type:GraphQLID}},
 			resolve(parent,args){
-				return Request.deleteOne({_id:args.id});
+				return PermintaanBarang.deleteOne({_id:args.id});
 			}
 		},
 		addListRequest:{

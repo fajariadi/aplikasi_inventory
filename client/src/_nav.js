@@ -40,7 +40,7 @@ export default {
       children: [
         {
           name: 'Permintaan Barang',
-          url: '/request/request',
+          url: '/permintaanBarang/permintaanBarang',
           icon: 'fa fa-tasks',
         },
         {
@@ -73,6 +73,11 @@ export default {
     {
       name: 'Laporan',
       url: '/peralatan/pemeliharaan',
+      icon: 'fa fa-book',
+    },
+    {
+      name: 'form-test',
+      url: '/base/forms',
       icon: 'fa fa-book',
     },
   ],

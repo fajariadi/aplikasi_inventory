@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { Redirect, Link } from 'react-router-dom';
 import {graphql} from 'react-apollo';
-import { getRequestQuery} from '../queries/queries';
-import { Button, Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Row, Table } from 'reactstrap';
+import { getPermintaanBarangQuery} from '../queries/queries';
+import { Button, Card, CardBody, CardHeader, Col, Row, Table } from 'reactstrap';
 
-class DetailRequest extends Component {
+class DetailPermintaanBarang extends Component {
   constructor(props){
     super(props);
     const username= localStorage.getItem("username")
@@ -25,7 +25,7 @@ class DetailRequest extends Component {
         <CardBody>
           <Row>
             <Col md="4">
-              <h5>Divisi : {request.divisi.nama}</h5>
+              <h5>Divisi : {request.akun.karyawan.divisi.nama}</h5>
             </Col>
             <Col md="4">
               <h5>Tanggal : {request.tanggal}</h5>
@@ -80,7 +80,7 @@ class DetailRequest extends Component {
                   Detail Permintaan Barang
                 </Col>
                 <Col>
-                  <Link to="/request/request" className={'float-right mb-0'}>
+                  <Link to="/permintaanBarang/permintaanBarang" className={'float-right mb-0'}>
                     <Button label color="primary" size="sm">
                         Kembali
                     </Button>
@@ -99,7 +99,7 @@ class DetailRequest extends Component {
 }
 
 export default
-  graphql(getRequestQuery, {
+  graphql(getPermintaanBarangQuery, {
     options:(props) => {
       return{
         variables:{
@@ -107,4 +107,4 @@ export default
         }
       }
     }
-  })(DetailRequest);
+  })(DetailPermintaanBarang);

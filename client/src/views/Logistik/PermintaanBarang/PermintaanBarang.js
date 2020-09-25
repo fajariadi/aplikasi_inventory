@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import { Redirect, Link } from 'react-router-dom';
 import {graphql} from 'react-apollo';
 import * as compose from 'lodash.flowright';
-import { getRequestsQuery, addRequestMutation, hapusRequestMutation, getListRequestsQuery, hapusManyListRequestMutation} from '../queries/queries';
+import { getPermintaanBarangsQuery, addPermintaanBarangMutation, hapusPermintaanBarangMutation, getListRequestsQuery, hapusManyListRequestMutation} from '../queries/queries';
 import { Button, Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Row, Table } from 'reactstrap';
 
-class Request extends Component {
+class PermintaanBarang extends Component {
 
    constructor(props){
     super(props);
@@ -16,7 +16,8 @@ class Request extends Component {
         loggedIn = false
       }
     this.state = {
-      divisi_id: localStorage.getItem("divisi_id"),
+      akun_id: localStorage.getItem("user_id"),
+      kode:'P001',
       nama:'',
       jumlah:'',
       satuan:'',
@@ -28,43 +29,44 @@ class Request extends Component {
   }
 
   onDelete(request_id){
-   this.props.hapusRequestMutation({
+   this.props.hapusPermintaanBarangMutation({
       variables:{
         id: request_id,        
       },
-      refetchQueries:[{query:getRequestsQuery}],
+      refetchQueries:[{query:getPermintaanBarangsQuery}],
     });
    this.props.hapusManyListRequestMutation({
       variables:{
         id: request_id,        
       },
-      refetchQueries:[{query:getRequestsQuery}],
+      refetchQueries:[{query:getPermintaanBarangsQuery}],
     });
   }
 
   displayRequest(){
-    var data1 = this.props.getRequestsQuery;
+    var data1 = this.props.getPermintaanBarangsQuery;
     var no = 0;
     if(data1.loading){
       return (<div>Loading Permintaan Barang...</div>);
     } else {
-      return data1.requests.map(request => {
+      return data1.permintaanBarangs.map(request => {
         no++;
         return(
           <tr>
             <td key={request.id}>{no}</td>
-            <td key={request.id}>{request.divisi.nama}</td>
+            <td key={request.id}>{request.kode}</td>
+            <td key={request.id}>{request.akun.karyawan.divisi.nama}</td>
             <td key={request.id}>{request.tanggal}</td>
             <td key={request.id}>{request.status}</td>
             <td key={request.id}>
-              <Link to={ `/request/detailRequest/${request.id}` }>
+              <Link to={ `/permintaanBarang/detailPermintaanBarang/${request.id}` }>
               <Button color="primary" size="sm">
                 <i className="fa fa-file"></i>
                 </Button>
               </Link>
             </td>
             <td key={request.id}>
-              <Link to={ `/request/editRequest/${request.id}` }>
+              <Link to={ `/permintaanBarang/editPermintaanBarang/${request.id}` }>
               <Button color="success" size="sm">
                 <i className="fa fa-pencil"></i>
                 </Button>
@@ -82,13 +84,14 @@ class Request extends Component {
   }
 
   addRequestHandler(){
-    this.props.addRequestMutation({
+    this.props.addPermintaanBarangMutation({
       variables:{
         tanggal: '03-04-2020',
         status: 'Pending',
-        divisi_id: this.state.divisi_id,
+        akun_id: this.state.akun_id,
+        kode: this.state.kode
       },
-      refetchQueries:[{query:getRequestsQuery}],
+      refetchQueries:[{query:getPermintaanBarangsQuery}],
     });
   }
 
@@ -107,9 +110,9 @@ class Request extends Component {
                   <h5>Permintaan Barang</h5>
                 </Col>
                 <Col>
-                  <Link to="/request/createRequest" className={'float-right mb-0'}>
+                  <Link to="/permintaanBarang/buatPermintaanBarang" className={'float-right mb-0'}>
                     <Button color="primary" onClick={this.addRequestHandler.bind(this)}>
-                        Buat Permintaan
+                    <i className="fa fa-plus mr-2"></i>Buat Permintaan
                     </Button>
                   </Link>
                 </Col>
@@ -120,6 +123,7 @@ class Request extends Component {
                   <thead align="center">
                   <tr>
                     <th>No</th>
+                    <th>Kode</th>
                     <th>Divisi</th>
                     <th>Tanggal</th>
                     <th>Status</th>
@@ -157,9 +161,9 @@ class Request extends Component {
 }
 
 export default compose(
-  graphql(getRequestsQuery, {name:"getRequestsQuery"}),
+  graphql(getPermintaanBarangsQuery, {name:"getPermintaanBarangsQuery"}),
   graphql(getListRequestsQuery, {name:"getListRequestsQuery"}),
-  graphql(addRequestMutation, {name:"addRequestMutation"}),
-  graphql(hapusRequestMutation, {name:"hapusRequestMutation"}),
+  graphql(addPermintaanBarangMutation, {name:"addPermintaanBarangMutation"}),
+  graphql(hapusPermintaanBarangMutation, {name:"hapusPermintaanBarangMutation"}),
   graphql(hapusManyListRequestMutation, {name:"hapusManyListRequestMutation"}),
-)(Request);
+)(PermintaanBarang);
