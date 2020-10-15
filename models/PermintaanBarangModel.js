@@ -6,6 +6,8 @@ const PermintaanBarangSchema = new Schema({
 	status: String,
 	kode: String,
 	akun_id:String,
+	tanggal_setuju: String,
+	disetujui_id:String,
 });
 
 module.exports = mongoose.model('PermintaanBarang', PermintaanBarangSchema);

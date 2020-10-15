@@ -306,10 +306,8 @@ class Dashboard extends Component {
     };
     const username= localStorage.getItem("username")
 
-    let loggedIn = true 
-      if(username == null){
-        loggedIn = false
-      }
+    let loggedIn = false 
+      
     this.state = {
       nama: localStorage.getItem("nama"),
       loggedIn

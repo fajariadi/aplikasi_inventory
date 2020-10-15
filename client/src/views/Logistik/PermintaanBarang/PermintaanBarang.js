@@ -17,7 +17,7 @@ class PermintaanBarang extends Component {
       }
     this.state = {
       akun_id: localStorage.getItem("user_id"),
-      kode:'P001',
+      kode:'',
       nama:'',
       jumlah:'',
       satuan:'',
@@ -43,6 +43,22 @@ class PermintaanBarang extends Component {
     });
   }
 
+  renderEditElement(request_akun_id, request_id){
+    console.log(request_akun_id);
+    console.log(request_id);
+      if(this.state.akun_id === request_akun_id){
+        return(
+          <td key={request_id}>
+              <Link to={ `/permintaanBarang/editPermintaanBarang/${request_id}` }>
+              <Button color="success" size="sm">
+                <i className="fa fa-pencil"></i>
+                </Button>
+              </Link>
+            </td>
+        )
+      }
+  }
+
   displayRequest(){
     var data1 = this.props.getPermintaanBarangsQuery;
     var no = 0;
@@ -59,19 +75,13 @@ class PermintaanBarang extends Component {
             <td key={request.id}>{request.tanggal}</td>
             <td key={request.id}>{request.status}</td>
             <td key={request.id}>
-              <Link to={ `/permintaanBarang/detailPermintaanBarang/${request.id}` }>
+              <Link to={`/permintaanBarang/detailPermintaanBarang/${request.id}`}>
               <Button color="primary" size="sm">
                 <i className="fa fa-file"></i>
                 </Button>
               </Link>
             </td>
-            <td key={request.id}>
-              <Link to={ `/permintaanBarang/editPermintaanBarang/${request.id}` }>
-              <Button color="success" size="sm">
-                <i className="fa fa-pencil"></i>
-                </Button>
-              </Link>
-            </td>
+            {this.renderEditElement(request.akun.id, request.id)}
             <td key={request.id}>
                 <Button onClick={this.onDelete.bind(this, request.id)} color="danger" size="sm">
                 <i className="fa fa-trash"></i>
@@ -82,14 +92,32 @@ class PermintaanBarang extends Component {
       });
     }
   }
+  getKodeBaru(){
+    var kode = 'R';
+    var nomor = 1;
+    var data = this.props.getPermintaanBarangsQuery;
+    data.permintaanBarangs.map(request => {
+        nomor++;
+    })
+    if(nomor < 10){
+      kode = kode+"00"+nomor;
+    }else if (nomor >= 10 && nomor < 100){
+      kode = kode+"0"+nomor;
+    }else {
+      kode = kode+""+nomor;
+    }
+    return kode;
+  }
 
   addRequestHandler(){
     this.props.addPermintaanBarangMutation({
       variables:{
-        tanggal: '03-04-2020',
-        status: 'Pending',
+        tanggal: new Date().toLocaleDateString(),
+        status: 'Belum Disetujui',
         akun_id: this.state.akun_id,
-        kode: this.state.kode
+        kode: this.getKodeBaru(),
+        tanggal_setuju: '',
+        disetujui_id: '5f7d7b275e9e27240c35abcf',
       },
       refetchQueries:[{query:getPermintaanBarangsQuery}],
     });

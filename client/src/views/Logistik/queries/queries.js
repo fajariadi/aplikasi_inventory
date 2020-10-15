@@ -41,6 +41,7 @@ const getPermintaanBarangsQuery = gql`
 		kode
 		akun{
 			username
+			id
 			karyawan{
 				nama
 				divisi{
@@ -62,9 +63,6 @@ const getListRequestsQuery = gql`
 		permintaanBarang{
 			status
 			tanggal
-			divisi{
-				nama
-			}
 		}
 	}
 }
@@ -174,8 +172,8 @@ const hapusDivisiMutation = gql`
 `
 
 const addPermintaanBarangMutation = gql`
-	mutation($tanggal:String!, $status:String!, $kode: String!, $akun_id: String!){
-		addPermintaanBarang(tanggal: $tanggal, status: $status, kode: $kode, akun_id: $akun_id){
+	mutation($tanggal:String!, $status:String!, $kode: String!, $akun_id: String!, $tanggal_setuju: String!, $disetujui_id:String!){
+		addPermintaanBarang(tanggal: $tanggal, status: $status, kode: $kode, akun_id: $akun_id, tanggal_setuju: $tanggal_setuju, disetujui_id: $disetujui_id){
 			tanggal
 			status
 			kode
@@ -322,6 +320,12 @@ const getPermintaanBarangQuery = gql`
 			status
 			kode
 			id
+			disetujui{
+				username
+				karyawan{
+				  nama
+				}
+			  }
 			akun{
 				username
 				karyawan{

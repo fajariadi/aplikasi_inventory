@@ -186,7 +186,7 @@ class BuatPermintaanBarang extends Component {
               jenis: item.jenis,
               request_id: request_id,
             },
-            refetchQueries:[{query:getListRequestsQuery}],
+            refetchQueries:[{query:getPermintaanBarangsQuery}],
           })
         );
       });

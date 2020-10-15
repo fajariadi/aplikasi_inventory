@@ -57,6 +57,12 @@ const DivisiType = new GraphQLObjectType({
 	fields: () => ({
 		id: {type: GraphQLID},
 		nama: {type:GraphQLString},
+		karyawans:{
+			type: new GraphQLList(KaryawanType),
+			resolve(parent,args){
+				return Karyawan.find({divisi_id: parent.id});
+			}
+		},
 	})
 });
 
@@ -67,6 +73,13 @@ const PermintaanBarangType = new GraphQLObjectType({
 		tanggal: {type:GraphQLString},
 		status: {type:GraphQLString},
 		kode: {type:GraphQLString},
+		tanggal_setuju: {type:GraphQLString},
+		disetujui : {
+			type: AkunType,
+			resolve(parent,args){
+				return Akun.findById(parent.disetujui_id);
+			}
+		},
 		akun: {
 			type: AkunType,
 			resolve(parent,args){
@@ -139,6 +152,12 @@ const KaryawanType = new GraphQLObjectType({
 			type: DivisiType,
 			resolve(parent,args){
 				return Divisi.findById(parent.divisi_id);
+			}
+		},
+		akun:{
+			type: AkunType,
+			resolve(parent,args){
+				return Akun.findOne({karyawan_id: parent.id});
 			}
 		}
 	})
@@ -373,6 +392,8 @@ const Mutation = new GraphQLObjectType({
 				status: {type: new GraphQLNonNull(GraphQLString)},
 				kode: {type: new GraphQLNonNull(GraphQLString)},
 				akun_id: {type: new GraphQLNonNull(GraphQLString)},
+				tanggal_setuju: {type: new GraphQLNonNull(GraphQLString)},
+				disetujui_id: {type: new GraphQLNonNull(GraphQLString)},
 			},
 			resolve(parent, args){
 				let permintaanBarang = new PermintaanBarang({
@@ -380,6 +401,8 @@ const Mutation = new GraphQLObjectType({
 					status:args.status,
 					kode: args.kode,
 					akun_id: args.akun_id,
+					tanggal_setuju: args.tanggal_setuju,
+					disetujui_id: args.disetujui_id,
 				});
 				return permintaanBarang.save();
 			}

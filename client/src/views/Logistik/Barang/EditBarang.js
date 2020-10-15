@@ -21,7 +21,7 @@ class EditBarang extends Component {
   constructor(props) {
     super(props);
     this.state = {
-        id:'',
+      id:'',
       nama_barang:'',
       jenis_barang: '',
       satuan: '',
