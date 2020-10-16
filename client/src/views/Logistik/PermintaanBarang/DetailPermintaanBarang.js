@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Redirect, Link } from 'react-router-dom';
 import {graphql} from 'react-apollo';
 import * as compose from 'lodash.flowright';
-import { getPermintaanBarangQuery, addBarangMutation} from '../queries/queries';
+import { getPermintaanBarangQuery, getPermintaanBarangsQuery, hapusPermintaanBarangMutation, hapusManyListRequestMutation, updateStatusPermintaanBarang} from '../queries/queries';
 import { Button, Card, CardBody, CardHeader, Col, Row, Table, Form, FormGroup, Label, Input } from 'reactstrap';
 
 class DetailPermintaanBarang extends Component {
@@ -15,9 +15,26 @@ class DetailPermintaanBarang extends Component {
         loggedIn = false
       }
     this.state = {
-      loggedIn
+      loggedIn,
+      akun_id: localStorage.getItem("user_id"),
+      divisi: localStorage.getItem("divisi"),
       }
   }
+
+  onDelete(request_id){
+    this.props.hapusPermintaanBarangMutation({
+       variables:{
+         id: request_id,        
+       },
+       refetchQueries:[{query:getPermintaanBarangsQuery}],
+     });
+    this.props.hapusManyListRequestMutation({
+       variables:{
+         id: request_id,        
+       },
+       refetchQueries:[{query:getPermintaanBarangsQuery}],
+     });
+   }
 
   displayRequestDetail(){
     const {permintaanBarang} = this.props.data;
@@ -46,6 +63,7 @@ class DetailPermintaanBarang extends Component {
                 </Col> 
               </FormGroup>
             </Col>  
+            {this.renderElement3(permintaanBarang.status, permintaanBarang.tanggal_setuju)}
           </Row>
           <Row>
             <Col md="4">
@@ -82,7 +100,7 @@ class DetailPermintaanBarang extends Component {
         </Form>
           <hr />
           <Table hover bordered striped responsive size="sm">
-            <thead>
+            <thead align="center">
               <tr>
                 <th>Nama Barang</th>
                 <th>Jumlah</th>
@@ -90,7 +108,7 @@ class DetailPermintaanBarang extends Component {
                 <th>Jenis</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody align="center">
               {
                 permintaanBarang.listRequest.map(item => {
                   return(
@@ -105,9 +123,94 @@ class DetailPermintaanBarang extends Component {
               }
             </tbody>
           </Table>
+          <hr />
+          <Row>
+            <Col>
+              {this.renderElement(permintaanBarang.akun.id)} 
+            </Col>
+            <Col>
+              {this.renderElement2(permintaanBarang.tanggal_setuju)}
+            </Col>
+          </Row>
         </CardBody>
       )
     }
+  }
+
+  renderElement(akun_id){
+    if (this.state.akun_id === akun_id){
+      return(
+        <div align="center">
+        <Link to={ `/permintaanBarang/editPermintaanBarang/${this.props.match.params.id}` }>
+          <Button color="warning">
+            <i className="fa fa-pencil" >Edit Permintaan Barang</i>
+            </Button>
+        </Link>
+        <Link to="/permintaanBarang/permintaanBarang">
+          <Button onClick={this.onDelete.bind(this, this.props.match.params.id)} color="danger">
+            <i className="fa fa-trash">Hapus Permintaan Barang</i>
+          </Button>
+        </Link>
+      </div>
+      )
+    }
+  }
+
+  renderElement2(tanggal){
+    if(this.state.divisi ===  "Logistic" && tanggal === ''){
+      return(
+        <div align="center">
+          <Link>
+            <Button onClick={this.onSetujuiPermintaan.bind(this, this.props.match.params.id)} color="success">
+              <i className="fa fa-check">Setujui Permintaan Barang</i>
+            </Button>
+          </Link>
+          <Link >
+            <Button onClick={this.onTolakPermintaan.bind(this, this.props.match.params.id)} color="danger">
+              <i className="fa fa-times">Tolak Permintaan Barang</i>
+            </Button>
+          </Link>
+        </div> 
+      )
+    }
+  }
+  renderElement3(status, tanggal){
+    if(status === 'Disetujui' || status === 'Ditolak'){
+      return(
+        <Col md="4">
+          <FormGroup row>
+            <Col md="3">
+              <Label htmlFor="name">Tanggal Diproses</Label>
+            </Col>
+            <Col md="9">
+              <Input type="text" name="kode" id="kode" value={tanggal} disabled></Input> 
+            </Col> 
+          </FormGroup>
+        </Col> 
+      )
+    } 
+  }
+
+  onSetujuiPermintaan(permintaan_id){
+    this.props.updateStatusPermintaanBarang({
+      variables:{
+        id:permintaan_id,
+        status: 'Disetujui',
+        tanggal_setuju: new Date().toLocaleDateString(),
+      },
+      refetchQueries:[{query:getPermintaanBarangsQuery}],
+    });
+  }
+
+  onTolakPermintaan(permintaan_id){
+    this.props.updateStatusPermintaanBarang({
+      variables:{
+        id:permintaan_id,
+        status: 'Ditolak',
+        tanggal_setuju: new Date().toLocaleDateString(),
+      },
+      refetchQueries:[{query:getPermintaanBarangsQuery}],
+    });
   }
 
  
@@ -144,7 +247,7 @@ class DetailPermintaanBarang extends Component {
   }
 }
 
-export default compose(
+export default compose (
   graphql(getPermintaanBarangQuery, {
       options:(props) => {
         return{
@@ -154,5 +257,8 @@ export default compose(
         }
       }
     }),
-graphql(addBarangMutation, {name:"addBarangMutation"})
+    graphql(updateStatusPermintaanBarang, {name:"updateStatusPermintaanBarang"}),
+    graphql(getPermintaanBarangsQuery, {name:"getPermintaanBarangsQuery"}),
+    graphql(hapusPermintaanBarangMutation, {name:"hapusPermintaanBarangMutation"}),
+    graphql(hapusManyListRequestMutation, {name:"hapusManyListRequestMutation"}),
 )(DetailPermintaanBarang);

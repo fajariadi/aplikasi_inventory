@@ -5,7 +5,7 @@ const Peralatan = require('./models/PeralatanModel');
 const Divisi = require('./models/DivisiModel');
 const PermintaanBarang = require('./models/PermintaanBarangModel');
 const ListRequest = require('./models/ListRequestModel');
-const Order = require('./models/OrderModel');
+const PurchaseOrder = require('./models/PurchaseOrderModel');
 const Barang = require('./models/BarangModel');
 const Karyawan = require('./models/KaryawanModel');
 const Akun = require('./models/AkunModel');
@@ -32,8 +32,8 @@ const VendorType = new GraphQLObjectType({
 		alamat: {type: GraphQLString},
 		email: {type: GraphQLString},
 		noTlp: {type: GraphQLString},
-		order: {
-			type: new GraphQLList(OrderType),
+		purchaseOrder: {
+			type: new GraphQLList(PurchaseOrderType),
 			resolve(parent, args){
 				return Order.find({vendor_id: parent.id});
 			}
@@ -112,13 +112,13 @@ const ListRequestType = new GraphQLObjectType({
 	})
 });
 
-const OrderType = new GraphQLObjectType({
-	name: 'Order',
+const PurchaseOrderType = new GraphQLObjectType({
+	name: 'PurchaseOrder',
 	fields: () => ({
 		id: {type: GraphQLID},
 		kode: {type:GraphQLString},
 		tanggal: {type:GraphQLString},
-		jenis: {type:GraphQLString},
+		tanggal_setuju: {type:GraphQLString},
 		status: {type:GraphQLString},
 		vendor: {
 			type: VendorType,
@@ -249,18 +249,18 @@ const RootQuery = new GraphQLObjectType({
 				return ListRequest.find({});
 			}
 		},
-		order:{
-			type: OrderType,
+		purchaseOrder:{
+			type: PurchaseOrderType,
 			args: {id:{type:GraphQLID}},
 			resolve(parent,args){
-				return Order.findById(args.id);
+				return PurchaseOrder.findById(args.id);
 			}
 		},
-		orders:{
-			type: new GraphQLList(OrderType),
+		purchaseOrders:{
+			type: new GraphQLList(PurchaseOrderType),
 			args: {id:{type:GraphQLID}},
 			resolve(parent,args){
-				return Order.find({});
+				return PurchaseOrder.find({});
 			}
 		},
 		barang:{
@@ -407,6 +407,17 @@ const Mutation = new GraphQLObjectType({
 				return permintaanBarang.save();
 			}
 		},
+		updateStatusPermintaanBarang:{
+			type: PermintaanBarangType,
+			args: {
+				id:{type:GraphQLID},
+				status: {type: new GraphQLNonNull(GraphQLString)},
+				tanggal_setuju: {type: new GraphQLNonNull(GraphQLString)},
+			},
+			resolve(parent, args){
+				return PermintaanBarang.findOneAndUpdate({_id: args.id}, {status: args.status, tanggal_setuju:args.tanggal_setuju})
+			}
+		},
 		hapusPermintaanBarang:{
 			type: PermintaanBarangType,
 			args: {id:{type:GraphQLID}},
@@ -448,24 +459,24 @@ const Mutation = new GraphQLObjectType({
 				return ListRequest.deleteOne({_id:args.id});
 			}
 		},
-		addOrder:{
-			type: OrderType,
+		addPurcahseOrder:{
+			type: PurchaseOrderType,
 			args:{
 				kode: {type: new GraphQLNonNull(GraphQLString)},
 				tanggal: {type: new GraphQLNonNull(GraphQLString)},
-				jenis: {type: new GraphQLNonNull(GraphQLString)},
+				tanggal_setuju: {type: new GraphQLNonNull(GraphQLString)},
 				status: {type: new GraphQLNonNull(GraphQLString)},
 				vendor_id: {type: new GraphQLNonNull(GraphQLID)}
 			},
 			resolve(parent, args){
-				let order = new Order({
+				let purcahseOrder = new PurchaseOrder({
 					kode: args.kode,
 					tanggal: args.tanggal,
-					jenis: args.jenis,
+					tanggal_setuju: args.tanggal_setuju,
 					status: args.status,
 					vendor_id: args.vendor_id
 				});
-				return order.save();
+				return purcahseOrder.save();
 			}
 		},
 		addBarang:{

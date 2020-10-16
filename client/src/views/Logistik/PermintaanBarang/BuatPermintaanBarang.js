@@ -23,7 +23,8 @@ import {
 class BuatPermintaanBarang extends Component {
   constructor(props){
     super(props);
-    const username= localStorage.getItem("username")
+    const username = localStorage.getItem("username")
+    const barang = null
 
     let loggedIn = true 
       if(username == null){
@@ -32,6 +33,7 @@ class BuatPermintaanBarang extends Component {
     this.state = {
       requestItems: [],
       nama:'',
+      barang,
       status: 'Active',
       jumlah:'',
       satuan:'',
@@ -146,7 +148,7 @@ class BuatPermintaanBarang extends Component {
     } else {
       return data.barangs.map(barang => {
         return(
-          <option key={barang.id} value={barang.nama_barang}>{barang.nama_barang}</option>
+          <option key={barang.id} value={barang}>{barang.nama_barang}</option>
         );
       });
     }
@@ -161,6 +163,11 @@ class BuatPermintaanBarang extends Component {
   addItem(e){
     e.preventDefault();
     this.toggleModal();
+    var nama='';
+    Object.keys(this.state.barang).map( barang => {
+      nama = barang.nama_barang
+    });
+    console.log(nama);
     const newItem = { nama: this.state.nama, jumlah: this.state.jumlah, satuan: this.state.satuan, jenis: this.state.jenis, status: this.state.status};
     this.setState(state => {
       state.requestItems.push(newItem);
@@ -186,6 +193,7 @@ class BuatPermintaanBarang extends Component {
               jenis: item.jenis,
               request_id: request_id,
             },
+            refetchQueries:[{query:getListRequestsQuery}],
             refetchQueries:[{query:getPermintaanBarangsQuery}],
           })
         );
@@ -270,7 +278,7 @@ class BuatPermintaanBarang extends Component {
             <Form onSubmit={(e) => {this.addItem(e)}}>
               <FormGroup>
                 <Label htmlFor="name">Nama Barang</Label>
-                <Input type="select" name="nama" onChange={(e) =>this.setState({nama:e.target.value})} id="nama" required>
+                <Input type="select" name="nama" onChange={(e) =>this.setState({barang:e.target.value})} id="nama" required>
                   <option>Nama Barang</option>
                   {this.displayBarang()}
                 </Input>

@@ -43,22 +43,6 @@ class PermintaanBarang extends Component {
     });
   }
 
-  renderEditElement(request_akun_id, request_id){
-    console.log(request_akun_id);
-    console.log(request_id);
-      if(this.state.akun_id === request_akun_id){
-        return(
-          <td key={request_id}>
-              <Link to={ `/permintaanBarang/editPermintaanBarang/${request_id}` }>
-              <Button color="success" size="sm">
-                <i className="fa fa-pencil"></i>
-                </Button>
-              </Link>
-            </td>
-        )
-      }
-  }
-
   displayRequest(){
     var data1 = this.props.getPermintaanBarangsQuery;
     var no = 0;
@@ -80,12 +64,6 @@ class PermintaanBarang extends Component {
                 <i className="fa fa-file"></i>
                 </Button>
               </Link>
-            </td>
-            {this.renderEditElement(request.akun.id, request.id)}
-            <td key={request.id}>
-                <Button onClick={this.onDelete.bind(this, request.id)} color="danger" size="sm">
-                <i className="fa fa-trash"></i>
-                </Button>
             </td>
           </tr>
         );
@@ -135,12 +113,12 @@ class PermintaanBarang extends Component {
               <CardHeader>
                 <Row>
                 <Col>
-                  <h5>Permintaan Barang</h5>
+                  <h5>Daftar Permintaan Barang</h5>
                 </Col>
                 <Col>
                   <Link to="/permintaanBarang/buatPermintaanBarang" className={'float-right mb-0'}>
                     <Button color="primary" onClick={this.addRequestHandler.bind(this)}>
-                    <i className="fa fa-plus mr-2"></i>Buat Permintaan
+                    <i className="fa fa-plus mr-2"></i>Buat Permintaan Barang
                     </Button>
                   </Link>
                 </Col>
@@ -155,9 +133,8 @@ class PermintaanBarang extends Component {
                     <th>Divisi</th>
                     <th>Tanggal</th>
                     <th>Status</th>
-                    <th>Detail</th>
-                    <th>Edit</th>
-                    <th>Hapus</th>
+                    <th>Aksi</th>
+                    
                   </tr>
                   </thead>
                   <tbody align="center">

@@ -20,7 +20,7 @@ import {
   ModalHeader
 } from 'reactstrap';
 
-class CreateOrder extends Component {
+class BuatPurchaseOrder extends Component {
   constructor(props){
     super(props);
     this.state = {
@@ -128,7 +128,7 @@ class CreateOrder extends Component {
             <Card>
               <CardHeader>
                 Form Create Order
-                <Link to="/order/listOrder" className={'float-right mb-0'}>
+                <Link to="/purchaseOrder/purchaseOrder" className={'float-right mb-0'}>
                   <Button label color="danger">
                       Batal
                   </Button>
@@ -275,4 +275,4 @@ export default compose(
   graphql(getPermintaanBarangsQuery, {name:"getPermintaanBarangsQuery"}),
   graphql(addListRequestMutation, {name:"addListRequestMutation"}),
   
-)(CreateOrder);
+)(BuatPurchaseOrder);

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { Card, Button, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Row, Table } from 'reactstrap';
 
-class DetailOrder extends Component {
+class DetailPurchaseOrder extends Component {
   render() {
     return (
       <div className="animated fadeIn">
@@ -11,7 +11,7 @@ class DetailOrder extends Component {
             <Card>
               <CardHeader>
                 Purchase Order
-                <Link to="/order/listOrder" className={'float-right mb-0'}>
+                <Link to="/purchaseOrder/purchaseOrder" className={'float-right mb-0'}>
                   <Button label color="secondary">
                       Kembali
                   </Button>
@@ -87,4 +87,4 @@ class DetailOrder extends Component {
   }
 }
 
-export default DetailOrder;
+export default DetailPurchaseOrder;

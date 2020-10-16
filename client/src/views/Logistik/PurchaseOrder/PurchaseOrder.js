@@ -1,8 +1,40 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import * as compose from 'lodash.flowright';
+import {graphql} from 'react-apollo';
+import { getPurchaseOrdersQuery } from '../queries/queries';
 import { Card, CardBody, CardHeader, Col, Pagination, PaginationItem,Button, PaginationLink, Row, Table } from 'reactstrap';
+import { isEmpty } from 'lodash';
 
-class ListOrder extends Component {
+class PurchaseOrder extends Component {
+
+  displayAllPurchaseOrder(){
+    var data = this.props.getPurchaseOrdersQuery;
+    var no = 0;
+    if(data.loading){
+      return (<div>Loading Purchase Order...</div>);
+    } else {
+      return data.purchaseOrders.map(order => {
+        no++;
+        return(
+          <tr>
+            <td key={order.id}>{no}</td>
+            <td key={order.id}>{order.kode}</td>
+            <td key={order.id}>{order.divisi.nama}</td>
+            <td key={order.id}>{order.tanggal}</td>
+            <td key={order.id}>{order.status}</td>
+            <td key={order.id}>
+              <Link to={`/purchaseOrder/detailPurchaseOrder/${order.id}`}>
+              <Button color="primary" size="sm">
+                <i className="fa fa-file"></i>
+                </Button>
+              </Link>
+            </td>
+          </tr>
+        );
+      });
+    }
+  }
   render() {
     return (
       <div className="animated fadeIn">
@@ -15,9 +47,9 @@ class ListOrder extends Component {
                   Daftar Purchase Order
                 </Col>
                 <Col>
-                  <Link to="/order/createOrder" className={'float-right mb-0'}>
+                  <Link to="/purchaseOrder/buatPurchaseOrder" className={'float-right mb-0'}>
                     <Button label color="primary" size="sm">
-                        <i className="fa fa-plus"></i> Purchase Order
+                        <i className="fa fa-plus"></i> Buat Purchase Order
                     </Button>
                   </Link>
                 </Col>
@@ -25,31 +57,18 @@ class ListOrder extends Component {
               </CardHeader>
               <CardBody>
                 <Table hover bordered striped responsive size="sm">
-                  <thead>
+                  <thead align="center">
                   <tr>
+                    <th>No</th>
                     <th>Kode</th>
+                    <th>Nama Vendor</th>
                     <th>Tanggal</th>
-                    <th>Vendor</th>
-                    <th>Jenis</th>
-                    <th>Nama Project</th>
                     <th>Status</th>
-                    <th>Detail Order</th>
+                    <th>Aksi</th>
                   </tr>
                   </thead>
-                  <tbody>
-                  <tr>
-                    <td>PO001</td>
-                    <td>01-02-2020</td>
-                    <td>CV. Sumber Abadi</td>
-                    <td>Material Bangunan</td>
-                    <td>Project Renovasi</td>
-                    <td>On Progress</td>
-                    <td>
-                      <Link to="/order/detailOrder" className="ml-auto">
-                        Lihat
-                      </Link>
-                    </td>
-                  </tr>
+                  <tbody align="center">
+                  {this.displayAllPurchaseOrder()}
                   </tbody>
                 </Table>
                 <nav>
@@ -74,4 +93,6 @@ class ListOrder extends Component {
   }
 }
 
-export default ListOrder;
+export default compose(
+  graphql(getPurchaseOrdersQuery, {name:"getPurchaseOrdersQuery"}),
+) (PurchaseOrder);

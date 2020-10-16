@@ -45,7 +45,7 @@ export default {
         },
         {
           name: 'Purchase Order',
-          url: '/order/listOrder',
+          url: '/purchaseOrder/purchaseOrder',
           icon: 'fa fa-shopping-cart',
         },
         {

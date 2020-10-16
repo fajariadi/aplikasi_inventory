@@ -96,6 +96,21 @@ const getBarangsQuery = gql`
 }
 `
 
+const getPurchaseOrdersQuery = gql`
+{
+	purchaseOrders {
+		kode
+		tanggal
+		tanggal_setuju
+		status
+		id
+		vendor{
+			nama
+		}
+	}
+}
+`
+
 const getKaryawansQuery = gql`
 {
 	karyawans {
@@ -320,6 +335,7 @@ const getPermintaanBarangQuery = gql`
 			status
 			kode
 			id
+			tanggal_setuju
 			disetujui{
 				username
 				karyawan{
@@ -328,6 +344,7 @@ const getPermintaanBarangQuery = gql`
 			  }
 			akun{
 				username
+				id
 				karyawan{
 					nama
 					divisi{
@@ -342,6 +359,16 @@ const getPermintaanBarangQuery = gql`
 				satuan
 				id
 			}
+		}
+	}
+`
+
+const updateStatusPermintaanBarang = gql`
+	mutation($id : ID, $status : String!, $tanggal_setuju : String! ){
+		updateStatusPermintaanBarang(id:$id, status:$status, tanggal_setuju:$tanggal_setuju){
+			id
+			status
+			tanggal_setuju
 		}
 	}
 `
@@ -374,5 +401,7 @@ export {
 	addAkunMutation,
 	getAkunQuery,
 	getVendorQuery,
-	hapusManyListRequestMutation
+	hapusManyListRequestMutation,
+	updateStatusPermintaanBarang,
+	getPurchaseOrdersQuery
 };

@@ -45,11 +45,9 @@ const PermintaanBarang = React.lazy(() => import('./views/Logistik/PermintaanBar
 const DetailPermintaanBarang = React.lazy(() => import('./views/Logistik/PermintaanBarang/DetailPermintaanBarang'));
 const BuatPermintaanBarang = React.lazy(() => import('./views/Logistik/PermintaanBarang/BuatPermintaanBarang'));
 const EditPermintaanBarang = React.lazy(() => import('./views/Logistik/PermintaanBarang/EditPermintaanBarang'));
-const ListOrder = React.lazy(() => import('./views/Logistik/Order/ListOrder'));
-const CreateOrder = React.lazy(() => import('./views/Logistik/Order/CreateOrder'));
-const DetailOrder = React.lazy(() => import('./views/Logistik/Order/DetailOrder'));
-const PenerimaanBarang = React.lazy(() => import('./views/Logistik/Order/PenerimaanBarang'));
-const PengambilanBarang = React.lazy(() => import('./views/Logistik/Order/PengambilanBarang'));
+const PurchaseOrder = React.lazy(() => import('./views/Logistik/PurchaseOrder/PurchaseOrder'));
+const BuatPurchaseOrder = React.lazy(() => import('./views/Logistik/PurchaseOrder/BuatPurchaseOrder'));
+const DetailPurchaseOrder = React.lazy(() => import('./views/Logistik/PurchaseOrder/DetailPurchaseOrder'));
 const Vendor = React.lazy(() => import('./views/Logistik/Vendor/Vendor'));
 const EditVendor = React.lazy(() => import('./views/Logistik/Vendor/EditVendor'));
 const OfferRoom = React.lazy(() => import('./views/Logistik/Users/OfferRoom'));
@@ -117,11 +115,9 @@ const routes = [
   { path: '/permintaanBarang/detailPermintaanBarang/:id', exact: true, name: 'Detail Permintaan Barang', component: DetailPermintaanBarang },
   { path: '/permintaanBarang/buatPermintaanBarang', exact: true, name: 'Buat Permintaan Barang', component: BuatPermintaanBarang },
   { path: '/permintaanBarang/editPermintaanBarang/:id', exact: true, name: 'Edit Permintaan Barang', component: EditPermintaanBarang },
-  { path: '/order/listOrder', exact: true, name: 'List Order', component: ListOrder },
-  { path: '/order/createOrder', exact: true, name: 'Create Order', component: CreateOrder },
-  { path: '/order/detailOrder', exact: true, name: 'Detail Order', component: DetailOrder },
-  { path: '/order/penerimaanBarang', exact: true, name: 'Penermaan Barang Order', component: PenerimaanBarang },
-  { path: '/order/pengambilanBarang', exact: true, name: 'Pengambilan Barang Order', component: PengambilanBarang },
+  { path: '/purchaseOrder/purchaseOrder', exact: true, name: 'Purchase Order', component: PurchaseOrder },
+  { path: '/purchaseOrder/buatPurchaseOrder', exact: true, name: 'Buat Purchase Order', component: BuatPurchaseOrder },
+  { path: '/purchaseOrder/detailPurchaseOrder', exact: true, name: 'Detail Purcahse Order', component: DetailPurchaseOrder },
   { path: '/vendor/vendor', exact: true, name: 'List Vendor', component: Vendor },
   { path: '/vendor/editVendor/:id', exact: true, name: 'Edit Vendor', component: EditVendor },
 
