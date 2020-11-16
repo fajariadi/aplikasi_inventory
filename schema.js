@@ -9,6 +9,7 @@ const PurchaseOrder = require('./models/PurchaseOrderModel');
 const Barang = require('./models/BarangModel');
 const Karyawan = require('./models/KaryawanModel');
 const Akun = require('./models/AkunModel');
+const ListItemPurchaseOrder = require('./models/ListItemPurchaseOrder');
 
 
 
@@ -35,7 +36,7 @@ const VendorType = new GraphQLObjectType({
 		purchaseOrder: {
 			type: new GraphQLList(PurchaseOrderType),
 			resolve(parent, args){
-				return Order.find({vendor_id: parent.id});
+				return PurchaseOrder.find({vendor_id: parent.id});
 			}
 		}
 	})
@@ -103,10 +104,37 @@ const ListRequestType = new GraphQLObjectType({
 		jumlah_barang: { type: GraphQLInt},
 		satuan: {type: GraphQLString},
 		jenis: {type: GraphQLString},
+		status: {type: GraphQLString},
+		harga: { type: GraphQLInt},
+		purchaseOrder: {
+			type: PurchaseOrderType,
+			resolve(parent,args){
+				return PurchaseOrder.findById(parent.order_id);
+			}	
+		},
 		permintaanBarang: {
 			type: PermintaanBarangType,
 			resolve(parent,args){
 				return PermintaanBarang.findById(parent.request_id);
+			}
+		}
+	})
+});
+
+const ListItemPurchaseOrderType = new GraphQLObjectType({
+	name: "ListItemPurchaseOrder",
+	fields: () => ({
+		id: {type: GraphQLID},
+		nama_barang: {type: GraphQLString},
+		jumlah_barang: { type: GraphQLInt},
+		satuan: {type: GraphQLString},
+		jenis: {type: GraphQLString},
+		status: {type: GraphQLString},
+		harga: { type: GraphQLInt},
+		purchaseOrder: {
+			type: PurchaseOrderType,
+			resolve(parent,args){
+				return PurchaseOrder.findById(parent.purchaseOrder_id);
 			}
 		}
 	})
@@ -120,10 +148,23 @@ const PurchaseOrderType = new GraphQLObjectType({
 		tanggal: {type:GraphQLString},
 		tanggal_setuju: {type:GraphQLString},
 		status: {type:GraphQLString},
+		total_harga: {type:GraphQLInt},
+		akun: {
+			type: AkunType,
+			resolve(parent,args){
+				return Akun.findById(parent.akun_id);
+			}
+		},
 		vendor: {
 			type: VendorType,
 			resolve(parent, args){
 				return Vendor.findById(parent.vendor_id);
+			}
+		},
+		listItemPurchaseOrder: {
+			type: new GraphQLList(ListItemPurchaseOrderType),
+			resolve(parent,args){ 
+				return ListItemPurchaseOrder.find({purchaseOrder_id: parent.id});
 			}
 		}
 	})
@@ -263,6 +304,20 @@ const RootQuery = new GraphQLObjectType({
 				return PurchaseOrder.find({});
 			}
 		},
+		listItemPurchaseOrder:{
+			type: ListItemPurchaseOrderType,
+			args: {id:{type:GraphQLID}},
+			resolve(parent,args){
+				return ListItemPurchaseOrder.findById(args.id);
+			}
+		},
+		listItemPurchaseOrders:{
+			type: new GraphQLList(ListItemPurchaseOrderType),
+			args: {id:{type:GraphQLID}},
+			resolve(parent,args){
+				return ListItemPurchaseOrder.find({});
+			}
+		},
 		barang:{
 			type: BarangType,
 			args: {id:{type:GraphQLID}},
@@ -341,6 +396,20 @@ const Mutation = new GraphQLObjectType({
 				return Vendor.deleteOne({_id:args.id});
 			}
 		},
+		updateVendor:{
+			type: VendorType,
+			args: {
+				id:{type:GraphQLID},
+				nama: {type: new GraphQLNonNull(GraphQLString)},
+				jenis_usaha: {type: new GraphQLNonNull(GraphQLString)},
+				alamat: {type: new GraphQLNonNull(GraphQLString)},
+				email: {type: new GraphQLNonNull(GraphQLString)},
+				noTlp: {type: new GraphQLNonNull(GraphQLString)}
+			},
+			resolve(parent, args){
+				return Vendor.findOneAndUpdate({_id: args.id}, {nama: args.nama, jenis_usaha:args.jenis_usaha, alamat:args.alamat, email:args.email, noTlp:args.noTlp})
+			}
+		},
 		addPeralatan:{
 			type: PeralatanType,
 			args:{
@@ -364,6 +433,20 @@ const Mutation = new GraphQLObjectType({
 			args: {id:{type:GraphQLID}},
 			resolve(parent,args){
 				return Peralatan.deleteOne({_id:args.id});
+			}
+		},
+
+		updatePeralatan:{
+			type: PeralatanType,
+			args: {
+				id:{type:GraphQLID},
+				nama: {type: new GraphQLNonNull(GraphQLString)},
+				jumlah: {type: new GraphQLNonNull(GraphQLInt)},
+				harga: {type: new GraphQLNonNull(GraphQLInt)},
+				sewa: {type: new GraphQLNonNull(GraphQLInt)},
+			},
+			resolve(parent, args){
+				return Peralatan.findOneAndUpdate({_id: args.id}, {nama: args.nama, jumlah:args.jumlah, sewa:args.sewa, harga:args.harga})
 			}
 		},
 		addDivisi:{
@@ -432,7 +515,9 @@ const Mutation = new GraphQLObjectType({
 				jumlah_barang: {type: new GraphQLNonNull(GraphQLInt)},
 				satuan: {type: new GraphQLNonNull(GraphQLString)},
 				jenis: {type: new GraphQLNonNull(GraphQLString)},
-				request_id: {type: new GraphQLNonNull(GraphQLID)}
+				request_id: {type: new GraphQLNonNull(GraphQLID)},
+				status: {type: new GraphQLNonNull(GraphQLString)},
+				harga: {type: new GraphQLNonNull(GraphQLInt)},
 			},
 			resolve(parent, args){
 				let listrequest = new ListRequest({
@@ -440,7 +525,9 @@ const Mutation = new GraphQLObjectType({
 					jumlah_barang: args.jumlah_barang,
 					satuan: args.satuan,
 					jenis: args.jenis,
-					request_id: args.request_id
+					request_id: args.request_id,
+					status: args.status,
+					harga: args.harga
 				});
 				return listrequest.save();
 			}
@@ -459,14 +546,35 @@ const Mutation = new GraphQLObjectType({
 				return ListRequest.deleteOne({_id:args.id});
 			}
 		},
-		addPurcahseOrder:{
+		updateStatusListRequest:{
+			type: ListRequestType,
+			args: {
+				id:{type:GraphQLID},
+				status: {type: GraphQLString},
+			},
+			resolve(parent, args){
+				return ListRequest.updateMany({request_id: args.id}, {status: args.status})
+			}
+		},
+		updateAllStatusListRequest:{
+			type: ListRequestType,
+			args: {
+				nama:{type:GraphQLString},
+				status: {type: GraphQLString},
+				order_id: {type: GraphQLID},
+			},
+			resolve(parent, args){
+				return ListRequest.updateMany({nama_barang: args.nama}, {status: args.status, order_id: args.order_id})
+			}
+		},
+		addPurchaseOrder:{
 			type: PurchaseOrderType,
 			args:{
 				kode: {type: new GraphQLNonNull(GraphQLString)},
 				tanggal: {type: new GraphQLNonNull(GraphQLString)},
 				tanggal_setuju: {type: new GraphQLNonNull(GraphQLString)},
 				status: {type: new GraphQLNonNull(GraphQLString)},
-				vendor_id: {type: new GraphQLNonNull(GraphQLID)}
+				akun_id: {type: new GraphQLNonNull(GraphQLString)},
 			},
 			resolve(parent, args){
 				let purcahseOrder = new PurchaseOrder({
@@ -474,9 +582,57 @@ const Mutation = new GraphQLObjectType({
 					tanggal: args.tanggal,
 					tanggal_setuju: args.tanggal_setuju,
 					status: args.status,
-					vendor_id: args.vendor_id
+					akun_id:args.akun_id,
 				});
 				return purcahseOrder.save();
+			}
+		},
+		updateVendorPurchaseOrder:{
+			type: PurchaseOrderType,
+			args: {
+				id:{type:GraphQLID},
+				vendor_id: {type: GraphQLString},
+			},
+			resolve(parent, args){
+				return PurchaseOrder.findOneAndUpdate({_id: args.id}, {vendor_id: args.vendor_id})
+			}
+		},
+		hapusPurchaseOrder:{
+			type: PurchaseOrderType,
+			args: {id:{type:GraphQLID}},
+			resolve(parent,args){
+				return PurchaseOrder.deleteOne({_id:args.id});
+			}
+		},
+		addListItemPurchaseOrder:{
+			type: ListItemPurchaseOrderType,
+			args:{
+				nama_barang: {type: new GraphQLNonNull(GraphQLString)},
+				jumlah_barang: {type: new GraphQLNonNull(GraphQLInt)},
+				satuan: {type: new GraphQLNonNull(GraphQLString)},
+				jenis: {type: new GraphQLNonNull(GraphQLString)},
+				purchaseOrder_id: {type: new GraphQLNonNull(GraphQLID)},
+				status: {type: new GraphQLNonNull(GraphQLString)},
+				harga: {type: new GraphQLNonNull(GraphQLInt)},
+			},
+			resolve(parent, args){
+				let listItemPurchaseOrder = new ListItemPurchaseOrder({
+					nama_barang: args.nama_barang,
+					jumlah_barang: args.jumlah_barang,
+					satuan: args.satuan,
+					jenis: args.jenis,
+					purchaseOrder_id: args.purchaseOrder_id,
+					status: args.status,
+					harga: args.harga
+				});
+				return listItemPurchaseOrder.save();
+			}
+		},
+		hapusManyListItemPurchaseOrder:{
+			type: ListItemPurchaseOrderType,
+			args: {id:{type:GraphQLID}},
+			resolve(parent,args){
+				return ListItemPurchaseOrder.deleteMany({purchaseOrder_id :args.id});
 			}
 		},
 		addBarang:{
@@ -502,6 +658,19 @@ const Mutation = new GraphQLObjectType({
 			args: {id:{type:GraphQLID}},
 			resolve(parent,args){
 				return Barang.deleteOne({_id:args.id});
+			}
+		},
+		updateBarang:{
+			type: BarangType,
+			args: {
+				id:{type:GraphQLID},
+				nama_barang: {type: new GraphQLNonNull(GraphQLString)},
+				jenis_barang: {type: new GraphQLNonNull(GraphQLString)},
+				satuan: {type: new GraphQLNonNull(GraphQLString)},
+				harga: {type: new GraphQLNonNull(GraphQLInt)},
+			},
+			resolve(parent, args){
+				return Barang.findOneAndUpdate({_id: args.id}, {nama_barang: args.nama_barang, jenis_barang:args.jenis_barang, satuan:args.satuan, harga:args.harga})
 			}
 		},
 		addKaryawan:{

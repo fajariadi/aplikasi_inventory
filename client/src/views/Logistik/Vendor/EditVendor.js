@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import {graphql} from 'react-apollo';
 import * as compose from 'lodash.flowright';
-import {getVendorQuery} from '../queries/queries';
+import {getVendorQuery, getVendorsQuery, updateVendorMutation} from '../queries/queries';
 import { 
   Card, 
   CardBody, 
@@ -21,53 +21,93 @@ class EditVendor extends Component {
   constructor(props) {
     super(props);
     this.state = {
-        id:'',
-      nama_barang:'',
-      jenis_barang: '',
-      satuan: '',
-      harga: '',
+      nama:'',
+      jenis_usaha: '',
+      alamat: '',
+      email: '',
+      noTlp:'',
       modalIsOpen: false,  
     };
   }
 
   submitForm(e){
-    e.preventDefault();
-    this.props.addBarangMutation({
+    const {vendor} = this.props.data;
+    var nam='';
+    var jenis='';
+    var almt='';
+    var eml='';
+    var no='';
+    if (this.state.nama === ''){
+      nam = vendor.nama
+    } else {
+      nam = this.state.nama
+    }
+    if (this.state.jenis_usaha === ''){
+      jenis = vendor.jenis_usaha
+    } else {
+      jenis = this.state.jenis
+    }
+    if (this.state.alamat === ''){
+      almt = vendor.alamat 
+    } else {
+      almt = this.state.alamat 
+    }
+    if (this.state.email === ''){
+      eml = vendor.email
+    } else {
+      eml = this.state.email
+    }
+    if (this.state.noTlp === ''){
+      no = vendor.noTlp
+    } else {
+      no = this.state.noTlp
+    }
+    this.props.updateVendorMutation({
       variables:{
-        nama_barang:this.state.nama_barang,
-        jenis_barang: this.state.jenis_barang,
-        satuan: this.state.satuan,
-        harga:parseInt(this.state.harga),
+        id:this.props.match.params.id,
+        nama: nam,
+        jenis_usaha: jenis,
+        alamat: almt,
+        email: eml,
+        noTlp: no,
       },
-      refetchQueries:[{query:getVendorQuery}]
+      refetchQueries:[{query:getVendorsQuery}],
     });
   }
 
-  displayBarang(){
-    const {barang} = this.props.data;
-    var nama = '' ;
-    var jenis = '' ;
-    var sat = '';
-    var har = '';
-    if(barang){
-        console.log(barang.nama_barang);
+  displayVendor(){
+    const {vendor} = this.props.data;
+    if(vendor){
+        return(
+          <div>
+            <FormGroup>
+                <Label htmlFor="name">Nama Vendor</Label>
+                <Input type="text" id="name"  defaultValue={vendor.nama} onChange={(e) =>this.setState({nam:e.target.value})} required />
+                </FormGroup>
+                <FormGroup>
+                <Label htmlFor="name">Jenis Usaha</Label>
+                <Input type="text" id="jenis" defaultValue={vendor.jenis_usaha} onChange={(e) =>this.setState({jenis_usaha:e.target.value})}  required />
+                </FormGroup>
+                <FormGroup>
+                <Label htmlFor="name">Alamat</Label>
+                <Input type="text" id="alamat" defaultValue={vendor.alamat} onChange={(e) =>this.setState({alamat:e.target.value})}  required />
+                </FormGroup>
+                <FormGroup>
+                <Label htmlFor="name">Email</Label>
+                <Input type="text" id="email" defaultValue={vendor.email} onChange={(e) =>this.setState({email:e.target.value})}  required />
+                </FormGroup>
+                <FormGroup>
+                <Label htmlFor="name">No Telepon</Label>
+                <Input type="text" id="noTlp" defaultValue={vendor.noTlp} onChange={(e) =>this.setState({noTlp:e.target.value})}  required />
+                </FormGroup>
+          </div>
+        )
     }
-  }
-
-  inputHandle(e){
-    const target = e.target;
-    const value = target.value;
-    const name = target.name;
-
-    this.setState({
-        [name] : value
-    })
   }
 
   render() {
     return (
       <div className="animated fadeIn">
-          {this.displayBarang()}
         <Row>
           <Col>
             <Card>
@@ -80,33 +120,11 @@ class EditVendor extends Component {
                 </Link>
               </CardHeader>
               <CardBody>
-                <Form onSubmit={(e) => {this.submitForm(e)}}>
-                <FormGroup>
-                <Label htmlFor="name">Nama Barang</Label>
-                <Input type="text" id="name"  onChange={this.inputHandle.bind(this)} required />
-                </FormGroup>
-                <FormGroup>
-                <Label htmlFor="name">Jenis Barang</Label>
-                <Input type="text" id="jenis" onChange={this.inputHandle.bind(this)}  required />
-                </FormGroup>
-                <FormGroup>
-                <Label htmlFor="name">Satuan</Label>
-                <Input type="select" name="satuan" id="satuan" onChange={this.inputHandle.bind(this)} >
-                    <option>Satuan</option>
-                    <option value="Kg">Kg</option>
-                    <option value="Buah">Buah</option>
-                    <option value="Meter">Meter</option>
-                    <option value="Lembar">Lembar</option>
-                    <option value="Liter">Liter</option>
-                    <option value="Sak">Sak</option>
-                    <option value="m3">m3</option>
-                </Input>
-                </FormGroup>
-                <FormGroup>
-                <Label htmlFor="name">Harga Barang</Label>
-                <Input type="number" id="harga" onChange={this.inputHandle.bind(this)}  required />
-                </FormGroup>
-                <Button type="submit" color="primary">Submit</Button>
+                <Form>
+                {this.displayVendor()}
+                <Link to="/vendor/vendor">
+                  <Button type="submit" color="primary" onClick={(e) => {this.submitForm(e)}} >Submit</Button>
+                </Link>
             </Form>
                 </CardBody>
             </Card>
@@ -128,6 +146,8 @@ export default compose(
           }
         }
       }),
+    graphql(updateVendorMutation, {name:"updateVendorMutation"}),
+    graphql(getVendorsQuery, {name:"getVendorsQuery"})
 )(EditVendor);
 
 

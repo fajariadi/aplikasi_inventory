@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import {graphql} from 'react-apollo';
 import * as compose from 'lodash.flowright';
-import { hapusManyListRequestMutation, getPermintaanBarangsQuery, getPermintaanBarangQuery, getBarangsQuery, getListRequestsQuery, addListRequestMutation} from '../queries/queries';
+import {  getPermintaanBarangsQuery, getPermintaanBarangQuery, getBarangsQuery, getListRequestsQuery, addListRequestMutation, hapusManyListRequestMutation} from '../queries/queries';
 import {  
   Card, 
   CardBody, 
@@ -39,87 +39,261 @@ class EditPermintaanBarang extends Component {
       redirect: true,
       selected: null,
       loggedIn,
+      modalEditIsOpen: false,
     }
   }
 
-
-
   displayRequestDetail(){
-    const {request} = this.props.data;
-    if(request){
+    const {permintaanBarang} = this.props.data;
+    var listItem=[];
+    if(this.state.requestItems.length === 0){
+      permintaanBarang.listRequest.map(item => {
+        const newItem = { nama: item.nama_barang, jumlah: item.jumlah_barang, satuan: item.satuan, jenis: item.jenis, status: item.status};
+        listItem.push(newItem);
+      })
+      this.setState({requestItems : listItem});
+      console.log("pertama");
       return(
         <CardBody>
+          <Form className="form-horizontal">
+          <Row> 
+            <Col md="4">
+              <FormGroup row>
+                <Col md="6">
+                  <Label htmlFor="name">Kode Permintaan</Label>
+                </Col>
+                <Col md="6">
+                <Input type="text" name="kode" id="kode" value={permintaanBarang.kode} disabled></Input> 
+                </Col>
+              </FormGroup>
+            </Col>  
+            <Col md="4">
+              <FormGroup row>
+              <Col md="3">
+                  <Label htmlFor="name">Status</Label>
+                </Col>
+                <Col md="9">
+                <Input type="text" name="kode" id="kode" value={permintaanBarang.status} disabled></Input> 
+                </Col> 
+              </FormGroup>
+            </Col>  
+          </Row>
           <Row>
             <Col md="4">
-              <h5>Divisi : {request.akun.karyawan.nama}</h5>
+            <FormGroup row>
+            <Col md="6">
+                  <Label htmlFor="name">Dibuat Oleh</Label>
+                </Col>
+                <Col md="6">
+                <Input type="text" name="kode" id="kode" value={permintaanBarang.akun.karyawan.nama} disabled></Input> 
+                </Col>
+              </FormGroup>
             </Col>
             <Col md="4">
-              <h5>Tanggal : {request.tanggal}</h5>
+            <FormGroup row>
+               <Col md="3">
+                  <Label htmlFor="name">Divisi</Label>
+                </Col>
+                <Col md="9">
+                <Input type="text" name="kode" id="kode" value={permintaanBarang.akun.karyawan.divisi.nama} disabled></Input> 
+                </Col>  
+              </FormGroup>
             </Col>
             <Col md="4">
-              <h5>Status : {request.status}</h5>
+            <FormGroup row>  
+            <Col md="3">
+                  <Label htmlFor="name">Tanggal</Label>
+                </Col>
+                <Col md="9">
+                <Input type="text" name="kode" id="kode" value={permintaanBarang.tanggal} disabled></Input> 
+                </Col>
+              </FormGroup>
             </Col>
           </Row>
-          
+        </Form>
+          <hr />
+          <Button onClick={this.toggleModal.bind(this)} size="sm" color="success" className={'float-right mb-0'}><i className="fa fa-plus-circle"></i> Tambah Barang</Button>
+          <Table hover bordered striped responsive size="sm" className="mt-2">
+            <thead align="center">
+              <tr>
+                <th>Nama Barang</th>
+                <th>Jumlah</th>
+                <th>Satuan</th>
+                <th>Jenis</th>
+                <th>Edit</th>
+                <th>Hapus</th>
+              </tr>
+            </thead>
+            <tbody align="center">
               {
-                request.listRequest.map(item => {
-                 if(this.state.requestItems.length === 0){
-                    const newItem = { nama: item.nama_barang, jumlah: item.jumlah_barang, satuan: item.satuan, jenis: item.jenis, status: this.state.status};
-                    this.setState(state => {
-                      state.requestItems.push(newItem);
-                    });
-                  }
+                listItem.map(item => {
+                  return(
+                    <tr key={item.id}>
+                      <td>{item.nama}</td>
+                      <td>{item.jumlah}</td>
+                      <td>{item.satuan}</td>
+                      <td>{item.jenis}</td>
+                      <td>
+                      <Button onClick={this.toggleModalEdit.bind(this, item.nama)}  color="success" size="sm">
+                        <i className="fa fa-pencil"></i>
+                      </Button>
+                      </td>
+                      <td>
+                      <Button onClick={this.onDeleteItem.bind(this, item.nama)} color="danger" size="sm">
+                        <i className="fa fa-trash"></i>
+                      </Button>
+                      </td>
+                    </tr>
+                  )
                 })
               }
-           
+            </tbody>
+          </Table>
+        </CardBody>
+      )
+    } else {
+      return(
+        <CardBody>
+          <Form className="form-horizontal">
+          <Row> 
+            <Col md="4">
+              <FormGroup row>
+                <Col md="6">
+                  <Label htmlFor="name">Kode Permintaan</Label>
+                </Col>
+                <Col md="6">
+                <Input type="text" name="kode" id="kode" value={permintaanBarang.kode} disabled></Input> 
+                </Col>
+              </FormGroup>
+            </Col>  
+            <Col md="4">
+              <FormGroup row>
+              <Col md="3">
+                  <Label htmlFor="name">Status</Label>
+                </Col>
+                <Col md="9">
+                <Input type="text" name="kode" id="kode" value={permintaanBarang.status} disabled></Input> 
+                </Col> 
+              </FormGroup>
+            </Col>  
+          </Row>
+          <Row>
+            <Col md="4">
+            <FormGroup row>
+            <Col md="6">
+                  <Label htmlFor="name">Dibuat Oleh</Label>
+                </Col>
+                <Col md="6">
+                <Input type="text" name="kode" id="kode" value={permintaanBarang.akun.karyawan.nama} disabled></Input> 
+                </Col>
+              </FormGroup>
+            </Col>
+            <Col md="4">
+            <FormGroup row>
+               <Col md="3">
+                  <Label htmlFor="name">Divisi</Label>
+                </Col>
+                <Col md="9">
+                <Input type="text" name="kode" id="kode" value={permintaanBarang.akun.karyawan.divisi.nama} disabled></Input> 
+                </Col>  
+              </FormGroup>
+            </Col>
+            <Col md="4">
+            <FormGroup row>  
+            <Col md="3">
+                  <Label htmlFor="name">Tanggal</Label>
+                </Col>
+                <Col md="9">
+                <Input type="text" name="kode" id="kode" value={permintaanBarang.tanggal} disabled></Input> 
+                </Col>
+              </FormGroup>
+            </Col>
+          </Row>
+        </Form>
+          <hr />
+          <Button onClick={this.toggleModal.bind(this)} size="sm" color="success" className={'float-right mb-0'}><i className="fa fa-plus-circle"></i> Tambah Barang</Button>
+          <Table hover bordered striped responsive size="sm" className="mt-2">
+            <thead align="center">
+              <tr>
+                <th>Nama Barang</th>
+                <th>Jumlah</th>
+                <th>Satuan</th>
+                <th>Jenis</th>
+                <th>Edit</th>
+                <th>Hapus</th>
+              </tr>
+            </thead>
+            <tbody align="center">
+              {
+                this.state.requestItems.map(item => {
+                  return(
+                    <tr key={item.id}>
+                      <td>{item.nama}</td>
+                      <td>{item.jumlah}</td>
+                      <td>{item.satuan}</td>
+                      <td>{item.jenis}</td>
+                      <td>
+                      <Button onClick={this.toggleModalEdit.bind(this, item.nama)} color="success" size="sm">
+                        <i className="fa fa-pencil"></i>
+                      </Button>
+                      </td>
+                      <td>
+                      <Button onClick={this.onDeleteItem.bind(this, item.nama)} color="danger" size="sm">
+                        <i className="fa fa-trash"></i>
+                      </Button>
+                      </td>
+                    </tr>
+                  )
+                })
+              }
+            </tbody>
+          </Table>
         </CardBody>
       )
     }
   }
 
-  onEdit(e){
-    e.preventDefault();
-    this.setState({
-      modalEdit: ! this.state.modalEdit
-    });
-    var index = this.state.requestItems.findIndex(x => x.nama === this.state.nama);
-    this.state.requestItems[index].jumlah = this.state.jumlah;
+  displayEditItem(){
+    var nama='';
+    var jenis='';
+    var satuan='';
+    var jumlah='';
+    this.state.requestItems.map(item =>{
+      if (item.nama === this.state.selected){
+        nama = item.nama
+        jumlah=item.jumlah
+      }
+    })
+    return(
+      <div>
+        <FormGroup>
+            <Label htmlFor="name">Nama Barang</Label>
+            <Input type="text" name="nama" value={nama} id="nama" disabled>
+            </Input>
+          </FormGroup>
+          <FormGroup>
+            <Label htmlFor="name">Jumlah Barang</Label>
+            <Input type="number" id="jumlah" defaultValue={jumlah} onChange={(e) =>this.setState({jumlah:e.target.value})} placeholder="Jumlah Barang" required />
+          </FormGroup>
+      </div>
+    )
   }
 
-   onDelete(e){
-    e.preventDefault();
-    this.setState({
-      modalDelete: ! this.state.modalDelete
-    });
-    var index = this.state.requestItems.findIndex(x => x.nama === this.state.nama);
-    this.setState( state => {
-      state.requestItems.splice(index, 1);
-    });
-  }
+  onDeleteItem(nama){
+    let filteredArray = this.state.requestItems.filter(item => item.nama !== nama)
+    this.setState({requestItems: filteredArray});
+}
 
-  onUpdate(){
-    var req_id = this.props.match.params.id;
-    this.props.hapusManyListRequestMutation({
-      variables:{
-        id: req_id,        
-      },
-      refetchQueries:[{query:getPermintaanBarangsQuery}],
-    });
-    this.state.requestItems.map(item => {
-      return(
-        this.props.addListRequestMutation({
-          variables:{
-            nama_barang: item.nama,
-            jumlah_barang: parseInt(item.jumlah),
-            satuan: item.satuan,
-            jenis: item.jenis,
-            request_id: req_id,
-          },
-          refetchQueries:[{query:getListRequestsQuery}],
-        })
-      );
-    });
-  }
+onUpdateItem(e){
+  e.preventDefault();
+  this.toggleModalEdit();
+  this.setState(state => ({
+    requestItems: state.requestItems.map(
+      el => el.nama === this.state.selected? { ...el, jumlah : this.state.jumlah}: el
+    )
+  
+  }))
+}
 
   displayBarang(){
     var data = this.props.getBarangsQuery;
@@ -140,56 +314,92 @@ class EditPermintaanBarang extends Component {
     });
   }
 
-  toggleModalEdit(name){
+  toggleModalEdit(nama){
     this.setState({
-      nama : name
-    });
-    this.setState({
-      modalEdit: ! this.state.modalEdit
-    });
-  }
-
-  toggleModalDelete(name){
-    this.setState({
-      nama : name
-    });
-    this.setState({
-      modalDelete: ! this.state.modalDelete
+      modalEditIsOpen: ! this.state.modalEditIsOpen,
+      selected: nama
     });
   }
 
   addItem(e){
     e.preventDefault();
     this.toggleModal();
-    const newItem = { nama: this.state.nama, jumlah: this.state.jumlah, satuan: this.state.satuan, jenis: this.state.jenis, status: this.state.status};
-    this.setState(state => {
-      state.requestItems.push(newItem);
-    });
+    var sama = false;
+    var jum = 0; var jenis= ''; var sat=''; 
+    const data = this.props.getBarangsQuery;
+    data.barangs.map(bar =>{
+      if(bar.nama_barang === this.state.nama){
+        jenis = bar.jenis_barang
+        sat = bar.satuan
+      }
+    })
+    if(this.state.requestItems.length === 0){
+      const newItem = { nama: this.state.nama, jumlah: this.state.jumlah, satuan: sat, jenis: jenis, status: this.state.status};
+      this.setState(state => {
+        state.requestItems.push(newItem);
+      });
+    } else {
+      this.state.requestItems.map(item => {
+        if(item.nama === this.state.nama){
+          sama = true;
+          jum = parseInt(item.jumlah)+parseInt(this.state.jumlah);
+        }
+      });
+      if (sama === true){
+        this.setState(state => ({
+          requestItems: state.requestItems.map(
+            el => el.nama === this.state.nama? { ...el, jumlah : jum }: el
+          )
+        
+        }))
+      } else {
+        const newItem = { nama: this.state.nama, jumlah: this.state.jumlah, satuan: sat, jenis: jenis, status: this.state.status};
+        this.setState(state => {
+          state.requestItems.push(newItem);
+        });
+      }
+    }
+    
   }
 
 
-  submitRequest = (e) => {
-      var data = this.props.getPermintaanBarangsQuery;
-      var request_id = '';
-      data.requests.map(request => {
+  onUpdateSubmit = (e) => {
+      var request_id = this.props.match.params.id;
+      if(this.state.requestItems.length === 0){
+        this.props.hapusPermintaanBarangMutation({
+          variables:{
+            id: request_id,        
+          },
+          refetchQueries:[{query:getPermintaanBarangsQuery}],
+        });
+       this.props.hapusManyListRequestMutation({
+          variables:{
+            id: request_id,        
+          },
+          refetchQueries:[{query:getPermintaanBarangsQuery}],
+        });
+      } else {
+        this.props.hapusManyListRequestMutation({
+          variables:{
+            id: request_id,        
+          },
+        });
+        this.state.requestItems.map(item => {
           return(
-             request_id = request.id
+            this.props.addListRequestMutation({
+              variables:{
+                nama_barang: item.nama,
+                jumlah_barang: parseInt(item.jumlah),
+                satuan: item.satuan,
+                jenis: item.jenis,
+                request_id: request_id,
+                status: 'Active',
+              },
+              refetchQueries:[{query:getPermintaanBarangsQuery}, {query:getListRequestsQuery}],
+            })
           );
-      });
-      this.state.requestItems.map(item => {
-        return(
-          this.props.addListRequestMutation({
-            variables:{
-              nama_barang: item.nama,
-              jumlah_barang: parseInt(item.jumlah),
-              satuan: item.satuan,
-              jenis: item.jenis,
-              request_id: request_id,
-            },
-            refetchQueries:[{query:getListRequestsQuery}],
-          })
-        );
-      });
+        });
+      }
   }
   
   render() {
@@ -204,51 +414,19 @@ class EditPermintaanBarang extends Component {
               <CardHeader>
                 Form Edit Permintaan Barang
                 <Link to="/permintaanBarang/permintaanBarang" className={'float-right mb-0'}>
-                  <Button label color="danger">
+                  <Button color="danger">
                       Batal
                   </Button>
                 </Link>
               </CardHeader>
               <CardBody>
+              
                {this.displayRequestDetail()}
-               <Button onClick={this.toggleModal.bind(this)} size="sm" color="success" className={'float-right mb-0'}><i className="fa fa-plus-circle"></i> Tambah Barang</Button>
-                <Table hover bordered striped responsive size="sm" className="mt-3">
-                    <thead>
-                    <tr>
-                      <th>Nama Barang</th>
-                      <th>Jumlah</th>
-                      <th>Satuan</th>
-                      <th>Jenis Barang</th>
-                      <th>status</th>
-                      <th>Edit</th>
-                      <th>Hapus</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                      {
-                         this.state.requestItems.map(item => {
-                          return(
-                            <tr>
-                              <td>{item.nama}</td>
-                              <td>{item.jumlah}</td>
-                              <td>{item.satuan}</td>
-                              <td>{item.jenis}</td>
-                              <td>{item.status}</td>
-                              <td>
-                                <Button onClick={(e) => {this.toggleModalEdit(item.nama)}}>Edit</Button>
-                              </td>
-                              <td>
-                                <Button onClick={(e) => {this.toggleModalDelete(item.nama)}}>Hapus</Button>
-                              </td>
-                            </tr>
-                          ) 
-                         })
-                      }
-                    </tbody>
-                  </Table>
+               
+               
               </CardBody>
-              <Link to='/request/request' className={'text-center mb-3'}>
-                <Button onClick={this.onUpdate.bind(this)} color="primary" >Simpan</Button>
+              <Link to='/permintaanBarang/permintaanBarang' className={'text-center mb-3'}>
+                <Button onClick={(e) => {this.onUpdateSubmit(e)}} color="primary" >Simpan</Button>
               </Link>
             </Card>
           </Col>
@@ -262,31 +440,6 @@ class EditPermintaanBarang extends Component {
                 <Input type="select" name="nama" onChange={(e) =>this.setState({nama:e.target.value})} id="nama" required>
                   <option>Nama Barang</option>
                   {this.displayBarang()}
-                </Input>
-              </FormGroup>
-              <FormGroup>
-                <Label htmlFor="name">Jenis Barang</Label>
-                <Input type="select" id="jenis" onChange={(e) =>this.setState({jenis:e.target.value})} required>
-                  <option>Jenis</option>
-                  <option value="Bahan Alam">Bahan Alam</option>
-                  <option value="Besi">Besi</option>
-                  <option value="Cat">Cat</option>
-                  <option value="Kayu">Kayu</option>
-                  <option value="Keramik">Keramik</option>
-                  <option value="Material">Material</option>
-                </Input>
-              </FormGroup>
-              <FormGroup>
-                <Label htmlFor="name">Satuan</Label>
-                <Input type="select" name="satuan" id="satuan" onChange={(e) =>this.setState({satuan:e.target.value})}>
-                  <option>Satuan</option>
-                  <option value="Kg">Kg</option>
-                  <option value="Buah">Buah</option>
-                  <option value="Meter">Meter</option>
-                  <option value="Lembar">Lembar</option>
-                  <option value="Liter">Liter</option>
-                  <option value="Sak">Sak</option>
-                  <option value="m3">m3</option>
                 </Input>
               </FormGroup>
               <FormGroup>
@@ -311,15 +464,16 @@ class EditPermintaanBarang extends Component {
             </Form>
           </ModalBody>  
         </Modal>
-        <Modal isOpen={this.state.modalDelete}>
-          <ModalBody className="text-center">
-            <Form onSubmit={(e) => {this.onDelete(e)}}>
-              <h5> APAKAH ANDA YAKIN MENGHAPUS ITEM INI ? </h5>
-              <Button type="submit" color="primary" className="mr-3">IYA</Button>
-              <Button color="danger" onClick={this.toggleModalDelete.bind(this)}>TIDAK</Button>
+        <Modal isOpen={this.state.modalEditIsOpen}>
+          <ModalHeader>Form Edit Item</ModalHeader>
+          <ModalBody>
+            <Form onSubmit={(e) => {this.onUpdateItem(e)}}>
+              {this.displayEditItem()}
+              <Button type="submit" color="primary">Simpan</Button>
+              <Button color="danger" onClick={this.toggleModalEdit.bind(this)}>Batal</Button>
             </Form>
-          </ModalBody>  
-        </Modal>
+          </ModalBody> 
+          </Modal>
       </div>
     );
   }
@@ -335,8 +489,8 @@ export default compose(
       }
     }
   }),
-  graphql(getBarangsQuery, {name:"getBarangsQuery"}),
   graphql(getPermintaanBarangsQuery, {name:"getPermintaanBarangsQuery"}),
+  graphql(getBarangsQuery, {name:"getBarangsQuery"}),
   graphql(getListRequestsQuery, {name:"getListRequestsQuery"}),
   graphql(addListRequestMutation, {name:"addListRequestMutation"}),
   graphql(hapusManyListRequestMutation, {name:"hapusManyListRequestMutation"}),

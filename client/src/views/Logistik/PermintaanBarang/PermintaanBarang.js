@@ -52,13 +52,13 @@ class PermintaanBarang extends Component {
       return data1.permintaanBarangs.map(request => {
         no++;
         return(
-          <tr>
-            <td key={request.id}>{no}</td>
-            <td key={request.id}>{request.kode}</td>
-            <td key={request.id}>{request.akun.karyawan.divisi.nama}</td>
-            <td key={request.id}>{request.tanggal}</td>
-            <td key={request.id}>{request.status}</td>
-            <td key={request.id}>
+          <tr key={request.id}>
+            <td>{no}</td>
+            <td>{request.kode}</td>
+            <td>{request.akun.karyawan.divisi.nama}</td>
+            <td>{request.tanggal}</td>
+            <td>{request.status}</td>
+            <td>
               <Link to={`/permintaanBarang/detailPermintaanBarang/${request.id}`}>
               <Button color="primary" size="sm">
                 <i className="fa fa-file"></i>
@@ -71,18 +71,24 @@ class PermintaanBarang extends Component {
     }
   }
   getKodeBaru(){
-    var kode = 'R';
+    var newKode = 'R';
+    var kode = '';
     var nomor = 1;
     var data = this.props.getPermintaanBarangsQuery;
     data.permintaanBarangs.map(request => {
-        nomor++;
+      if(request.kode !== ''){
+        kode = request.kode
+      } 
     })
+    if(kode !== ''){
+      nomor = parseInt(kode.substring(1,4))+1
+    }
     if(nomor < 10){
-      kode = kode+"00"+nomor;
+      kode = newKode+"00"+nomor;
     }else if (nomor >= 10 && nomor < 100){
-      kode = kode+"0"+nomor;
+      kode = newKode+"0"+nomor;
     }else {
-      kode = kode+""+nomor;
+      kode = newKode+""+nomor;
     }
     return kode;
   }

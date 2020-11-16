@@ -117,7 +117,7 @@ const routes = [
   { path: '/permintaanBarang/editPermintaanBarang/:id', exact: true, name: 'Edit Permintaan Barang', component: EditPermintaanBarang },
   { path: '/purchaseOrder/purchaseOrder', exact: true, name: 'Purchase Order', component: PurchaseOrder },
   { path: '/purchaseOrder/buatPurchaseOrder', exact: true, name: 'Buat Purchase Order', component: BuatPurchaseOrder },
-  { path: '/purchaseOrder/detailPurchaseOrder', exact: true, name: 'Detail Purcahse Order', component: DetailPurchaseOrder },
+  { path: '/purchaseOrder/detailPurchaseOrder/:id', exact: true, name: 'Detail Purcahse Order', component: DetailPurchaseOrder },
   { path: '/vendor/vendor', exact: true, name: 'List Vendor', component: Vendor },
   { path: '/vendor/editVendor/:id', exact: true, name: 'Edit Vendor', component: EditVendor },
 

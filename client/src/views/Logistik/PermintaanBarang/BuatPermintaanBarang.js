@@ -24,7 +24,6 @@ class BuatPermintaanBarang extends Component {
   constructor(props){
     super(props);
     const username = localStorage.getItem("username")
-    const barang = null
 
     let loggedIn = true 
       if(username == null){
@@ -33,15 +32,15 @@ class BuatPermintaanBarang extends Component {
     this.state = {
       requestItems: [],
       nama:'',
-      barang,
       status: 'Active',
       jumlah:'',
       satuan:'',
       jenis:'',
       req_id:'',
       redirect: true,
-      selected: null,
-      loggedIn
+      selected: '',
+      loggedIn,
+      modalEditIsOpen: false,
     }
   }
 
@@ -148,7 +147,7 @@ class BuatPermintaanBarang extends Component {
     } else {
       return data.barangs.map(barang => {
         return(
-          <option key={barang.id} value={barang}>{barang.nama_barang}</option>
+          <option key={barang.id} value={barang.nama_barang}>{barang.nama_barang}</option>
         );
       });
     }
@@ -159,19 +158,77 @@ class BuatPermintaanBarang extends Component {
       modalIsOpen: ! this.state.modalIsOpen
     });
   }
+  toggleModalEdit(nama){
+    this.setState({
+      modalEditIsOpen: ! this.state.modalEditIsOpen,
+      selected: nama
+    });
+  }
+
+  displayEditItem(){
+    var nama='';
+    var jumlah='';
+    this.state.requestItems.map(item =>{
+      if (item.nama === this.state.selected){
+        nama = item.nama
+        jumlah=item.jumlah
+      }
+    })
+    return(
+      <div>
+        <FormGroup>
+            <Label htmlFor="name">Nama Barang</Label>
+            <Input type="text" name="nama" value={nama} id="nama" disabled>
+            </Input>
+          </FormGroup>
+          <FormGroup>
+            <Label htmlFor="name">Jumlah Barang</Label>
+            <Input type="number" id="jumlah" defaultValue={jumlah} onChange={(e) =>this.setState({jumlah:e.target.value})} placeholder="Jumlah Barang" required />
+          </FormGroup>
+      </div>
+    )
+  }
 
   addItem(e){
     e.preventDefault();
     this.toggleModal();
-    var nama='';
-    Object.keys(this.state.barang).map( barang => {
-      nama = barang.nama_barang
-    });
-    console.log(nama);
-    const newItem = { nama: this.state.nama, jumlah: this.state.jumlah, satuan: this.state.satuan, jenis: this.state.jenis, status: this.state.status};
-    this.setState(state => {
-      state.requestItems.push(newItem);
-    });
+    var sama = false;
+    var jum = 0; var jenis= ''; var sat=''; var har=0;
+    const data = this.props.getBarangsQuery;
+    data.barangs.map(bar =>{
+      if(bar.nama_barang === this.state.nama){
+        jenis = bar.jenis_barang
+        sat = bar.satuan
+        har = bar.harga
+      }
+    })
+    if(this.state.requestItems.length === 0){
+      const newItem = { nama: this.state.nama, jumlah: this.state.jumlah, satuan: sat, jenis: jenis, harga: har};
+      this.setState(state => {
+        state.requestItems.push(newItem);
+      });
+    } else {
+      this.state.requestItems.map(item => {
+        if(item.nama === this.state.nama){
+          sama = true;
+          jum = parseInt(item.jumlah)+parseInt(this.state.jumlah);
+        }
+      });
+      if (sama === true){
+        this.setState(state => ({
+          requestItems: state.requestItems.map(
+            el => el.nama === this.state.nama? { ...el, jumlah : jum }: el
+          )
+        
+        }))
+      } else {
+        const newItem = { nama: this.state.nama, jumlah: this.state.jumlah, satuan: sat, jenis: jenis, harga: har};
+        this.setState(state => {
+          state.requestItems.push(newItem);
+        });
+      }
+    }
+    
   }
 
 
@@ -192,12 +249,33 @@ class BuatPermintaanBarang extends Component {
               satuan: item.satuan,
               jenis: item.jenis,
               request_id: request_id,
+              harga: item.harga,
+              status: 'Waiting',
             },
-            refetchQueries:[{query:getListRequestsQuery}],
-            refetchQueries:[{query:getPermintaanBarangsQuery}],
+            refetchQueries:[{query:getPermintaanBarangsQuery}, {query:getListRequestsQuery}],
           })
         );
       });
+  }
+
+  show = (e) => {
+      console.log(this.state.requestItems);
+  }
+
+  onDeleteItem(nama){
+      let filteredArray = this.state.requestItems.filter(item => item.nama !== nama)
+      this.setState({requestItems: filteredArray});
+  }
+
+  onUpdateItem(e){
+    e.preventDefault();
+    this.toggleModalEdit();
+    this.setState(state => ({
+      requestItems: state.requestItems.map(
+        el => el.nama === this.state.selected? { ...el, jumlah : this.state.jumlah}: el
+      )
+    
+    }))
   }
   
   render() {
@@ -245,7 +323,8 @@ class BuatPermintaanBarang extends Component {
                       <th>Jumlah</th>
                       <th>Satuan</th>
                       <th>Jenis Barang</th>
-                      <th>status</th>
+                      <th>Edit</th>
+                      <th>Delete</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -257,7 +336,16 @@ class BuatPermintaanBarang extends Component {
                               <td>{item.jumlah}</td>
                               <td>{item.satuan}</td>
                               <td>{item.jenis}</td>
-                              <td>{item.status}</td>
+                              <td>
+                                <Button onClick={this.toggleModalEdit.bind(this, item.nama)} color="success" size="sm">
+                                  <i className="fa fa-pencil"></i>
+                                </Button>
+                              </td>
+                              <td>
+                                <Button onClick={this.onDeleteItem.bind(this, item.nama)} color="danger" size="sm">
+                                  <i className="fa fa-trash"></i>
+                                </Button>
+                              </td>
                             </tr>
                           ) 
                          })
@@ -278,34 +366,9 @@ class BuatPermintaanBarang extends Component {
             <Form onSubmit={(e) => {this.addItem(e)}}>
               <FormGroup>
                 <Label htmlFor="name">Nama Barang</Label>
-                <Input type="select" name="nama" onChange={(e) =>this.setState({barang:e.target.value})} id="nama" required>
+                <Input type="select" name="nama" onChange={(e) =>this.setState({nama:e.target.value})} id="nama" required>
                   <option>Nama Barang</option>
                   {this.displayBarang()}
-                </Input>
-              </FormGroup>
-              <FormGroup>
-                <Label htmlFor="name">Jenis Barang</Label>
-                <Input type="select" id="jenis" onChange={(e) =>this.setState({jenis:e.target.value})} required>
-                  <option>Jenis</option>
-                  <option value="Bahan Alam">Bahan Alam</option>
-                  <option value="Besi">Besi</option>
-                  <option value="Cat">Cat</option>
-                  <option value="Kayu">Kayu</option>
-                  <option value="Keramik">Keramik</option>
-                  <option value="Material">Material</option>
-                </Input>
-              </FormGroup>
-              <FormGroup>
-                <Label htmlFor="name">Satuan</Label>
-                <Input type="select" name="satuan" id="satuan" onChange={(e) =>this.setState({satuan:e.target.value})}>
-                  <option>Satuan</option>
-                  <option value="Kg">Kg</option>
-                  <option value="Buah">Buah</option>
-                  <option value="Meter">Meter</option>
-                  <option value="Lembar">Lembar</option>
-                  <option value="Liter">Liter</option>
-                  <option value="Sak">Sak</option>
-                  <option value="m3">m3</option>
                 </Input>
               </FormGroup>
               <FormGroup>
@@ -314,6 +377,16 @@ class BuatPermintaanBarang extends Component {
               </FormGroup>
               <Button type="submit" color="primary">Tambah</Button>
               <Button color="danger" onClick={this.toggleModal.bind(this)}>Batal</Button>
+            </Form>
+          </ModalBody>  
+        </Modal>
+        <Modal isOpen={this.state.modalEditIsOpen}>
+          <ModalHeader>Form Edit Item</ModalHeader>
+          <ModalBody>
+            <Form onSubmit={(e) => {this.onUpdateItem(e)}}>
+              {this.displayEditItem()}
+              <Button type="submit" color="primary">Simpan</Button>
+              <Button color="danger" onClick={this.toggleModalEdit.bind(this)}>Batal</Button>
             </Form>
           </ModalBody>  
         </Modal>

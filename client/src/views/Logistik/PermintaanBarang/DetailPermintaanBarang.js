@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Redirect, Link } from 'react-router-dom';
 import {graphql} from 'react-apollo';
 import * as compose from 'lodash.flowright';
-import { getPermintaanBarangQuery, getPermintaanBarangsQuery, hapusPermintaanBarangMutation, hapusManyListRequestMutation, updateStatusPermintaanBarang} from '../queries/queries';
+import { getPermintaanBarangQuery, getPermintaanBarangsQuery, hapusPermintaanBarangMutation, hapusManyListRequestMutation, updateStatusPermintaanBarang, updateStatusListRequest, getListRequestsQuery} from '../queries/queries';
 import { Button, Card, CardBody, CardHeader, Col, Row, Table, Form, FormGroup, Label, Input } from 'reactstrap';
 
 class DetailPermintaanBarang extends Component {
@@ -106,17 +106,19 @@ class DetailPermintaanBarang extends Component {
                 <th>Jumlah</th>
                 <th>Satuan</th>
                 <th>Jenis</th>
+                <th>Status</th>
               </tr>
             </thead>
             <tbody align="center">
               {
                 permintaanBarang.listRequest.map(item => {
                   return(
-                    <tr>
-                      <td key={item.id}>{item.nama_barang}</td>
-                      <td key={item.id}>{item.jumlah_barang}</td>
-                      <td key={item.id}>{item.satuan}</td>
-                      <td key={item.id}>{item.jenis}</td>
+                    <tr key={item.id}>
+                      <td>{item.nama_barang}</td>
+                      <td>{item.jumlah_barang}</td>
+                      <td>{item.satuan}</td>
+                      <td>{item.jenis}</td>
+                      <td>{item.status}</td>
                     </tr>
                   )
                 })
@@ -126,7 +128,7 @@ class DetailPermintaanBarang extends Component {
           <hr />
           <Row>
             <Col>
-              {this.renderElement(permintaanBarang.akun.id)} 
+              {this.renderElement(permintaanBarang.akun.id, permintaanBarang.status)} 
             </Col>
             <Col>
               {this.renderElement2(permintaanBarang.tanggal_setuju)}
@@ -137,8 +139,8 @@ class DetailPermintaanBarang extends Component {
     }
   }
 
-  renderElement(akun_id){
-    if (this.state.akun_id === akun_id){
+  renderElement(akun_id, status){
+    if (this.state.akun_id === akun_id && status === 'Belum Disetujui'){
       return(
         <div align="center">
         <Link to={ `/permintaanBarang/editPermintaanBarang/${this.props.match.params.id}` }>
@@ -153,19 +155,29 @@ class DetailPermintaanBarang extends Component {
         </Link>
       </div>
       )
+    } else {
+      return(
+        <div align="center">
+          <Link to="/permintaanBarang/permintaanBarang">
+          <Button onClick={this.onDelete.bind(this, this.props.match.params.id)} color="danger">
+            <i className="fa fa-trash">Hapus Permintaan Barang</i>
+          </Button>
+        </Link>
+        </div>
+      )
     }
   }
 
   renderElement2(tanggal){
-    if(this.state.divisi ===  "Logistic" && tanggal === ''){
+    if(this.state.divisi ===  "Logistic" && tanggal === '' ){
       return(
         <div align="center">
-          <Link>
+          <Link to="/permintaanBarang/permintaanBarang">
             <Button onClick={this.onSetujuiPermintaan.bind(this, this.props.match.params.id)} color="success">
               <i className="fa fa-check">Setujui Permintaan Barang</i>
             </Button>
           </Link>
-          <Link >
+          <Link to="/permintaanBarang/permintaanBarang">
             <Button onClick={this.onTolakPermintaan.bind(this, this.props.match.params.id)} color="danger">
               <i className="fa fa-times">Tolak Permintaan Barang</i>
             </Button>
@@ -200,6 +212,13 @@ class DetailPermintaanBarang extends Component {
       },
       refetchQueries:[{query:getPermintaanBarangsQuery}],
     });
+    this.props.updateStatusListRequest({
+      variables:{
+        id:permintaan_id,
+        status: 'Active',
+      },
+      refetchQueries:[{query:getListRequestsQuery}],
+    });
   }
 
   onTolakPermintaan(permintaan_id){
@@ -210,6 +229,13 @@ class DetailPermintaanBarang extends Component {
         tanggal_setuju: new Date().toLocaleDateString(),
       },
       refetchQueries:[{query:getPermintaanBarangsQuery}],
+    });
+    this.props.updateStatusListRequest({
+      variables:{
+        id:permintaan_id,
+        status: 'Ditolak',
+      },
+      refetchQueries:[{query:getListRequestsQuery}],
     });
   }
 
@@ -230,7 +256,7 @@ class DetailPermintaanBarang extends Component {
                 </Col>
                 <Col>
                   <Link to="/permintaanBarang/permintaanBarang" className={'float-right mb-0'}>
-                    <Button label color="primary" size="sm">
+                    <Button color="primary" size="sm">
                         Kembali
                     </Button>
                   </Link>
@@ -257,8 +283,10 @@ export default compose (
         }
       }
     }),
+    graphql(updateStatusListRequest, {name:"updateStatusListRequest"}),
     graphql(updateStatusPermintaanBarang, {name:"updateStatusPermintaanBarang"}),
     graphql(getPermintaanBarangsQuery, {name:"getPermintaanBarangsQuery"}),
+    graphql(getListRequestsQuery, {name:"getListRequestsQuery"}),
     graphql(hapusPermintaanBarangMutation, {name:"hapusPermintaanBarangMutation"}),
     graphql(hapusManyListRequestMutation, {name:"hapusManyListRequestMutation"}),
 )(DetailPermintaanBarang);

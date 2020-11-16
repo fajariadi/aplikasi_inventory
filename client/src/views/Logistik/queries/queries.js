@@ -59,6 +59,8 @@ const getListRequestsQuery = gql`
 		jumlah_barang
 		jenis
 		satuan
+		status
+		harga
 		id
 		permintaanBarang{
 			status
@@ -104,8 +106,16 @@ const getPurchaseOrdersQuery = gql`
 		tanggal_setuju
 		status
 		id
+		akun{
+			username
+			id
+			karyawan{
+				nama
+			}
+		}
 		vendor{
 			nama
+			jenis_usaha
 		}
 	}
 }
@@ -206,12 +216,14 @@ const hapusPermintaanBarangMutation = gql`
 `
 
 const addListRequestMutation = gql`
-	mutation($nama_barang:String!, $jumlah_barang:Int!, $satuan:String!, $jenis:String!, $request_id: ID!){
-		addListRequest(nama_barang: $nama_barang, jumlah_barang: $jumlah_barang, satuan:$satuan, jenis:$jenis, request_id: $request_id){
+	mutation($nama_barang:String!, $jumlah_barang:Int!, $satuan:String!, $jenis:String!, $request_id: ID!, $status: String!, $harga: Int!){
+		addListRequest(nama_barang: $nama_barang, jumlah_barang: $jumlah_barang, satuan:$satuan, jenis:$jenis, request_id: $request_id, status:$status, harga:$harga){
 			nama_barang
 			jumlah_barang
 			satuan
 			jenis
+			status
+			harga
 			id
 		}
 	}
@@ -264,6 +276,51 @@ const addAkunMutation = gql`
 		addAkun(username: $username, password: $password, karyawan_id:$karyawan_id){
 			username
 			password
+			id
+		}
+	}
+`
+
+const addPurchaseOrderMutation = gql`
+	mutation($kode:String!, $tanggal:String!, $status:String!, $tanggal_setuju:String!, $akun_id:String!){
+		addPurchaseOrder(kode:$kode, tanggal:$tanggal, status:$status, tanggal_setuju:$tanggal_setuju, akun_id:$akun_id ){
+			kode
+			tanggal
+			status
+			tanggal_setuju
+			id
+		}
+	}
+`
+
+const hapusPurchaseOrderMutation = gql`
+	mutation($id:ID!){
+		hapusPurchaseOrder(id: $id){
+			id
+		}
+	}
+`
+const addListItemPurchaseOrder = gql`
+	mutation($nama_barang:String!, $jumlah_barang:Int!, $satuan:String!, $jenis:String!, $purchaseOrder_id: ID!, $status: String!, $harga: Int!){
+		addListItemPurchaseOrder(nama_barang: $nama_barang, jumlah_barang: $jumlah_barang, satuan:$satuan, jenis:$jenis, purchaseOrder_id: $purchaseOrder_id, status:$status, harga:$harga){
+			nama_barang
+			jumlah_barang
+			satuan
+			jenis
+			status
+			harga
+			id
+		}
+	}
+`
+const hapusManyListItemPurchaseOrder = gql`
+	mutation($id:ID!){
+		hapusManyListItemPurchaseOrder(id: $id){
+			nama_barang
+			jumlah_barang
+			satuan
+			jenis
+			harga
 			id
 		}
 	}
@@ -357,8 +414,76 @@ const getPermintaanBarangQuery = gql`
 				jumlah_barang
 				jenis
 				satuan
+				status
+				harga
 				id
 			}
+		}
+	}
+`
+
+const getPurchaseOrderQuery = gql`
+	query($id:ID){
+		purchaseOrder(id: $id) {
+			tanggal
+			status
+			kode
+			id
+			tanggal_setuju
+			vendor{
+				nama
+			}
+			akun{
+				id
+				karyawan{
+					nama
+				}
+			}
+			listItemPurchaseOrder{
+				nama_barang
+				jumlah_barang
+				satuan
+				harga
+				id
+				jenis
+			}
+		}
+	}
+`
+
+const updateBarangMutation = gql`
+	mutation($id : ID, $nama_barang : String!, $jenis_barang : String!, $satuan : String !, $harga : Int! ){
+		updateBarang(id:$id, nama_barang:$nama_barang, jenis_barang:$jenis_barang, satuan:$satuan, harga:$harga){
+			id
+			nama_barang
+			jenis_barang
+			satuan
+			harga
+		}
+	}
+`
+
+const updatePeralatanMutation = gql`
+	mutation($id : ID, $nama : String!, $jumlah : Int!, $harga : Int!, $sewa : Int!){
+		updatePeralatan(id:$id, nama:$nama, jumlah:$jumlah, harga:$harga, sewa:$sewa){
+			id
+			nama
+			jumlah
+			harga
+			sewa
+		}
+	}
+`
+
+const updateVendorMutation = gql`
+	mutation($id : ID, $nama : String!, $jenis_usaha: String!, $alamat : String !, $email : String!, $noTlp: String! ){
+		updateVendor(id:$id, nama:$nama, jenis_usaha:$jenis_usaha, alamat:$alamat, email:$email, noTlp:$noTlp){
+			id
+			nama
+			jenis_usaha
+			alamat
+			email
+			noTlp
 		}
 	}
 `
@@ -369,6 +494,30 @@ const updateStatusPermintaanBarang = gql`
 			id
 			status
 			tanggal_setuju
+		}
+	}
+`
+const updateStatusListRequest = gql`
+	mutation($id : ID, $status : String! ){
+		updateStatusListRequest(id:$id, status:$status){
+			id
+			status
+		}
+	}
+`
+const updateAllStatusListRequest = gql`
+	mutation($nama : String!, $status : String!, $order_id: ID){
+		updateAllStatusListRequest(nama:$nama, status:$status, order_id:$order_id){
+			id
+			status
+		}
+	}
+`
+
+const updateVendorPurchaseOrderMutation = gql`
+	mutation($id : ID, $vendor_id : String! ){
+		updateVendorPurchaseOrder(id:$id, vendor_id:$vendor_id){
+			id
 		}
 	}
 `
@@ -385,6 +534,7 @@ export {
 	getBarangsQuery,
 	getBarangQuery,
 	getPeralatanQuery,
+	addPurchaseOrderMutation,
 	addDivisiMutation, 
 	addPeralatanMutation, 
 	addVendorMutation,
@@ -397,11 +547,22 @@ export {
 	hapusBarangMutation,
 	hapusPeralatanMutation,
 	hapusVendorMutation,
+	hapusPurchaseOrderMutation,
 	getKaryawansQuery,
 	addAkunMutation,
 	getAkunQuery,
 	getVendorQuery,
 	hapusManyListRequestMutation,
 	updateStatusPermintaanBarang,
-	getPurchaseOrdersQuery
+	updateStatusListRequest,
+	getPurchaseOrdersQuery,
+	getPurchaseOrderQuery,
+	updateVendorPurchaseOrderMutation,
+	updateBarangMutation,
+	updatePeralatanMutation,
+	updateVendorMutation, 
+	updateAllStatusListRequest,
+	addListItemPurchaseOrder,
+	hapusManyListItemPurchaseOrder,
+
 };

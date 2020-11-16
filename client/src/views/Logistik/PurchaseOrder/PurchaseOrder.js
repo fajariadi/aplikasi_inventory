@@ -1,13 +1,24 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Redirect} from 'react-router-dom';
 import * as compose from 'lodash.flowright';
 import {graphql} from 'react-apollo';
-import { getPurchaseOrdersQuery } from '../queries/queries';
+import { getPurchaseOrdersQuery, addPurchaseOrderMutation } from '../queries/queries';
 import { Card, CardBody, CardHeader, Col, Pagination, PaginationItem,Button, PaginationLink, Row, Table } from 'reactstrap';
-import { isEmpty } from 'lodash';
 
 class PurchaseOrder extends Component {
+  constructor(props){
+    super(props);
+    const username= localStorage.getItem("username")
 
+    let loggedIn = true 
+      if(username == null){
+        loggedIn = false
+      }
+    this.state = {
+      loggedIn,
+      akun_id: localStorage.getItem("user_id"),
+      }
+  }
   displayAllPurchaseOrder(){
     var data = this.props.getPurchaseOrdersQuery;
     var no = 0;
@@ -17,13 +28,13 @@ class PurchaseOrder extends Component {
       return data.purchaseOrders.map(order => {
         no++;
         return(
-          <tr>
-            <td key={order.id}>{no}</td>
-            <td key={order.id}>{order.kode}</td>
-            <td key={order.id}>{order.divisi.nama}</td>
-            <td key={order.id}>{order.tanggal}</td>
-            <td key={order.id}>{order.status}</td>
-            <td key={order.id}>
+          <tr key={order.id}>
+            <td>{no}</td>
+            <td>{order.kode}</td>
+            <td>{order.vendor.nama}</td>
+            <td>{order.tanggal}</td>
+            <td>{order.status}</td>
+            <td>
               <Link to={`/purchaseOrder/detailPurchaseOrder/${order.id}`}>
               <Button color="primary" size="sm">
                 <i className="fa fa-file"></i>
@@ -35,7 +46,40 @@ class PurchaseOrder extends Component {
       });
     }
   }
+
+  addPurchaseOrder(){
+    this.props.addPurchaseOrderMutation({
+      variables:{
+        kode: this.getKodeBaru(),
+        tanggal: new Date().toLocaleDateString(),
+        status: 'Belum Disetujui',
+        tanggal_setuju: '',
+        akun_id: this.state.akun_id,
+      },
+      refetchQueries:[{query:getPurchaseOrdersQuery}],
+    })
+  }
+
+  getKodeBaru(){
+    var kode = 'R';
+    var nomor = 1;
+    var data = this.props.getPurchaseOrdersQuery;
+    data.purchaseOrders.map(order => {
+        nomor++;
+    })
+    if(nomor < 10){
+      kode = kode+"00"+nomor;
+    }else if (nomor >= 10 && nomor < 100){
+      kode = kode+"0"+nomor;
+    }else {
+      kode = kode+""+nomor;
+    }
+    return kode;
+  }
   render() {
+    if(this.state.loggedIn === false){
+      return <Redirect to="/login" />
+    }
     return (
       <div className="animated fadeIn">
         <Row>
@@ -48,7 +92,7 @@ class PurchaseOrder extends Component {
                 </Col>
                 <Col>
                   <Link to="/purchaseOrder/buatPurchaseOrder" className={'float-right mb-0'}>
-                    <Button label color="primary" size="sm">
+                    <Button color="primary" size="sm"  onClick={this.addPurchaseOrder.bind(this)}>
                         <i className="fa fa-plus"></i> Buat Purchase Order
                     </Button>
                   </Link>
@@ -95,4 +139,5 @@ class PurchaseOrder extends Component {
 
 export default compose(
   graphql(getPurchaseOrdersQuery, {name:"getPurchaseOrdersQuery"}),
+  graphql(addPurchaseOrderMutation, {name:"addPurchaseOrderMutation"}),
 ) (PurchaseOrder);

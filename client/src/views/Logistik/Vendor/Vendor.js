@@ -55,7 +55,6 @@ class Vendor extends Component {
     var no = 0;
    
     if(data.loading){
-      console.log(data);
       return (<div>Loading books...</div>);
     } else {
       return data.vendors.map(vendor => {

@@ -74,13 +74,13 @@ class Barang extends Component {
       return data.barangs.map(barang => {
         no++;
         return(
-          <tr>
-            <td key={barang.id}>{no}</td>
-            <td key={barang.id}>{barang.nama_barang}</td>
-            <td key={barang.id}>{barang.jenis_barang}</td>
-            <td key={barang.id}>{barang.satuan}</td>
-            <td key={barang.id}>{barang.harga}</td>
-            <td key={barang.id}>
+          <tr key={barang.id}>
+            <td>{no}</td>
+            <td>{barang.nama_barang}</td>
+            <td>{barang.jenis_barang}</td>
+            <td>{barang.satuan}</td>
+            <td>{barang.harga}</td>
+            <td>
               <Link to={`/barang/editBarang/${barang.id}`}>
               <Button color="success" size="sm">
                 <i className="fa fa-pencil"></i>
@@ -165,7 +165,15 @@ class Barang extends Component {
                   <option value="Lembar">Lembar</option>
                   <option value="Liter">Liter</option>
                   <option value="Sak">Sak</option>
+                  <option value="m">m</option>
+                  <option value="m2">m2</option>
                   <option value="m3">m3</option>
+                  <option value="Roll">Roll</option>
+                  <option value="Kardus">Kardus</option>
+                  <option value="Batang">Batang</option>
+                  <option value="Truk">Truk</option>
+                  <option value="Drum">Drum</option>
+                  <option value="Takaran">Takaran</option>
                 </Input>
               </FormGroup>
               <FormGroup>

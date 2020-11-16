@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import {graphql} from 'react-apollo';
 import * as compose from 'lodash.flowright';
-import {getPeralatanQuery} from '../queries/queries';
+import {getPeralatanQuery, updatePeralatanMutation, getPeralatansQuery} from '../queries/queries';
 import { 
   Card, 
   CardBody, 
@@ -21,11 +21,10 @@ class EditPeralatan extends Component {
   constructor(props) {
     super(props);
     this.state = {
-        id:'',
-      nama_barang:'',
-      jenis_barang: '',
-      satuan: '',
-      harga: '',
+      nama:'',
+      jumlah: 0,
+      sewa: 0,
+      harga: 0,
       modalIsOpen: false,  
     };
   }
@@ -37,49 +36,78 @@ class EditPeralatan extends Component {
   }
 
   submitForm(e){
-    e.preventDefault();
-    this.props.addBarangMutation({
+    const {peralatan} = this.props.data;
+    var nam = '';
+    var jum = 0;
+    var har = 0;
+    var sew = 0;
+    if (this.state.nama === ''){
+      nam = peralatan.nama
+    } else {
+      nam = this.state.nama
+    }
+    if (this.state.jumlah === 0){
+      jum = peralatan.jumlah
+    } else {
+      jum = this.state.jumlah
+    }
+    if (this.state.sewa === 0){
+      sew = peralatan.sewa
+    } else {
+      sew = this.state.sewa 
+    }
+    if (this.state.harga === 0){
+      har = peralatan.harga
+    } else {
+      har = this.state.harga
+    }
+    this.props.updatePeralatanMutation({
       variables:{
-        nama_barang:this.state.nama_barang,
-        jenis_barang: this.state.jenis_barang,
-        satuan: this.state.satuan,
-        harga:parseInt(this.state.harga),
+        id:this.props.match.params.id,
+        nama: nam,
+        jumlah: parseInt(jum),
+        harga: parseInt(har),
+        sewa: parseInt(sew),
       },
-      refetchQueries:[{query:getPeralatanQuery}]
+      refetchQueries:[{query:getPeralatansQuery}]
     });
   }
 
-  displayBarang(){
-    const {barang} = this.props.data;
-    var nama = '' ;
-    var jenis = '' ;
-    var sat = '';
-    var har = '';
-    if(barang){
-        console.log(barang.nama_barang);
+  displayPeralatan(){
+    const {peralatan} = this.props.data;
+    if(peralatan){
+        return(
+          <div>
+            <FormGroup>
+                <Label htmlFor="name">Nama Peralatan</Label>
+                <Input type="text" id="nama"  defaultValue={peralatan.nama} onChange={(e) =>this.setState({nama:e.target.value})} required />
+                </FormGroup>
+                <FormGroup>
+                <Label htmlFor="name">Jumlah</Label>
+                <Input type="number" id="jumlah" defaultValue={peralatan.jumlah} onChange={(e) =>this.setState({jumlah:e.target.value})}  required />
+                </FormGroup>
+                <FormGroup>
+                <Label htmlFor="name">Harga</Label>
+                <Input type="number" id="harga" defaultValue={peralatan.harga} onChange={(e) =>this.setState({harga:e.target.value})}  required />
+                </FormGroup>
+                <FormGroup>
+                <Label htmlFor="name">Sewa</Label>
+                <Input type="number" id="sewa" defaultValue={peralatan.sewa} onChange={(e) =>this.setState({sewa:e.target.value})} required />
+                </FormGroup>
+          </div>
+        )
     }
-  }
-
-  inputHandle(e){
-    const target = e.target;
-    const value = target.value;
-    const name = target.name;
-
-    this.setState({
-        [name] : value
-    })
   }
 
   render() {
     return (
       <div className="animated fadeIn">
-          {this.displayBarang()}
         <Row>
           <Col>
             <Card>
               <CardHeader>
                 <i className="fa fa-align-justify"></i> Form Edit Data Peralatan
-                <Link to="/barang/barang" className={'float-right mb-0'}> 
+                <Link to="/peralatan/peralatan" className={'float-right mb-0'}> 
                   <Button label color="primary">
                       Kembali
                   </Button>
@@ -87,32 +115,10 @@ class EditPeralatan extends Component {
               </CardHeader>
               <CardBody>
                 <Form onSubmit={(e) => {this.submitForm(e)}}>
-                <FormGroup>
-                <Label htmlFor="name">Nama Barang</Label>
-                <Input type="text" id="name"  onChange={this.inputHandle.bind(this)} required />
-                </FormGroup>
-                <FormGroup>
-                <Label htmlFor="name">Jenis Barang</Label>
-                <Input type="text" id="jenis" onChange={this.inputHandle.bind(this)}  required />
-                </FormGroup>
-                <FormGroup>
-                <Label htmlFor="name">Satuan</Label>
-                <Input type="select" name="satuan" id="satuan" onChange={this.inputHandle.bind(this)} >
-                    <option>Satuan</option>
-                    <option value="Kg">Kg</option>
-                    <option value="Buah">Buah</option>
-                    <option value="Meter">Meter</option>
-                    <option value="Lembar">Lembar</option>
-                    <option value="Liter">Liter</option>
-                    <option value="Sak">Sak</option>
-                    <option value="m3">m3</option>
-                </Input>
-                </FormGroup>
-                <FormGroup>
-                <Label htmlFor="name">Harga Barang</Label>
-                <Input type="number" id="harga" onChange={this.inputHandle.bind(this)}  required />
-                </FormGroup>
-                <Button type="submit" color="primary">Submit</Button>
+                {this.displayPeralatan()}
+                <Link to="/peralatan/peralatan">
+                  <Button type="submit" color="primary" onClick={(e) => {this.submitForm(e)}} >Simpan</Button>
+                </Link>
                 <Button color="danger" onClick={this.toggleModal.bind(this)}>Batal</Button>
             </Form>
                 </CardBody>
@@ -135,6 +141,8 @@ export default compose(
           }
         }
       }),
+      graphql(updatePeralatanMutation, {name:"updatePeralatanMutation"}),
+      graphql(getPeralatansQuery, {name:"getPeralatansQuery"})
 )(EditPeralatan);
 
 

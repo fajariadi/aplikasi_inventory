@@ -7,6 +7,9 @@ const ListRequestSchema = new Schema({
 	satuan: String,
 	jenis: String,
 	request_id: String,
+	status: String,
+	harga:Number,
+	order_id:String,
 });
 
 module.exports = mongoose.model('ListRequest', ListRequestSchema);
