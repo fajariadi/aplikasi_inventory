@@ -136,6 +136,69 @@ const getKaryawansQuery = gql`
 	}
 }
 `
+const getPersediaanBarangsQuery = gql`
+{
+	persediaanBarangs {
+		jumlah
+		status
+		id
+		barang{
+			nama_barang
+			jenis_barang
+			satuan
+			harga
+		}
+	}
+}
+`
+const getAllInventarisQuery = gql`
+{
+	allInventaris {
+		jumlah
+		status
+		jumlah_diperbaiki
+		jumlah_dipakai
+		id
+		barang{
+			nama_barang
+			jenis_barang
+			satuan
+			harga
+		}
+	}
+}
+`
+
+const getPenerimaanBarangsQuery = gql`
+{
+	penerimaanBarangs {
+		kode
+		tanggal
+		id
+		akun{
+			username
+			id
+			karyawan{
+				nama
+				jabatan
+			}
+		}
+		purchaseOrder{
+			kode
+			id
+			tanggal
+			listItemPurchaseOrder{
+				nama_barang
+				jumlah_barang
+				satuan
+				harga
+				id
+				jenis
+			}
+		}
+	}
+}
+`
 
 const addPeralatanMutation = gql`
 	mutation($nama:String!, $jumlah:Int!, $harga:Int!, $sewa:Int!){
@@ -313,6 +376,36 @@ const addListItemPurchaseOrder = gql`
 		}
 	}
 `
+const addPersediaanBarang = gql`
+	mutation($jumlah:Int!, $status:String!, $barang_id: ID!){
+		addPersediaanBarang(jumlah: $jumlah, status:$status, barang_id: $barang_id){
+			jumlah
+			status
+			id
+		}
+	}
+`
+const addInventaris = gql`
+	mutation($jumlah:Int!, $status:String!, $barang_id: ID!, $jumlah_diperbaiki:Int!, $jumlah_dipakai:Int!){
+		addInventaris(jumlah: $jumlah, status:$status, barang_id: $barang_id, jumlah_diperbaiki:$jumlah_diperbaiki, jumlah_dipakai:$jumlah_dipakai){
+			jumlah
+			status
+			jumlah_diperbaiki
+			jumlah_dipakai
+			id
+		}
+	}
+`
+
+const addPenerimaanBarang = gql`
+	mutation($kode:String!, $tanggal:String!, $akun_id: ID!, $purchase_id: ID!,){
+		addPenerimaanBarang(kode:$kode, tanggal:$tanggal, akun_id: $akun_id, purchase_id: $purchase_id,){
+			tanggal
+			kode
+			id
+		}
+	}
+`
 const hapusManyListItemPurchaseOrder = gql`
 	mutation($id:ID!){
 		hapusManyListItemPurchaseOrder(id: $id){
@@ -321,6 +414,33 @@ const hapusManyListItemPurchaseOrder = gql`
 			satuan
 			jenis
 			harga
+			id
+		}
+	}
+`
+const hapusPersediaanBarang = gql`
+	mutation($id:ID!){
+		hapusPersediaanBarang(id: $id){
+			jumlah
+			status
+			id
+		}
+	}
+`
+
+const hapusPenerimaanBarang = gql`
+	mutation($id:ID!){
+		hapusPenerimaanBarang(id: $id){
+			id
+		}
+	}
+`
+
+const hapusInventaris = gql`
+	mutation($id:ID!){
+		hapusInventaris(id: $id){
+			jumlah
+			status
 			id
 		}
 	}
@@ -450,6 +570,71 @@ const getPurchaseOrderQuery = gql`
 		}
 	}
 `
+const getPersediaanBarangQuery = gql`
+	query($id:ID){
+		persediaanBarang(id: $id) {
+			jumlah
+			status
+			id
+			barang{
+				nama_barang
+				jenis_barang
+				satuan
+				harga
+				id
+			}	
+		}
+	}
+`
+
+const getInventarisQuery = gql`
+	query($id:ID){
+		inventaris(id: $id) {
+			jumlah
+			status
+			jumlah_diperbaiki
+			jumlah_dipakai
+			id
+			barang{
+				nama_barang
+				jenis_barang
+				satuan
+				harga
+				id
+			}	
+		}
+	}
+`
+const getPenerimaanBarangQuery = gql`
+	query($id:ID){
+		penerimaanBarang(id: $id) {
+			tanggal
+			kode
+			id
+			akun{
+				username
+				id
+				karyawan{
+					nama
+					jabatan
+				}
+			}
+			purchaseOrder{
+				kode
+				id
+				tanggal
+				listItemPurchaseOrder{
+					nama_barang
+					jumlah_barang
+					satuan
+					harga
+					id
+					jenis
+				}
+			}
+		}
+	}
+`
 
 const updateBarangMutation = gql`
 	mutation($id : ID, $nama_barang : String!, $jenis_barang : String!, $satuan : String !, $harga : Int! ){
@@ -497,6 +682,16 @@ const updateStatusPermintaanBarang = gql`
 		}
 	}
 `
+const updateStatusPurchaseOrder = gql`
+	mutation($id : ID, $status : String!, $tanggal_setuju : String!){
+		updateStatusPurchaseOrder(id:$id, status:$status, tanggal_setuju:$tanggal_setuju){
+			id
+			status
+			tanggal_setuju
+		}
+	}
+`
+
 const updateStatusListRequest = gql`
 	mutation($id : ID, $status : String! ){
 		updateStatusListRequest(id:$id, status:$status){
@@ -513,6 +708,20 @@ const updateAllStatusListRequest = gql`
 		}
 	}
 `
+const updateStatusListRequestOnOrder = gql`
+	mutation( $order_id: ID, $status : String!,){
+		updateStatusListRequestOnOrder(order_id:$order_id, status:$status ){
+			status
+		}
+	}
+`
+const updateStatusListItemPurchaseOrder = gql`
+	mutation($purchaseOrder_id: ID, $status : String! ){
+		updateStatusListItemPurchaseOrder(purchaseOrder_id:$purchaseOrder_id, status:$status){
+			status
+		}
+	}
+`
 
 const updateVendorPurchaseOrderMutation = gql`
 	mutation($id : ID, $vendor_id : String! ){
@@ -521,7 +730,26 @@ const updateVendorPurchaseOrderMutation = gql`
 		}
 	}
 `
-
+const updatePersediaanBarang = gql`
+	mutation($id : ID, $jumlah : Int!, $status : String! ){
+		updatePersediaanBarang(id:$id, jumlah:$jumlah, status:$status){
+			id
+			jumlah
+			status
+		}
+	}
+`
+const updateInventaris = gql`
+	mutation($id : ID, $jumlah : Int!, $status : String!, $jumlah_diperbaiki:Int!, $jumlah_dipakai:Int! ){
+		updateInventaris(id:$id, jumlah:$jumlah, status:$status, jumlah_diperbaiki:$jumlah_diperbaiki, jumlah_dipakai:$jumlah_dipakai){
+			id
+			jumlah
+			status
+			jumlah_diperbaiki
+			jumlah_dipakai
+		}
+	}
+`
 
 export {
 	getVendorsQuery, 
@@ -564,5 +792,22 @@ export {
 	updateAllStatusListRequest,
 	addListItemPurchaseOrder,
 	hapusManyListItemPurchaseOrder,
+	updateStatusPurchaseOrder,
+	updateStatusListItemPurchaseOrder,
+	updateStatusListRequestOnOrder,
+	getPersediaanBarangQuery,
+	getPersediaanBarangsQuery,
+	addPersediaanBarang,
+	updatePersediaanBarang,
+	hapusPersediaanBarang,
+	getInventarisQuery,
+	getAllInventarisQuery,
+	addInventaris,
+	updateInventaris,
+	hapusInventaris,
+	getPenerimaanBarangQuery,
+	getPenerimaanBarangsQuery,
+	addPenerimaanBarang,
+	hapusPenerimaanBarang
 
 };

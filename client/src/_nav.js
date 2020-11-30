@@ -34,9 +34,9 @@ export default {
       ],
     }, 
     {
-      name: 'Transaksi',
+      name: 'Logistik',
       url: '/base',
-      icon: 'icon-basket-loaded',
+      icon: 'fa fa-database',
       children: [
         {
           name: 'Permintaan Barang',
@@ -44,7 +44,40 @@ export default {
           icon: 'fa fa-tasks',
         },
         {
-          name: 'Purchase Order',
+          name: 'Penerimaan Barang',
+          url: '/penerimaanBarang/penerimaanBarang',
+          icon: 'fa fa-angle-double-down',
+        },
+        {
+          name: 'Pengambilan Barang',
+          url: '/order/pengambilanBarang',
+          icon: 'fa fa-angle-double-up',
+        },
+        {
+          name: 'Persediaan Barang',
+          url: '/persediaanBarang/persediaanBarang',
+          icon: 'icon-home',
+        },
+        {
+          name: 'Inventaris',
+          url: '/inventaris/inventaris',
+          icon: 'icon-wrench',
+        },
+        {
+          name: 'Pemeliharaan',
+          url: '/user/karyawan',
+          icon: 'icon-user',
+        },
+
+      ],
+    }, 
+    {
+      name: 'Purchasing',
+      url: '/base',
+      icon: 'icon-basket-loaded',
+      children: [     
+        {
+          name: 'Pembelian Barang',
           url: '/purchaseOrder/purchaseOrder',
           icon: 'fa fa-shopping-cart',
         },
@@ -53,22 +86,12 @@ export default {
           url: '/penyewaan/penyewaan',
           icon: 'fa fa-handshake-o',
         },
-        {
-          name: 'Penerimaan Barang',
-          url: '/order/penerimaanBarang',
-          icon: 'fa fa-angle-double-down',
-        },
-        {
-          name: 'Pengambilan Barang',
-          url: '/order/pengambilanBarang',
-          icon: 'fa fa-angle-double-up',
-        },
       ],
     },
     {
-      name: 'Pemeliharaan',
-      url: '/peralatan/pemeliharaan',
-      icon: 'fa fa-refresh',
+      name: 'Peralatan',
+      url: '/peralatan/peralatan',
+      icon: 'icon-wrench',
     },
     {
       name: 'Laporan',

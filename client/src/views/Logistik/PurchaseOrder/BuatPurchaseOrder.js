@@ -316,10 +316,6 @@ class BuatPurchaseOrder extends Component {
     }
   }
 
-  show(){
-    console.log(this.state.orderItems);
-  }
-  
   render() {
     return (
       <div className="animated fadeIn">
@@ -356,11 +352,8 @@ class BuatPurchaseOrder extends Component {
                   </Table>
                   <div align="center">
                     <Link to="/purchaseOrder/purchaseOrder">
-                    <Button onClick={(e) => {this.createListPurchaseOrder(e)}} color="primary">Simpan</Button>
+                    <Button onClick={(e) => {this.createListPurchaseOrder(e)}} color="primary">Submit</Button>
                     </Link>
-                  </div>
-                  <div align="center">
-                   <Button onClick={(e) => {this.show(e)}} color="primary">Show</Button>
                   </div>
               </CardBody>
             </Card>

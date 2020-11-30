@@ -174,6 +174,7 @@ class Barang extends Component {
                   <option value="Truk">Truk</option>
                   <option value="Drum">Drum</option>
                   <option value="Takaran">Takaran</option>
+                  <option value="Takaran">Unit</option>
                 </Input>
               </FormGroup>
               <FormGroup>

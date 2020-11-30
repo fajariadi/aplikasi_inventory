@@ -57,6 +57,10 @@ const Profile = React.lazy(() => import('./views/Logistik/Profile/Profile'));
 const Penyewaan = React.lazy(() => import('./views/Logistik/Penyewaan/Penyewaan'));
 const BuatPenyewaan = React.lazy(() => import('./views/Logistik/Penyewaan/BuatPenyewaan'));
 const DetailPenyewaan = React.lazy(() => import('./views/Logistik/Penyewaan/DetailPenyewaan'));
+const PersediaanBarang = React.lazy(() => import('./views/Logistik/PersediaanBarang/PersediaanBarang'));
+const Inventaris = React.lazy(() => import('./views/Logistik/Inventaris/Inventaris'));
+const PenerimaanBarang = React.lazy(() => import('./views/Logistik/PenerimaanBarang/PenerimaanBarang'));
+const BuatPenerimaanBarang = React.lazy(() => import('./views/Logistik/PenerimaanBarang/BuatPenerimaanBarang'));
 
 
 const DataKaryawan = React.lazy(() => import('./views/HumanResource/Karyawan/DataKaryawan'));
@@ -129,6 +133,10 @@ const routes = [
   { path: '/penyewaan/buatPenyewaan', exact: true, name: 'Buat Penyewaan', component: BuatPenyewaan },
   { path: '/penyewaan/detailPenyewaan', exact: true, name: 'Detail Penyewaan', component: DetailPenyewaan },
   { path: '/dashboardLogistik/dashboardLogistik', exact: true, name: 'Dashboard', component: DashboardLogistik },
+  { path: '/persediaanBarang/persediaanBarang', exact: true, name: 'Persediaan Barang', component: PersediaanBarang },
+  { path: '/inventaris/inventaris', exact: true, name: 'Inventaris', component: Inventaris },
+  { path: '/penerimaanBarang/penerimaanBarang', exact: true, name: 'Penerimaan Barang', component: PenerimaanBarang },
+  { path: '/penerimaanBarang/buatPenerimaanBarang/:id', exact: true, name: 'Buat Penerimaan Barang', component: BuatPenerimaanBarang },
 
 ];
 

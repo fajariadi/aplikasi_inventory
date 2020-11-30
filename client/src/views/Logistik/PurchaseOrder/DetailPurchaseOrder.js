@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import {graphql} from 'react-apollo';
 import * as compose from 'lodash.flowright';
-import {getPurchaseOrderQuery, hapusPurchaseOrderMutation, hapusManyListItemPurchaseOrder, getPurchaseOrdersQuery} from '../queries/queries';
-import { Card, Button, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Row, Table, Form, FormGroup, Label, Input } from 'reactstrap';
+import {getPurchaseOrderQuery, hapusPurchaseOrderMutation, updateStatusListRequestOnOrder ,updateStatusListItemPurchaseOrder,  hapusManyListItemPurchaseOrder, getPurchaseOrdersQuery, updateStatusPurchaseOrder, getListRequestsQuery} from '../queries/queries';
+import { Card, Button, CardBody, CardHeader, Col, Row, Table, Form, FormGroup, Label, Input } from 'reactstrap';
 
 class DetailPurchaseOrder extends Component {
   constructor(props){
@@ -106,17 +106,12 @@ class DetailPurchaseOrder extends Component {
     if (this.state.akun_id === akun_id){
       return(
         <div align="center">
-        <Link>
-          <Button color="warning">
-            <i className="fa fa-pencil" >Edit Permintaan Barang</i>
+          <Link to="/purchaseOrder/purchaseOrder">
+            <Button onClick={this.onDelete.bind(this, this.props.match.params.id)} color="danger">
+              <i className="fa fa-trash">Hapus Permintaan Barang</i>
             </Button>
-        </Link>
-        <Link to="/purchaseOrder/purchaseOrder">
-          <Button onClick={this.onDelete.bind(this, this.props.match.params.id)} color="danger">
-            <i className="fa fa-trash">Hapus Permintaan Barang</i>
-          </Button>
-        </Link>
-      </div>
+          </Link>
+        </div>
       )
     }
   }
@@ -126,12 +121,12 @@ class DetailPurchaseOrder extends Component {
       return(
         <div align="center">
           <Link>
-            <Button onClick={this.onSetujuiPermintaan.bind(this, this.props.match.params.id)} color="success">
+            <Button onClick={this.onSetujuiPurchaseOrder.bind(this, this.props.match.params.id)} color="success">
               <i className="fa fa-check">Setujui Permintaan Barang</i>
             </Button>
           </Link>
           <Link >
-            <Button onClick={this.onTolakPermintaan.bind(this, this.props.match.params.id)} color="danger">
+            <Button onClick={this.onTolakPurchaseOrder.bind(this, this.props.match.params.id)} color="danger">
               <i className="fa fa-times">Tolak Permintaan Barang</i>
             </Button>
           </Link>
@@ -155,19 +150,33 @@ class DetailPurchaseOrder extends Component {
       )
     } 
   }
-  onSetujuiPermintaan(order_id){
-    this.props.updateStatusPurchaseorder({
+  onSetujuiPurchaseOrder(orderid){
+    this.props.updateStatusPurchaseOrder({
       variables:{
-        id:order_id,
+        id:orderid,
         status: 'Disetujui',
         tanggal_setuju: new Date().toLocaleDateString(),
       },
       refetchQueries:[{query:getPurchaseOrdersQuery}],
     });
+    this.props.updateStatusListRequestOnOrder({
+      variables:{
+        order_id: orderid,
+        status: 'Delivery',
+      },
+      refetchQueries:[{query:getPurchaseOrdersQuery}],
+    });
+    this.props.updateStatusListItemPurchaseOrder({
+      variables:{
+        purchaseOrder_id: orderid,
+        status: 'Delivery',
+      },
+      refetchQueries:[{query:getPurchaseOrdersQuery}],
+    })
   }
 
-  onTolakPermintaan(order_id){
-    this.props.updateStatusPermintaanBarang({
+  onTolakPurchaseOrder(order_id){
+    this.props.updateStatusPurchaseOrder({
       variables:{
         id:order_id,
         status: 'Ditolak',
@@ -177,18 +186,25 @@ class DetailPurchaseOrder extends Component {
     });
   }
 
-  onDelete(order_id){
+  onDelete(orderid){
     this.props.hapusPurchaseOrderMutation({
       variables:{
-        id: order_id,        
+        id: orderid,        
       },
       refetchQueries:[{query:getPurchaseOrdersQuery}],
     });
     this.props.hapusManyListItemPurchaseOrder({
       variables:{
-        id: order_id,        
+        id: orderid,        
       },
       refetchQueries:[{query:getPurchaseOrdersQuery}],
+    });
+    this.props.updateStatusListRequestOnOrder({
+      variables:{
+        order_id: orderid,
+        status: 'Active',
+      },
+      refetchQueries:[{query:getListRequestsQuery}],
     });
   }
 
@@ -231,5 +247,10 @@ export default compose (
   graphql(getPurchaseOrdersQuery, {name:"getPurchaseOrdersQuery"}),
   graphql(hapusPurchaseOrderMutation, {name:"hapusPurchaseOrderMutation"}),
   graphql(hapusManyListItemPurchaseOrder, {name:"hapusManyListItemPurchaseOrder"}),
+  graphql(updateStatusPurchaseOrder, {name:"updateStatusPurchaseOrder"}),
+  graphql(updateStatusListItemPurchaseOrder, {name:"updateStatusListItemPurchaseOrder"}),
+  graphql(updateStatusListRequestOnOrder, {name:"updateStatusListRequestOnOrder"}),
+  graphql(getListRequestsQuery, {name:"getListRequestsQuery"}),
+  
   
   )(DetailPurchaseOrder);
