@@ -48,6 +48,8 @@ class PersediaanBarang extends Component {
           <tr key={persediaan.id}>
             <td>{no}</td>
             <td>{persediaan.barang.nama_barang}</td>
+            <td>{persediaan.barang.jenis_barang}</td>
+            <td>{persediaan.barang.satuan}</td>
             <td>{persediaan.jumlah}</td>
             <td>{persediaan.status}</td>
           </tr>
@@ -74,6 +76,8 @@ class PersediaanBarang extends Component {
                   <tr>
                     <th>No</th>
                     <th>Nama Barang</th>
+                    <th>Jenis</th>
+                    <th>Satuan</th>
                     <th>Jumlah</th>
                     <th>Status</th>
                   </tr>

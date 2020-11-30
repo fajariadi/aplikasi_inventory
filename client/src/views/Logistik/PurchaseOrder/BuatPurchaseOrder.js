@@ -276,7 +276,6 @@ class BuatPurchaseOrder extends Component {
           }
         })
       } 
-      console.log(items); 
       var data = this.props.getPurchaseOrdersQuery;
                 var orderid = '';
                 data.purchaseOrders.map(request => {

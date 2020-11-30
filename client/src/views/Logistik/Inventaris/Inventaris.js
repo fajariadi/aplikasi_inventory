@@ -48,9 +48,9 @@ class Inventaris extends Component {
             <td>{no}</td>
             <td>{inventaris.barang.nama_barang}</td>
             <td>{inventaris.jumlah}</td>
-            <td>{inventaris.status}</td>
             <td>{inventaris.jumlah_diperbaiki}</td>
             <td>{inventaris.jumlah_dipakai}</td>
+            <td>{inventaris.jumlah-inventaris.jumlah_diperbaiki-inventaris.jumlah_dipakai}</td>
           </tr>
         );
       });
@@ -112,9 +112,9 @@ class Inventaris extends Component {
                     <th>No</th>
                     <th>Nama Barang</th>
                     <th>Jumlah</th>
-                    <th>Status</th>
                     <th>Diperbaiki</th>
                     <th>Dipakai</th>
+                    <th>Tersedia</th>
                   </tr>
                   </thead>
                   <tbody align="center">

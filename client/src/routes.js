@@ -61,7 +61,10 @@ const PersediaanBarang = React.lazy(() => import('./views/Logistik/PersediaanBar
 const Inventaris = React.lazy(() => import('./views/Logistik/Inventaris/Inventaris'));
 const PenerimaanBarang = React.lazy(() => import('./views/Logistik/PenerimaanBarang/PenerimaanBarang'));
 const BuatPenerimaanBarang = React.lazy(() => import('./views/Logistik/PenerimaanBarang/BuatPenerimaanBarang'));
-
+const DetailPenerimaanBarang = React.lazy(() => import('./views/Logistik/PenerimaanBarang/DetailPenerimaanBarang'));
+const PengeluaranBarang = React.lazy(() => import('./views/Logistik/PengeluaranBarang/PengeluaranBarang'));
+const BuatPengeluaranBarang = React.lazy(() => import('./views/Logistik/PengeluaranBarang/BuatPengeluaranBarang'));
+const DetailPengeluaranBarang = React.lazy(() => import('./views/Logistik/PengeluaranBarang/DetailPengeluaranBarang'));
 
 const DataKaryawan = React.lazy(() => import('./views/HumanResource/Karyawan/DataKaryawan'));
 const TambahKaryawan = React.lazy(() => import('./views/HumanResource/Karyawan/TambahKaryawan'));
@@ -137,7 +140,10 @@ const routes = [
   { path: '/inventaris/inventaris', exact: true, name: 'Inventaris', component: Inventaris },
   { path: '/penerimaanBarang/penerimaanBarang', exact: true, name: 'Penerimaan Barang', component: PenerimaanBarang },
   { path: '/penerimaanBarang/buatPenerimaanBarang/:id', exact: true, name: 'Buat Penerimaan Barang', component: BuatPenerimaanBarang },
-
+  { path: '/penerimaanBarang/detailPenerimaanBarang/:id', exact: true, name: 'Detail Penerimaan Barang', component: DetailPenerimaanBarang },
+  { path: '/pengeluaranBarang/pengeluaranBarang', exact: true, name: 'Pengeluaran Barang', component: PengeluaranBarang },
+  { path: '/pengeluaranBarang/buatPengeluaranBarang/:id', exact: true, name: 'Buat Pengeluaran Barang', component: BuatPengeluaranBarang },
+  { path: '/pengeluaranBarang/detailPengeluaranBarang/:id', exact: true, name: 'Detail Pengeluaran Barang', component: DetailPengeluaranBarang },
 ];
 
 export default routes;

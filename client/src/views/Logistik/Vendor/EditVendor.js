@@ -45,7 +45,7 @@ class EditVendor extends Component {
     if (this.state.jenis_usaha === ''){
       jenis = vendor.jenis_usaha
     } else {
-      jenis = this.state.jenis
+      jenis = this.state.jenis_usaha
     }
     if (this.state.alamat === ''){
       almt = vendor.alamat 
@@ -62,6 +62,7 @@ class EditVendor extends Component {
     } else {
       no = this.state.noTlp
     }
+
     this.props.updateVendorMutation({
       variables:{
         id:this.props.match.params.id,

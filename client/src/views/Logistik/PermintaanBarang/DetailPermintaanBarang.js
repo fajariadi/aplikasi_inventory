@@ -32,7 +32,7 @@ class DetailPermintaanBarang extends Component {
        variables:{
          id: request_id,        
        },
-       refetchQueries:[{query:getPermintaanBarangsQuery}],
+       refetchQueries:[{query:getListRequestsQuery}],
      });
    }
 
@@ -143,7 +143,7 @@ class DetailPermintaanBarang extends Component {
     if (this.state.akun_id === akun_id && status === 'Belum Disetujui'){
       return(
         <div align="center">
-        <Link to={ `/permintaanBarang/editPermintaanBarang/${this.props.match.params.id}` }>
+        <Link to={`/permintaanBarang/editPermintaanBarang/${this.props.match.params.id}`}>
           <Button color="warning">
             <i className="fa fa-pencil" >Edit Permintaan Barang</i>
             </Button>
@@ -217,7 +217,7 @@ class DetailPermintaanBarang extends Component {
         id:permintaan_id,
         status: 'Active',
       },
-      refetchQueries:[{query:getListRequestsQuery}],
+      refetchQueries:[{query:getListRequestsQuery}, {query:getPermintaanBarangsQuery}],
     });
   }
 

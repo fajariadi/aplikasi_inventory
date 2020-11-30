@@ -6,34 +6,6 @@ export default {
       icon: 'icon-speedometer',
     },
     {
-      name: 'Data Master',
-      url: '/base',
-      icon: 'fa fa-database',
-      children: [
-        {
-          name: 'Barang',
-          url: '/barang/barang',
-          icon: 'icon-puzzle',
-        },
-        {
-          name: 'Peralatan',
-          url: '/peralatan/peralatan',
-          icon: 'icon-wrench',
-        },
-        {
-          name: 'Vendor',
-          url: '/vendor/vendor',
-          icon: 'icon-home',
-        },
-        {
-          name: 'User',
-          url: '/user/karyawan',
-          icon: 'icon-user',
-        },
-
-      ],
-    }, 
-    {
       name: 'Logistik',
       url: '/base',
       icon: 'fa fa-database',
@@ -49,8 +21,8 @@ export default {
           icon: 'fa fa-angle-double-down',
         },
         {
-          name: 'Pengambilan Barang',
-          url: '/order/pengambilanBarang',
+          name: 'Pengeluaran Barang',
+          url: '/pengeluaranBarang/pengeluaranBarang',
           icon: 'fa fa-angle-double-up',
         },
         {
@@ -89,19 +61,32 @@ export default {
       ],
     },
     {
-      name: 'Peralatan',
-      url: '/peralatan/peralatan',
-      icon: 'icon-wrench',
-    },
-    {
       name: 'Laporan',
       url: '/peralatan/pemeliharaan',
       icon: 'fa fa-book',
     },
     {
-      name: 'form-test',
-      url: '/base/forms',
-      icon: 'fa fa-book',
-    },
+      name: 'Data Master',
+      url: '/base',
+      icon: 'fa fa-database',
+      children: [
+        {
+          name: 'Barang',
+          url: '/barang/barang',
+          icon: 'icon-puzzle',
+        },
+        {
+          name: 'Vendor',
+          url: '/vendor/vendor',
+          icon: 'icon-home',
+        },
+        {
+          name: 'User',
+          url: '/user/karyawan',
+          icon: 'icon-user',
+        },
+
+      ],
+    }, 
   ],
 };

@@ -60,14 +60,14 @@ class Vendor extends Component {
       return data.vendors.map(vendor => {
          no++;
         return(
-          <tr>
-            <td key={vendor.id}>{no}</td>
-            <td key={vendor.id}>{vendor.nama}</td>
-            <td key={vendor.id}>{vendor.jenis_usaha}</td>
-            <td key={vendor.id}>{vendor.alamat}</td>
-            <td key={vendor.id}>{vendor.email}</td>
-            <td key={vendor.id}>{vendor.noTlp}</td>
-            <td key={vendor.id}>
+          <tr key={vendor.id}>
+            <td>{no}</td>
+            <td>{vendor.nama}</td>
+            <td>{vendor.jenis_usaha}</td>
+            <td>{vendor.alamat}</td>
+            <td>{vendor.email}</td>
+            <td>{vendor.noTlp}</td>
+            <td>
               <Link to={`/vendor/editVendor/${vendor.id}`}>
               <Button color="success" size="sm">
                 <i className="fa fa-pencil"></i>

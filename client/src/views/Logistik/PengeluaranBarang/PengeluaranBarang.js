@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {graphql} from 'react-apollo';
 import { Link, Redirect } from 'react-router-dom';
 import * as compose from 'lodash.flowright';
-import {hapusPenerimaanBarang, getPurchaseOrdersQuery, getPenerimaanBarangsQuery, addPenerimaanBarang} from '../queries/queries';
+import {hapusPengeluaranBarang, getPermintaanBarangsQuery, getPengeluaranBarangsQuery, addPengeluaranBarang} from '../queries/queries';
 import { 
   Form,
   Card, 
@@ -21,14 +21,14 @@ import {
   Modal, ModalBody, ModalHeader
 } from 'reactstrap';
 
-class PenerimaanBarang extends Component {
+class PengeluaranBarang extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
       akun_id: localStorage.getItem("user_id"),
       nama:'',
-      purchase_id:'',
+      permintaan_id:'',
       jumlah: 0,
       modalIsOpen: false,  
       harga: 0,
@@ -43,28 +43,28 @@ class PenerimaanBarang extends Component {
     });
   }
 
-  displayPurchaseOrder(){
-    var data = this.props.getPurchaseOrdersQuery;
+  displayPermintaanBarangs(){
+    var data = this.props.getPermintaanBarangsQuery;
     if(data.loading){
-      return (<div>Loading order...</div>);
+      return (<div>Loading Permintaan...</div>);
     } else {
-      return data.purchaseOrders.map(order => {
-          if(order.status === 'Disetujui'){
+      return data.permintaanBarangs.map(permintaan => {
+          if(permintaan.status === 'Disetujui'){
             return(
-                <option key={order.id} value={order.id}>{order.kode}</option> 
+                <option key={permintaan.id} value={permintaan.id}>{permintaan.kode}</option>
               )
           }
       });
     }
   }
 
-  displayPenerimaanBarang(){
-    var data1 = this.props.getPenerimaanBarangsQuery;
+  displayPengeluaranBarang(){
+    var data1 = this.props.getPengeluaranBarangsQuery;
     var no = 0;
     if(data1.loading){
-      return (<div>Loading Permintaan Barang...</div>);
+      return (<div>Loading Pengeluaran Barang...</div>);
     } else {
-      return data1.penerimaanBarangs.map(request => {
+      return data1.pengeluaranBarangs.map(request => {
         no++;
         return(
           <tr key={request.id}>
@@ -72,7 +72,7 @@ class PenerimaanBarang extends Component {
             <td>{request.kode}</td>
             <td>{request.tanggal}</td>
             <td>
-              <Link to={`/penerimaanBarang/detailPenerimaanBarang/${request.id}`}>
+              <Link to={`/pengeluaranBarang/detailPengeluaranBarang/${request.id}`}>
               <Button color="primary" size="sm">
                 <i className="fa fa-file"></i>
                 </Button>
@@ -89,21 +89,21 @@ class PenerimaanBarang extends Component {
     }
   }
 
-  onDelete(penerimaan_id){
-    this.props.hapusPenerimaanBarang({
+  onDelete(pengeluaran_id){
+    this.props.hapusPengeluaranBarang({
       variables:{
-        id: penerimaan_id,        
+        id: pengeluaran_id,        
       },
-      refetchQueries:[{query:getPenerimaanBarangsQuery}],
+      refetchQueries:[{query:getPengeluaranBarangsQuery}],
     });
   }
 
   getKodeBaru(){
-    var newKode = 'PB';
+    var newKode = 'PE';
     var kode = '';
     var nomor = 1;
-    var data = this.props.getPenerimaanBarangsQuery;
-    data.penerimaanBarangs.map(request => {
+    var data = this.props.getPengeluaranBarangsQuery;
+    data.pengeluaranBarangs.map(request => {
       if(request.kode !== ''){
         kode = request.kode
       } 
@@ -122,14 +122,14 @@ class PenerimaanBarang extends Component {
   }
 
   submit(){
-    this.props.addPenerimaanBarang({
+    this.props.addPengeluaranBarang({
       variables:{
         kode: this.getKodeBaru(),
         tanggal: new Date().toLocaleDateString(),
         akun_id: this.state.akun_id,
-        purchase_id: this.state.purchase_id,
+        permintaan_id: this.state.permintaan_id,
       },
-      refetchQueries:[{query:getPenerimaanBarangsQuery}],
+      refetchQueries:[{query:getPengeluaranBarangsQuery}],
     });
   }
   render() {
@@ -139,9 +139,9 @@ class PenerimaanBarang extends Component {
            <Col>
             <Card>
               <CardHeader>
-                <i className="fa fa-align-justify"></i>Penerimaan Barang
+                <i className="fa fa-align-justify"></i>Pengeluaran Barang
                 <Button size="sm" color="primary" className="float-right mb-0" onClick={this.toggleModal.bind(this)}>
-                  <i className="fa fa-plus"></i> Tambah Penerimaan Barang
+                  <i className="fa fa-plus"></i> Buat Pengeluaran Barang
                 </Button>
               </CardHeader>
               <CardBody>
@@ -156,7 +156,7 @@ class PenerimaanBarang extends Component {
                   </tr>
                   </thead>
                   <tbody align="center">
-                  {this.displayPenerimaanBarang()}
+                  {this.displayPengeluaranBarang()}
                   </tbody>
                 </Table>
                 <nav>
@@ -176,17 +176,17 @@ class PenerimaanBarang extends Component {
           </Col>
         </Row>
         <Modal isOpen={this.state.modalIsOpen}>
-          <ModalHeader>Pilih Purchase Order</ModalHeader>
+          <ModalHeader>Pilih Permintaangeluaran</ModalHeader>
           <ModalBody>
             <Form>
               <FormGroup>
-              <Label htmlFor="name">Kode Purchase Order</Label>
-                <Input type="select" name="id" onChange={(e) =>this.setState({purchase_id:e.target.value})} id="id" required>
+              <Label htmlFor="name">Kode Permintaan Barang</Label>
+                <Input type="select" name="id" onChange={(e) =>this.setState({permintaan_id:e.target.value})} id="id" required>
                   <option>Kode</option>
-                  {this.displayPurchaseOrder()}
+                  {this.displayPermintaanBarangs()}
                 </Input>
               </FormGroup>
-              <Link to={`/penerimaanBarang/buatPenerimaanBarang/${this.state.purchase_id}`}>
+              <Link to={`/pengeluaranBarang/buatPengeluaranBarang/${this.state.permintaan_id}`}>
                 <Button type="submit" color="primary" onClick={this.submit.bind(this)}>Submit</Button>  
               </Link>      
               <Button color="danger" onClick={this.toggleModal.bind(this)}>Batal</Button>
@@ -194,14 +194,13 @@ class PenerimaanBarang extends Component {
           </ModalBody>  
         </Modal>
       </div>
-
     );
   }
 }
 
 export default compose(
-  graphql(getPenerimaanBarangsQuery, {name:"getPenerimaanBarangsQuery"}),
-  graphql(getPurchaseOrdersQuery, {name:"getPurchaseOrdersQuery"}),
-  graphql(addPenerimaanBarang, {name:"addPenerimaanBarang"}),
-  graphql(hapusPenerimaanBarang, {name:"hapusPenerimaanBarang"}),
-)(PenerimaanBarang);
+  graphql(getPengeluaranBarangsQuery, {name:"getPengeluaranBarangsQuery"}),
+  graphql(getPermintaanBarangsQuery, {name:"getPermintaanBarangsQuery"}),
+  graphql(addPengeluaranBarang, {name:"addPengeluaranBarang"}),
+  graphql(hapusPengeluaranBarang, {name:"hapusPengeluaranBarang"}),
+)(PengeluaranBarang);

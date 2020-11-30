@@ -199,13 +199,6 @@ class DetailPurchaseOrder extends Component {
       },
       refetchQueries:[{query:getPurchaseOrdersQuery}],
     });
-    this.props.updateStatusListRequestOnOrder({
-      variables:{
-        order_id: orderid,
-        status: 'Active',
-      },
-      refetchQueries:[{query:getListRequestsQuery}],
-    });
   }
 
   render() {

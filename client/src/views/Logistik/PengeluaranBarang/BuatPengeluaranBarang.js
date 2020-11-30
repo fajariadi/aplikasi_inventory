@@ -2,26 +2,22 @@ import React, { Component } from 'react';
 import {graphql} from 'react-apollo';
 import { Link, Redirect } from 'react-router-dom';
 import * as compose from 'lodash.flowright';
-import {getPurchaseOrderQuery, getAllInventarisQuery, updateJumlahInventaris, getPurchaseOrdersQuery, getPenerimaanBarangsQuery, getPersediaanBarangsQuery, getListRequestsQuery, getBarangsQuery, addPersediaanBarang, updateJumlahPersediaanBarang, updateStatusListRequestOnOrder, updateStatusDonePurchaseOrder} from '../queries/queries';
+import {getPermintaanBarangQuery, getAllInventarisQuery, updateJumlahDipakaiInventaris, getPermintaanBarangsQuery, getPengeluaranBarangsQuery, getPersediaanBarangsQuery, getListRequestsQuery, getBarangsQuery, addPersediaanBarang, updateJumlahPersediaanBarang, updateStatusDonePermintaanBarang} from '../queries/queries';
 import { 
   Form,
   Card, 
   CardBody, 
   CardHeader, 
   Col, 
-  Pagination, 
-  PaginationItem, 
-  PaginationLink, 
   Row, 
   Table,
   Button,
   FormGroup,
   Label,
   Input,
-  Modal, ModalBody, ModalHeader
 } from 'reactstrap';
 
-class BuatPenerimaanBarang extends Component {
+class BuatPengeluaranBarang extends Component {
 
   constructor(props) {
     super(props);
@@ -54,12 +50,12 @@ class BuatPenerimaanBarang extends Component {
       });
     }
   }
-  displayNewPenerimaanbarang(){
-    var data = this.props.getPenerimaanBarangsQuery;
+  displayNewPengeluaranBarang(){
+    var data = this.props.getPengeluaranBarangsQuery;
     var tanggal = '';
     var kode='';
     var nama='';
-    data.penerimaanBarangs.map(request => {
+    data.pengeluaranBarangs.map(request => {
       return(
         tanggal = request.tanggal,
         kode = request.kode,
@@ -73,7 +69,7 @@ class BuatPenerimaanBarang extends Component {
             <Col md="4">
               <FormGroup row>
                 <Col md="6">
-                  <Label htmlFor="name">Kode Penerimaan Barang</Label>
+                  <Label htmlFor="name">Kode Pengeluaran Barang</Label>
                 </Col>
                 <Col md="6">
                 <Input type="text" name="kode" id="kode" value={kode} disabled></Input> 
@@ -93,7 +89,7 @@ class BuatPenerimaanBarang extends Component {
             <Col md="4">
               <FormGroup row>
               <Col md="3">
-                  <Label htmlFor="name">Penerima</Label>
+                  <Label htmlFor="name">Dikeluarkan Oleh</Label>
                 </Col>
                 <Col md="9">
                 <Input type="text" name="kode" id="kode" value={nama} disabled></Input> 
@@ -107,9 +103,9 @@ class BuatPenerimaanBarang extends Component {
     );
   }
 
-  displayPurchaseOrderDetail(){
-    const {purchaseOrder} = this.props.data;
-    if(purchaseOrder){
+  displayPermintaanBarangDetail(){
+    const {permintaanBarang} = this.props.data;
+    if(permintaanBarang){
       return(
         <CardBody>
           <Form className="form-horizontal">
@@ -117,20 +113,20 @@ class BuatPenerimaanBarang extends Component {
             <Col md="4">
               <FormGroup row>
                 <Col md="6">
-                  <Label htmlFor="name">Kode Purchase Order</Label>
+                  <Label htmlFor="name">Kode Permintaan Barang</Label>
                 </Col>
                 <Col md="6">
-                <Input type="text" name="kode" id="kode" value={purchaseOrder.kode} disabled></Input> 
+                <Input type="text" name="kode" id="kode" value={permintaanBarang.kode} disabled></Input> 
                 </Col>
               </FormGroup>
             </Col>  
             <Col md="4">
               <FormGroup row>
               <Col md="3">
-                  <Label htmlFor="name">Nama vendor</Label>
+                  <Label htmlFor="name">Penerima</Label>
                 </Col>
                 <Col md="9">
-                <Input type="text" name="kode" id="kode" value={purchaseOrder.vendor.nama} disabled></Input> 
+                <Input type="text" name="kode" id="kode" value={permintaanBarang.akun.karyawan.nama} disabled></Input> 
                 </Col> 
               </FormGroup>
             </Col>  
@@ -148,7 +144,7 @@ class BuatPenerimaanBarang extends Component {
             </thead>
             <tbody align="center">
               {
-                purchaseOrder.listItemPurchaseOrder.map(item => {
+                permintaanBarang.listRequest.map(item => {
                   return(
                     <tr key={item.id}>
                       <td>{item.nama_barang}</td>
@@ -161,8 +157,8 @@ class BuatPenerimaanBarang extends Component {
             </tbody>
           </Table>
           <div align="center">
-            <Link to="/penerimaanBarang/penerimaanBarang">
-                <Button onClick={this.Submit.bind(this, purchaseOrder.vendor.jenis_usaha)} color="primary">Submit</Button>
+            <Link to="/pengeluaranBarang/pengeluaranBarang">
+                <Button onClick={this.Submit.bind(this)} color="primary">Submit</Button>
             </Link>
           </div>
         </CardBody>
@@ -170,99 +166,48 @@ class BuatPenerimaanBarang extends Component {
     }
   }
 
-  Submit(jenis_usaha){
-    if(jenis_usaha !== 'Perkakas'){
-        const {purchaseOrder} = this.props.data;
-        purchaseOrder.listItemPurchaseOrder.map(item => {
-            var pers_id = '';
-            var jumlah1=0;
+  Submit(){
+    const {permintaanBarang} = this.props.data;
+    permintaanBarang.listRequest.map(item => {
+        if(item.jenis !== 'Perkakas'){
             var data = this.props.getPersediaanBarangsQuery;
+            var jumlah1 = 0; var per_id='';
             data.persediaanBarangs.map(stock => {
                 if (item.nama_barang === stock.barang.nama_barang){
-                    pers_id = stock.barang.id
+                    per_id = stock.barang.id
                     jumlah1 = stock.jumlah
                 }
-            });   
-            if(pers_id !== ''){
-                this.props.updateJumlahPersediaanBarang({
-                    variables:{
-                      barang_id: pers_id,
-                      jumlah: parseInt(item.jumlah_barang)+parseInt(jumlah1),
-                    },
-                    refetchQueries:[{query:getPersediaanBarangsQuery}],
-                });
-            } else {
-                var id1='';
-                var data = this.props.getBarangsQuery;
-                data.barangs.map(bar => {
-                    if(item.nama_barang === bar.nama_barang){
-                        id1 = bar.id
-                    }
-                });
-                this.props.addPersediaanBarang({
-                    variables:{
-                      barang_id: id1,
-                      jumlah: parseInt(item.jumlah_barang),
-                      status: 'Available',
-                    },
-                    refetchQueries:[{query:getPersediaanBarangsQuery}],
-                });
-            }
-        });
-    } else {
-        const {purchaseOrder} = this.props.data;
-        purchaseOrder.listItemPurchaseOrder.map( item => {
+            });  
+            this.props.updateJumlahPersediaanBarang({
+                variables:{
+                  barang_id: per_id,
+                  jumlah: parseInt(jumlah1)-parseInt(item.jumlah_barang),
+                },
+                refetchQueries:[{query:getPersediaanBarangsQuery}],
+            });
+        } else {
             var data = this.props.getAllInventarisQuery;
             var inv_id = '';
-            var jumlah1=0;
             data.allInventaris.map (inv => {
                 if (item.nama_barang === inv.barang.nama_barang){
                     inv_id = inv.barang.id
-                    jumlah1 = inv.jumlah
                 }
             });
-            if(inv_id !== ''){
-                this.props.updateJumlahInventaris({
-                    variables:{
-                      barang_id: inv_id,
-                      jumlah: parseInt(item.jumlah_barang)+parseInt(jumlah1),
-                    },
-                    refetchQueries:[{query:getAllInventarisQuery}],
-                });
-            } else {
-                var id1='';
-                var data = this.props.getBarangsQuery;
-                data.barangs.map(bar => {
-                    if(item.nama_barang === bar.nama_barang){
-                        id1 = bar.id
-                    }
-                });
-                this.props.addInventaris({
-                    variables:{
-                      barang_id: id1,
-                      jumlah: parseInt(item.jumlah_barang),
-                      status: 'Available',
-                      jumlah_dipakai: 0,
-                      jumlah_diperbaiki: 0,
-                    },
-                    refetchQueries:[{query:getAllInventarisQuery}]
-                  });
-            }
-        });
-    }
-    this.props.updateStatusDonePurchaseOrder({
+            this.props.updateJumlahDipakaiInventaris({
+                variables:{
+                  barang_id: inv_id,
+                  jumlah_dipakai: parseInt(item.jumlah_barang),
+                },
+                refetchQueries:[{query:getAllInventarisQuery}],
+            });
+        }
+    });
+    this.props.updateStatusDonePermintaanBarang({
         variables:{
             id: this.props.match.params.id,
             status: 'Done',
           },
-          refetchQueries:[{query:getPurchaseOrdersQuery}],
-    });
-    this.props.updateStatusListRequestOnOrder({
-        variables:{
-            order_id: this.props.match.params.id,
-            status: 'Ready',
-          },
-          refetchQueries:[{query:getListRequestsQuery}],
+          refetchQueries:[{query:getPermintaanBarangsQuery}],
     });
   }
 
@@ -273,15 +218,15 @@ class BuatPenerimaanBarang extends Component {
            <Col>
             <Card>
               <CardHeader>
-                <i className="fa fa-align-justify"></i>Form Buat Penerimaan Barang
-                <Link to="/penerimaanBarang/penerimaanBarang" className={'float-right mb-0'}>
+                <i className="fa fa-align-justify"></i>Form Pengeluaran Barang
+                <Link to="/pengeluaranBarang/pengeluaranBarang" className={'float-right mb-0'}>
                   <Button color="danger">
                       Batal
                   </Button>
                 </Link>
               </CardHeader>
-              {this.displayNewPenerimaanbarang()}
-              {this.displayPurchaseOrderDetail()}
+              {this.displayNewPengeluaranBarang()}
+              {this.displayPermintaanBarangDetail()}
             </Card>
           </Col>
         </Row>
@@ -293,7 +238,7 @@ class BuatPenerimaanBarang extends Component {
 }
 
 export default compose(
-    graphql(getPurchaseOrderQuery, {
+    graphql(getPermintaanBarangQuery, {
         options:(props) => {
           return{
             variables:{
@@ -302,16 +247,15 @@ export default compose(
           }
         }
       }),
-  graphql(getPenerimaanBarangsQuery, {name:"getPenerimaanBarangsQuery"}),
-  graphql(getPurchaseOrdersQuery, {name:"getPurchaseOrdersQuery"}),
+  graphql(getPengeluaranBarangsQuery, {name:"getPengeluaranBarangsQuery"}),
+  graphql(getPermintaanBarangsQuery, {name:"getPermintaanBarangsQuery"}),
   graphql(getPersediaanBarangsQuery, {name:"getPersediaanBarangsQuery"}),
   graphql(getListRequestsQuery, {name:"getListRequestsQuery"}),
   graphql(getBarangsQuery, {name:"getBarangsQuery"}),
   graphql(getAllInventarisQuery, {name:"getAllInventarisQuery"}),
   graphql(addPersediaanBarang, {name:"addPersediaanBarang"}),
   graphql(updateJumlahPersediaanBarang, {name:"updateJumlahPersediaanBarang"}),
-  graphql(updateJumlahInventaris, {name:"updateJumlahInventaris"}),
-  graphql(updateStatusListRequestOnOrder, {name:"updateStatusListRequestOnOrder"}),
-  graphql(updateStatusDonePurchaseOrder, {name:"updateStatusDonePurchaseOrder"}),
+  graphql(updateJumlahDipakaiInventaris, {name:"updateJumlahDipakaiInventaris"}), 
+  graphql(updateStatusDonePermintaanBarang, {name:"updateStatusDonePermintaanBarang"}),
   
-)(BuatPenerimaanBarang);
+)(BuatPengeluaranBarang);
