@@ -8,7 +8,7 @@ export default {
     {
       name: 'Logistik',
       url: '/base',
-      icon: 'fa fa-database',
+      icon: 'fa fa-truck',
       children: [
         {
           name: 'Permintaan Barang',
@@ -37,8 +37,8 @@ export default {
         },
         {
           name: 'Pemeliharaan',
-          url: '/user/karyawan',
-          icon: 'icon-user',
+          url: '/pemeliharaan/pemeliharaan',
+          icon: 'icon-wrench',
         },
 
       ],
@@ -82,7 +82,7 @@ export default {
         },
         {
           name: 'User',
-          url: '/user/karyawan',
+          url: '/user/akun',
           icon: 'icon-user',
         },
 

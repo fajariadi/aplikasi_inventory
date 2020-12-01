@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import {graphql} from 'react-apollo';
-import { Link } from 'react-router-dom';
 import * as compose from 'lodash.flowright';
 import {getPersediaanBarangsQuery} from '../queries/queries';
 import { 
-  Form,
   Card, 
   CardBody, 
   CardHeader, 
@@ -15,10 +13,7 @@ import {
   Row, 
   Table,
   Button,
-  FormGroup,
-  Label,
-  Input,
-  Modal, ModalBody, ModalHeader
+
 } from 'reactstrap';
 
 class PersediaanBarang extends Component {

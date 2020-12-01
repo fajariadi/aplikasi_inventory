@@ -38,9 +38,6 @@ const User = React.lazy(() => import('./views/Users/User'));
 
 const Barang = React.lazy(() => import('./views/Logistik/Barang/Barang'));
 const EditBarang = React.lazy(() => import('./views/Logistik/Barang/EditBarang'));
-const Peralatan = React.lazy(() => import('./views/Logistik/Peralatan/Peralatan'));
-const EditPeralatan = React.lazy(() => import('./views/Logistik/Peralatan/EditPeralatan'));
-const Pemeliharaan = React.lazy(() => import('./views/Logistik/Peralatan/Pemeliharaan'));
 const PermintaanBarang = React.lazy(() => import('./views/Logistik/PermintaanBarang/PermintaanBarang'));
 const DetailPermintaanBarang = React.lazy(() => import('./views/Logistik/PermintaanBarang/DetailPermintaanBarang'));
 const BuatPermintaanBarang = React.lazy(() => import('./views/Logistik/PermintaanBarang/BuatPermintaanBarang'));
@@ -50,8 +47,7 @@ const BuatPurchaseOrder = React.lazy(() => import('./views/Logistik/PurchaseOrde
 const DetailPurchaseOrder = React.lazy(() => import('./views/Logistik/PurchaseOrder/DetailPurchaseOrder'));
 const Vendor = React.lazy(() => import('./views/Logistik/Vendor/Vendor'));
 const EditVendor = React.lazy(() => import('./views/Logistik/Vendor/EditVendor'));
-const OfferRoom = React.lazy(() => import('./views/Logistik/Users/OfferRoom'));
-const Karyawan = React.lazy(() => import('./views/Logistik/Users/Karyawan'));
+const Akun = React.lazy(() => import('./views/Logistik/Users/Akun'));
 const DashboardLogistik = React.lazy(() => import('./views/Logistik/DashboardLogistik/DashboardLogistik'));
 const Profile = React.lazy(() => import('./views/Logistik/Profile/Profile'));
 const Penyewaan = React.lazy(() => import('./views/Logistik/Penyewaan/Penyewaan'));
@@ -65,6 +61,7 @@ const DetailPenerimaanBarang = React.lazy(() => import('./views/Logistik/Penerim
 const PengeluaranBarang = React.lazy(() => import('./views/Logistik/PengeluaranBarang/PengeluaranBarang'));
 const BuatPengeluaranBarang = React.lazy(() => import('./views/Logistik/PengeluaranBarang/BuatPengeluaranBarang'));
 const DetailPengeluaranBarang = React.lazy(() => import('./views/Logistik/PengeluaranBarang/DetailPengeluaranBarang'));
+const Pemeliharaan = React.lazy(() => import('./views/Logistik/Pemeliharaan/Pemeliharaan'));
 
 const DataKaryawan = React.lazy(() => import('./views/HumanResource/Karyawan/DataKaryawan'));
 const TambahKaryawan = React.lazy(() => import('./views/HumanResource/Karyawan/TambahKaryawan'));
@@ -114,10 +111,7 @@ const routes = [
 
 
   { path: '/barang/barang', exact: true, name: 'Barang', component: Barang },
-  { path: '/barang/editBarang/:id', exact: true, name: 'Edit Barang', component: EditBarang },
-  { path: '/peralatan/peralatan', exact: true, name: 'Peralatan', component: Peralatan },
-  { path: '/peralatan/editPeralatan/:id', exact: true, name: 'Edit Peralatan', component: EditPeralatan },
-  { path: '/peralatan/pemeliharaan', exact: true, name: 'Pemeliharaan', component: Pemeliharaan },
+  { path: '/barang/editBarang/:id', exact: true, name: 'Edit Barang', component: EditBarang },  
   { path: '/permintaanBarang/permintaanBarang', exact: true, name: 'Permintaan Barang', component: PermintaanBarang },
   { path: '/permintaanBarang/detailPermintaanBarang/:id', exact: true, name: 'Detail Permintaan Barang', component: DetailPermintaanBarang },
   { path: '/permintaanBarang/buatPermintaanBarang', exact: true, name: 'Buat Permintaan Barang', component: BuatPermintaanBarang },
@@ -128,8 +122,8 @@ const routes = [
   { path: '/vendor/vendor', exact: true, name: 'List Vendor', component: Vendor },
   { path: '/vendor/editVendor/:id', exact: true, name: 'Edit Vendor', component: EditVendor },
 
-  { path: '/user/offerRoom', exact: true, name: 'Offer Room', component: OfferRoom },
-  { path: '/user/karyawan', exact: true, name: 'Users', component: Karyawan },
+
+  { path: '/user/akun', exact: true, name: 'Akun', component: Akun },
   { path: '/dashboardLogistik/dashboardLogistik', exact: true, name: 'Dashboard', component: DashboardLogistik },
   { path: '/profile/profile', exact: true, name: 'Profile', component: Profile },
   { path: '/penyewaan/penyewaan', exact: true, name: 'Penyewaan', component: Penyewaan },
@@ -144,6 +138,8 @@ const routes = [
   { path: '/pengeluaranBarang/pengeluaranBarang', exact: true, name: 'Pengeluaran Barang', component: PengeluaranBarang },
   { path: '/pengeluaranBarang/buatPengeluaranBarang/:id', exact: true, name: 'Buat Pengeluaran Barang', component: BuatPengeluaranBarang },
   { path: '/pengeluaranBarang/detailPengeluaranBarang/:id', exact: true, name: 'Detail Pengeluaran Barang', component: DetailPengeluaranBarang },
+  { path: '/pemeliharaan/pemeliharaan', exact: true, name: 'Pemeliharaan Inventaris', component: Pemeliharaan },
+
 ];
 
 export default routes;

@@ -86,6 +86,28 @@ const getOrdersQuery = gql`
 }
 `
 
+const getAkunsQuery = gql`
+{
+	akuns {
+		username
+		password
+		karyawan{
+			nama
+			jabatan
+			alamat
+			noHp
+			avatar
+			id
+			divisi{
+				nama
+				id
+			}
+		}
+		id
+	}
+}
+`
+
 const getBarangsQuery = gql`
 {
 	barangs {
@@ -131,11 +153,44 @@ const getKaryawansQuery = gql`
 		avatar
 		divisi{
 			nama
+			id
 		}
 		id
 	}
 }
 `
+
+const getPemeliharaansQuery = gql`
+{
+	pemeliharaans {
+		jumlah
+		status
+		tanggal
+		id
+		akun{
+			username
+			karyawan{
+				nama
+				jabatan
+				divisi{
+					nama
+				}
+			}
+			id
+		}	
+		inventaris{
+			jumlah
+			id
+			barang{
+				nama_barang
+				id
+			}
+		}
+	}
+}
+`
+
+
 const getPersediaanBarangsQuery = gql`
 {
 	persediaanBarangs {
@@ -267,6 +322,14 @@ const hapusPeralatanMutation = gql`
 	mutation($id:ID!){
 		hapusPeralatan(id: $id){
 			nama
+			id
+		}
+	}
+`
+
+const hapusAkunMutation = gql`
+	mutation($id:ID!){
+		hapusAkun(id: $id){
 			id
 		}
 	}
@@ -459,6 +522,16 @@ const addPenerimaanBarang = gql`
 	}
 `
 
+const addKaryawanMutation = gql`
+	mutation($nama:String!, $jabatan:String!, $alamat:String!, $noHp:String!, $avatar:String!, $divisi_id: ID!,){
+		addKaryawan(nama:$nama, jabatan:$jabatan, alamat:$alamat, noHp:$noHp , avatar:$avatar, divisi_id: $divisi_id,){
+			nama
+			jabatan
+			id
+		}
+	}
+`
+
 const addPengeluaranBarang = gql`
 	mutation($kode:String!, $tanggal:String!, $akun_id: ID!, $permintaan_id: ID!,){
 		addPengeluaranBarang(kode:$kode, tanggal:$tanggal, akun_id: $akun_id, permintaan_id: $permintaan_id,){
@@ -468,6 +541,15 @@ const addPengeluaranBarang = gql`
 		}
 	}
 `
+const addPemeliharaan = gql`
+	mutation($status:String!, $jumlah: Int!, $tanggal:String!, $akun_id: ID!, $inventaris_id: ID!,){
+		addPemeliharaan(status:$status, jumlah:$jumlah, tanggal:$tanggal, akun_id: $akun_id, inventaris_id: $inventaris_id,){
+			tanggal
+			id
+		}
+	}
+`
+
 const hapusManyListItemPurchaseOrder = gql`
 	mutation($id:ID!){
 		hapusManyListItemPurchaseOrder(id: $id){
@@ -509,6 +591,16 @@ const hapusPengeluaranBarang = gql`
 const hapusInventaris = gql`
 	mutation($id:ID!){
 		hapusInventaris(id: $id){
+			jumlah
+			status
+			id
+		}
+	}
+`
+
+const hapusPemeliharaan = gql`
+	mutation($id:ID!){
+		hapusPemeliharaan(id: $id){
 			jumlah
 			status
 			id
@@ -676,6 +768,35 @@ const getInventarisQuery = gql`
 		}
 	}
 `
+
+const getPemeliharaanQuery = gql`
+	query($id:ID){
+		pemeliharaan(id: $id) {
+			jumlah
+			status
+			tanggal
+			id
+			akun{
+				username
+				karyawan{
+					nama
+					jabatan
+					divisi{
+						nama
+					}
+				}
+				id
+			}	
+			inventaris{
+				jumlah
+				barang{
+					nama_barang
+				}
+			}
+		}
+	}
+`
+
 const getPenerimaanBarangQuery = gql`
 	query($id:ID){
 		penerimaanBarang(id: $id) {
@@ -878,7 +999,7 @@ const updateJumlahPersediaanBarang = gql`
 			id
 			jumlah
 		}
-	}
+	} 
 `
 const updateInventaris = gql`
 	mutation($id : ID, $jumlah : Int!, $status : String!, $jumlah_diperbaiki:Int!, $jumlah_dipakai:Int! ){
@@ -914,6 +1035,18 @@ const updateJumlahDipakaiInventaris = gql`
 		}
 	}
 `
+
+const updateJumlahDiperbaikiInventaris = gql`
+	mutation($barang_id : ID, $jumlah_diperbaiki : Int! ){
+		updateJumlahDiperbaikiInventaris(barang_id:$barang_id, jumlah_diperbaiki:$jumlah_diperbaiki,){
+			id
+			jumlah
+			status
+			jumlah_diperbaiki
+			jumlah_dipakai
+		}
+	}
+`
 export {
 	getVendorsQuery, 
 	getPeralatansQuery,
@@ -928,6 +1061,7 @@ export {
 	addPurchaseOrderMutation,
 	addDivisiMutation, 
 	addPeralatanMutation, 
+	addKaryawanMutation,
 	addVendorMutation,
 	addPermintaanBarangMutation,
 	addListRequestMutation,
@@ -942,6 +1076,7 @@ export {
 	getKaryawansQuery,
 	addAkunMutation,
 	getAkunQuery,
+	getAkunsQuery,
 	getVendorQuery,
 	hapusManyListRequestMutation,
 	updateStatusPermintaanBarang,
@@ -971,6 +1106,7 @@ export {
 	updateInventaris,
 	updateJumlahInventaris,
 	updateJumlahDipakaiInventaris,
+	updateJumlahDiperbaikiInventaris,
 	hapusInventaris,
 	getPenerimaanBarangQuery,
 	getPenerimaanBarangsQuery,
@@ -979,6 +1115,11 @@ export {
 	getPengeluaranBarangQuery,
 	getPengeluaranBarangsQuery,
 	addPengeluaranBarang,
-	hapusPengeluaranBarang
+	hapusPengeluaranBarang,
+	getPemeliharaanQuery,
+	getPemeliharaansQuery,
+	addPemeliharaan,
+	hapusPemeliharaan,
+	hapusAkunMutation
 
 };

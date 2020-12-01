@@ -15,6 +15,7 @@ const PersediaanBarang = require('./models/PersediaanBarangModel');
 const Inventaris = require('./models/InventarisModel');
 const PenerimaanBarang = require('./models/PenerimaanBarangModel');
 const PengeluaranBarang = require('./models/PengeluaranBarangModel');
+const Pemeliharaan = require('./models/PemeliharaanModel');
 
 
 
@@ -52,6 +53,28 @@ const InventarisType = new GraphQLObjectType({
 			type: BarangType,
 			resolve(parent, args){
 				return Barang.findById(parent.barang_id);
+			}
+		}
+	})
+});
+
+const PemeliharaanType = new GraphQLObjectType({
+	name: 'Pemeliharaan',
+	fields: () => ({
+		id: {type: GraphQLID},
+		jumlah: {type: GraphQLInt},
+		status:{type:GraphQLString},
+		tanggal:{type:GraphQLString},
+		akun: {
+			type: AkunType,
+			resolve(parent, args){
+				return Akun.findById(parent.akun_id);
+			}
+		},
+		inventaris: {
+			type: InventarisType,
+			resolve(parent, args){
+				return Inventaris.findById(parent.inventaris_id);
 			}
 		}
 	})
@@ -285,12 +308,6 @@ const KaryawanType = new GraphQLObjectType({
 				return Divisi.findById(parent.divisi_id);
 			}
 		},
-		akun:{
-			type: AkunType,
-			resolve(parent,args){
-				return Akun.findOne({karyawan_id: parent.id});
-			}
-		}
 	})
 });
 
@@ -515,6 +532,20 @@ const RootQuery = new GraphQLObjectType({
 			args: {id:{type:GraphQLID}},
 			resolve(parent,args){
 				return PengeluaranBarang.find({});
+			}
+		},
+		pemeliharaan:{
+			type: PemeliharaanType,
+			args: {id:{type:GraphQLID}},
+			resolve(parent,args){
+				return Pemeliharaan.findById(args.id);
+			}
+		},
+		pemeliharaans:{
+			type: new GraphQLList(PemeliharaanType),
+			args: {id:{type:GraphQLID}},
+			resolve(parent,args){
+				return Pemeliharaan.find({});
 			}
 		},
 	}
@@ -936,6 +967,13 @@ const Mutation = new GraphQLObjectType({
 				return akun.save();
 			}
 		},
+		hapusAkun:{
+			type: AkunType,
+			args: {id:{type:GraphQLID}},
+			resolve(parent,args){
+				return Akun.deleteOne({_id:args.id});
+			}
+		},
 		addPersediaanBarang:{
 			type: PersediaanBarangType,
 			args:{
@@ -1029,6 +1067,16 @@ const Mutation = new GraphQLObjectType({
 				return Inventaris.findOneAndUpdate({barang_id: args.barang_id}, {jumlah_dipakai: args.jumlah_dipakai})
 			}
 		},
+		updateJumlahDiperbaikiInventaris:{
+			type: InventarisType,
+			args: {
+				barang_id:{type:GraphQLID},
+				jumlah_diperbaiki: {type: new GraphQLNonNull(GraphQLInt)},
+			},
+			resolve(parent, args){
+				return Inventaris.findOneAndUpdate({barang_id: args.barang_id}, {jumlah_diperbaiki: args.jumlah_diperbaiki})
+			}
+		},
 		addPenerimaanBarang:{
 			type: PenerimaanBarangType,
 			args:{
@@ -1077,6 +1125,33 @@ const Mutation = new GraphQLObjectType({
 			args: {id:{type:GraphQLID}},
 			resolve(parent,args){
 				return PengeluaranBarang.deleteOne({_id:args.id});
+			}
+		},
+		addPemeliharaan:{
+			type: PemeliharaanType,
+			args:{
+				status: {type: new GraphQLNonNull(GraphQLString)},
+				jumlah: {type: new GraphQLNonNull(GraphQLInt)},
+				tanggal: {type: new GraphQLNonNull(GraphQLString)},
+				akun_id: {type: new GraphQLNonNull(GraphQLID)},
+				inventaris_id: {type: new GraphQLNonNull(GraphQLID)},
+			},
+			resolve(parent, args){
+				let pemeliharaan = new Pemeliharaan({
+					status: args.status,
+					jumlah: args.jumlah,
+					tanggal: args.tanggal,
+					akun_id: args.akun_id,
+					inventaris_id:  args.inventaris_id,
+				});
+				return pemeliharaan.save();
+			}
+		},
+		hapusPemeliharaan:{
+			type: PemeliharaanType,
+			args: {id:{type:GraphQLID}},
+			resolve(parent,args){
+				return Pemeliharaan.deleteOne({_id:args.id});
 			}
 		},
 	}

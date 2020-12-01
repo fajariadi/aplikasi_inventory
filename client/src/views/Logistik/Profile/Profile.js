@@ -130,7 +130,7 @@ class Profile extends Component {
              <h5>:</h5>
           </Col>
           <Col md='4'>
-            <h5></h5>
+            <h5>-</h5>
           </Col>
         </Row>
       </div>
@@ -222,7 +222,7 @@ class Profile extends Component {
 
   addUser(e){
    e.preventDefault();
-   var data = this.props.addUserMutation({
+   this.props.addUserMutation({
       variables:{
         username: this.state.username,
         password: this.state.password,

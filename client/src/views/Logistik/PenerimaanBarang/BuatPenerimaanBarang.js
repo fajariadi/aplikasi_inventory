@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {graphql} from 'react-apollo';
-import { Link, Redirect } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import * as compose from 'lodash.flowright';
 import {getPurchaseOrderQuery, getAllInventarisQuery, updateJumlahInventaris, getPurchaseOrdersQuery, getPenerimaanBarangsQuery, getPersediaanBarangsQuery, getListRequestsQuery, getBarangsQuery, addPersediaanBarang, updateJumlahPersediaanBarang, updateStatusListRequestOnOrder, updateStatusDonePurchaseOrder} from '../queries/queries';
 import { 
@@ -9,16 +9,12 @@ import {
   CardBody, 
   CardHeader, 
   Col, 
-  Pagination, 
-  PaginationItem, 
-  PaginationLink, 
   Row, 
   Table,
   Button,
   FormGroup,
   Label,
   Input,
-  Modal, ModalBody, ModalHeader
 } from 'reactstrap';
 
 class BuatPenerimaanBarang extends Component {
