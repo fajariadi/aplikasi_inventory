@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import {graphql} from 'react-apollo';
 import * as compose from 'lodash.flowright';
+import Swal from 'sweetalert2';
 import {getPurchaseOrderQuery, hapusPurchaseOrderMutation, updateStatusListRequestOnOrder ,updateStatusListItemPurchaseOrder,  hapusManyListItemPurchaseOrder, getPurchaseOrdersQuery, updateStatusPurchaseOrder, getListRequestsQuery} from '../queries/queries';
 import { Card, Button, CardBody, CardHeader, Col, Row, Table, Form, FormGroup, Label, Input } from 'reactstrap';
 
@@ -173,6 +174,12 @@ class DetailPurchaseOrder extends Component {
       },
       refetchQueries:[{query:getPurchaseOrdersQuery}],
     })
+    Swal.fire({
+      position: 'center',
+      icon: 'success',
+      title: 'Pembelian Barang Disetujui',
+      showConfirmButton: true,
+    })
   }
 
   onTolakPurchaseOrder(order_id){
@@ -184,21 +191,44 @@ class DetailPurchaseOrder extends Component {
       },
       refetchQueries:[{query:getPurchaseOrdersQuery}],
     });
+    Swal.fire({
+      position: 'center',
+      icon: 'success',
+      title: 'Pembelian Barang Ditolak',
+      showConfirmButton: true,
+    })
   }
 
   onDelete(orderid){
-    this.props.hapusPurchaseOrderMutation({
-      variables:{
-        id: orderid,        
-      },
-      refetchQueries:[{query:getPurchaseOrdersQuery}],
-    });
-    this.props.hapusManyListItemPurchaseOrder({
-      variables:{
-        id: orderid,        
-      },
-      refetchQueries:[{query:getPurchaseOrdersQuery}],
-    });
+    Swal.fire({
+      title: 'Apakah anda Yakin?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Ya, Saya Yakin!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.props.hapusPurchaseOrderMutation({
+          variables:{
+            id: orderid,        
+          },
+          refetchQueries:[{query:getPurchaseOrdersQuery}],
+        });
+        this.props.hapusManyListItemPurchaseOrder({
+          variables:{
+            id: orderid,        
+          },
+          refetchQueries:[{query:getPurchaseOrdersQuery}],
+        });
+        Swal.fire(
+          'Dihapus!',
+          'Pembelian Barang Telah Dihapus',
+          'success'
+        )
+      }
+    })
+   
   }
 
   render() {

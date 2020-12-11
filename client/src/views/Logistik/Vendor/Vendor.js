@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {graphql} from 'react-apollo';
 import { Link } from 'react-router-dom';
 import * as compose from 'lodash.flowright';
+import Swal from 'sweetalert2';
 import {getVendorsQuery, addVendorMutation, hapusVendorMutation} from '../queries/queries';
 import { 
   Card, 
@@ -42,12 +43,28 @@ class Vendor extends Component {
   }
 
   onDelete(vendor_id){
-    this.props.hapusVendorMutation({
-      variables:{
-        id: vendor_id,        
-      },
-      refetchQueries:[{query:getVendorsQuery}],
-    });
+    Swal.fire({
+      title: 'Apakah anda Yakin?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Ya, Saya Yakin!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.props.hapusVendorMutation({
+          variables:{
+            id: vendor_id,        
+          },
+          refetchQueries:[{query:getVendorsQuery}],
+        });
+        Swal.fire(
+          'Dihapus!',
+          'Data Vendor Telah Dihapus',
+          'success'
+        )
+      }
+    })
   }
 
   displayVendors(){
@@ -97,6 +114,12 @@ class Vendor extends Component {
       },
       refetchQueries:[{query:getVendorsQuery}]
     });
+    Swal.fire({
+      position: 'center',
+      icon: 'success',
+      title: 'Data Vendor Berhasil Disimpan',
+      showConfirmButton: true,
+    })
   }
 
   render() {

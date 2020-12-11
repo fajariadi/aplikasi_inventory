@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {graphql} from 'react-apollo';
 import { Link } from 'react-router-dom';
 import * as compose from 'lodash.flowright';
+import Swal from 'sweetalert2';
 import {getPurchaseOrderQuery, getAllInventarisQuery, updateJumlahInventaris, getPurchaseOrdersQuery, getPenerimaanBarangsQuery, getPersediaanBarangsQuery, getListRequestsQuery, getBarangsQuery, addPersediaanBarang, updateJumlahPersediaanBarang, updateStatusListRequestOnOrder, updateStatusDonePurchaseOrder} from '../queries/queries';
 import { 
   Form,
@@ -260,6 +261,12 @@ class BuatPenerimaanBarang extends Component {
           },
           refetchQueries:[{query:getListRequestsQuery}],
     });
+    Swal.fire({
+      position: 'center',
+      icon: 'success',
+      title: 'Penerimaan Barang Berhasil Disimpan',
+      showConfirmButton: true,
+    })
   }
 
   render() {

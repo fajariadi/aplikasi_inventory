@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import {graphql} from 'react-apollo';
 import * as compose from 'lodash.flowright';
+import Swal from 'sweetalert2';
 import {getBarangsQuery, addBarangMutation, hapusBarangMutation} from '../queries/queries';
 import { 
   Card, 
@@ -33,6 +34,7 @@ class Barang extends Component {
       satuan: '',
       harga: '',
       modalIsOpen: false,  
+      success: false,
     };
   }
 
@@ -54,15 +56,37 @@ class Barang extends Component {
       },
       refetchQueries:[{query:getBarangsQuery}]
     });
+    Swal.fire({
+      position: 'center',
+      icon: 'success',
+      title: 'Data Barang Berhasil Disimpan',
+      showConfirmButton: true,
+    })
   }
 
   onDelete(barang_id){
-    this.props.hapusBarangMutation({
-      variables:{
-        id: barang_id,        
-      },
-      refetchQueries:[{query:getBarangsQuery}],
-    });
+    Swal.fire({
+      title: 'Apakah anda Yakin?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Ya, Saya Yakin!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.props.hapusBarangMutation({
+          variables:{
+            id: barang_id,        
+          },
+          refetchQueries:[{query:getBarangsQuery}],
+        });
+        Swal.fire(
+          'Dihapus!',
+          'Data Barang Telah Dihapus',
+          'success'
+        )
+      }
+    })
   }
 
   displayBarang(){

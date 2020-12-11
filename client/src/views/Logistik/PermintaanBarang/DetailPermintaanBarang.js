@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Redirect, Link } from 'react-router-dom';
 import {graphql} from 'react-apollo';
 import * as compose from 'lodash.flowright';
+import Swal from 'sweetalert2';
 import { getPermintaanBarangQuery, getPermintaanBarangsQuery, hapusPermintaanBarangMutation, hapusManyListRequestMutation, updateStatusPermintaanBarang, updateStatusListRequest, getListRequestsQuery} from '../queries/queries';
 import { Button, Card, CardBody, CardHeader, Col, Row, Table, Form, FormGroup, Label, Input } from 'reactstrap';
 
@@ -22,18 +23,35 @@ class DetailPermintaanBarang extends Component {
   }
 
   onDelete(request_id){
-    this.props.hapusPermintaanBarangMutation({
-       variables:{
-         id: request_id,        
-       },
-       refetchQueries:[{query:getPermintaanBarangsQuery}],
-     });
-    this.props.hapusManyListRequestMutation({
-       variables:{
-         id: request_id,        
-       },
-       refetchQueries:[{query:getListRequestsQuery}],
-     });
+    Swal.fire({
+      title: 'Apakah anda Yakin?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Ya, Saya Yakin!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.props.hapusPermintaanBarangMutation({
+          variables:{
+            id: request_id,        
+          },
+          refetchQueries:[{query:getPermintaanBarangsQuery}],
+        });
+       this.props.hapusManyListRequestMutation({
+          variables:{
+            id: request_id,        
+          },
+          refetchQueries:[{query:getListRequestsQuery}],
+        });
+        Swal.fire(
+          'Dihapus!',
+          'Permintaan Barang Telah Dihapus',
+          'success'
+        )
+      }
+    })
+    
    }
 
   displayRequestDetail(){
@@ -219,6 +237,12 @@ class DetailPermintaanBarang extends Component {
       },
       refetchQueries:[{query:getListRequestsQuery}, {query:getPermintaanBarangsQuery}],
     });
+    Swal.fire({
+      position: 'center',
+      icon: 'success',
+      title: 'Permintaan Barang Disetujui',
+      showConfirmButton: true,
+    })
   }
 
   onTolakPermintaan(permintaan_id){
@@ -237,6 +261,12 @@ class DetailPermintaanBarang extends Component {
       },
       refetchQueries:[{query:getListRequestsQuery}],
     });
+    Swal.fire({
+      position: 'center',
+      icon: 'error',
+      title: 'Permintaan Barang Ditolak',
+      showConfirmButton: true,
+    })
   }
 
  

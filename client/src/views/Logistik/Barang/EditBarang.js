@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import {graphql} from 'react-apollo';
 import * as compose from 'lodash.flowright';
+import Swal from 'sweetalert2';
 import {getBarangQuery, updateBarangMutation, getBarangsQuery} from '../queries/queries';
 import { 
   Card, 
@@ -72,6 +73,12 @@ class EditBarang extends Component {
       },
       refetchQueries:[{query:getBarangsQuery}],
     });
+    Swal.fire({
+      position: 'center',
+      icon: 'success',
+      title: 'Data Barang Berhasil Diubah',
+      showConfirmButton: true,
+    })
   }
 
   displayBarang(){
@@ -97,7 +104,6 @@ class EditBarang extends Component {
                     <option value="Lembar">Lembar</option>
                     <option value="Liter">Liter</option>
                     <option value="Sak">Sak</option>
-                    <option value="m">m</option>
                     <option value="m2">m2</option>
                     <option value="m3">m3</option>
                     <option value="Roll">Roll</option>
@@ -137,7 +143,9 @@ class EditBarang extends Component {
                 <Link to="/barang/barang">
                   <Button type="submit" color="primary" onClick={(e) => {this.submitForm(e)}} >Submit</Button>
                 </Link>
-                <Button color="danger" onClick={this.toggleModal.bind(this)}>Batal</Button>
+                <Link to="/barang/barang">
+                  <Button color="danger">Batal</Button>
+                </Link>
             </Form>
                 </CardBody>
             </Card>

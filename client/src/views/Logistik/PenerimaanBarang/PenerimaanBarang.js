@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {graphql} from 'react-apollo';
 import { Link, Redirect } from 'react-router-dom';
 import * as compose from 'lodash.flowright';
+import Swal from 'sweetalert2';
 import {hapusPenerimaanBarang, getPurchaseOrdersQuery, getPenerimaanBarangsQuery, addPenerimaanBarang} from '../queries/queries';
 import { 
   Form,
@@ -90,12 +91,28 @@ class PenerimaanBarang extends Component {
   }
 
   onDelete(penerimaan_id){
-    this.props.hapusPenerimaanBarang({
-      variables:{
-        id: penerimaan_id,        
-      },
-      refetchQueries:[{query:getPenerimaanBarangsQuery}],
-    });
+    Swal.fire({
+      title: 'Apakah anda Yakin?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Ya, Saya Yakin!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.props.hapusPenerimaanBarang({
+          variables:{
+            id: penerimaan_id,        
+          },
+          refetchQueries:[{query:getPenerimaanBarangsQuery}],
+        });
+        Swal.fire(
+          'Dihapus!',
+          'Data Barang Telah Dihapus',
+          'success'
+        )
+      }
+    })
   }
 
   getKodeBaru(){

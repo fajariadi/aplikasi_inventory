@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Link} from 'react-router-dom';
 import {graphql} from 'react-apollo';
 import * as compose from 'lodash.flowright';
+import Swal from 'sweetalert2';
 import { getVendorsQuery, getPurchaseOrdersQuery, addListItemPurchaseOrder, updateAllStatusListRequest, getListRequestsQuery, updateVendorPurchaseOrderMutation, hapusPurchaseOrderMutation} from '../queries/queries';
 import {  
   Card, 
@@ -312,6 +313,12 @@ class BuatPurchaseOrder extends Component {
                     })
                   );
                 });
+                Swal.fire({
+                  position: 'center',
+                  icon: 'success',
+                  title: 'Pembelian Barang Berhasil Disimpan',
+                  showConfirmButton: true,
+                })
     }
   }
 

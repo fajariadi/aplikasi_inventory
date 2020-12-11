@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import {graphql} from 'react-apollo';
 import * as compose from 'lodash.flowright';
+import Swal from 'sweetalert2';
 import { hapusPermintaanBarangMutation, getPermintaanBarangsQuery, getBarangsQuery, getListRequestsQuery, addListRequestMutation} from '../queries/queries';
 import {  
   Card, 
@@ -168,10 +169,12 @@ class BuatPermintaanBarang extends Component {
   displayEditItem(){
     var nama='';
     var jumlah='';
+    var harga=0;
     this.state.requestItems.map(item =>{
       if (item.nama === this.state.selected){
         nama = item.nama
         jumlah=item.jumlah
+        harga=item.harga
       }
     })
     return(
@@ -256,10 +259,12 @@ class BuatPermintaanBarang extends Component {
           })
         );
       });
-  }
-
-  show = (e) => {
-      console.log(this.state.requestItems);
+      Swal.fire({
+        position: 'center',
+        icon: 'success',
+        title: 'Permintaan Barang Berhasil Disimpan',
+        showConfirmButton: true,
+      })
   }
 
   onDeleteItem(nama){
@@ -317,7 +322,7 @@ class BuatPermintaanBarang extends Component {
                   </Col>
                 </Row>
                   <Table hover bordered striped responsive size="sm">
-                    <thead>
+                    <thead align="center">
                     <tr>
                       <th>Nama Barang</th>
                       <th>Jumlah</th>
@@ -327,7 +332,7 @@ class BuatPermintaanBarang extends Component {
                       <th>Delete</th>
                     </tr>
                     </thead>
-                    <tbody>
+                    <tbody align="center">
                       {
                          this.state.requestItems.map(item => {
                           return(
@@ -353,9 +358,11 @@ class BuatPermintaanBarang extends Component {
                     </tbody>
                   </Table>
                   <br />
+                  <div align="center">  
                   <Link to="/permintaanBarang/permintaanBarang">
                     <Button onClick={(e) => {this.submitRequest(e)}} color="primary">Submit</Button>
                   </Link>
+                  </div>
               </CardBody>
             </Card>
           </Col>

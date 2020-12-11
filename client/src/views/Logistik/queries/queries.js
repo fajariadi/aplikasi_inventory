@@ -93,15 +93,40 @@ const getAkunsQuery = gql`
 		password
 		karyawan{
 			nama
-			jabatan
+			tanggal_lahir
+			jenis_kelamin
+			agama
+			tempat_lahir
 			alamat
-			noHp
-			avatar
+			no_kontak
+			email
+			jabatan
 			id
 			divisi{
 				nama
 				id
 			}
+		}
+		id
+	}
+}
+`
+
+const getKaryawansQuery = gql`
+{
+	karyawans {
+		nama
+		tanggal_lahir
+		jenis_kelamin
+		agama
+		tempat_lahir
+		alamat
+		no_kontak
+		email
+		jabatan
+		divisi{
+			nama
+			id
 		}
 		id
 	}
@@ -143,21 +168,25 @@ const getPurchaseOrdersQuery = gql`
 }
 `
 
-const getKaryawansQuery = gql`
-{
-	karyawans {
-		nama
-		jabatan
-		alamat
-		noHp
-		avatar
-		divisi{
+const getKaryawanQuery = gql`
+	query($id: ID){
+		karyawan(id: $id) {
 			nama
+			tanggal_lahir
+			jenis_kelamin
+			agama
+			tempat_lahir
+			alamat
+			no_kontak
+			email
+			jabatan
+			divisi{
+				nama
+				id
+			}
 			id
 		}
-		id
 	}
-}
 `
 
 const getPemeliharaansQuery = gql`
@@ -251,6 +280,9 @@ const getPenerimaanBarangsQuery = gql`
 				harga
 				id
 				jenis
+			}
+			vendor{
+				nama
 			}
 		}
 	}
@@ -613,19 +645,23 @@ const getAkunQuery = gql`
 		akun(username: $username, password: $password) {
 			username
 			password
-			karyawan{
+			id
+			karyawan {
 				nama
-				jabatan
+				tanggal_lahir
+				jenis_kelamin
+				agama
+				tempat_lahir
 				alamat
-				noHp
-				avatar
-				id
+				no_kontak
+				email
+				jabatan
 				divisi{
 					nama
 					id
 				}
+				id
 			}
-			id
 		}
 	}
 `

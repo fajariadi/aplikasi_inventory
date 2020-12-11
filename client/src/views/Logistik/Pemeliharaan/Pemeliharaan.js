@@ -12,7 +12,7 @@ import {
   Pagination, 
   PaginationItem, 
   PaginationLink, 
-  Row, 
+  Row,  
   Table,
   Button,
   FormGroup,
@@ -48,17 +48,10 @@ class Pemeliharaan extends Component {
           <tr key={pem.id}>
             <td>{no}</td>
             <td>{pem.inventaris.barang.nama_barang}</td>
-            <td>{pem.jumlah}</td>
-            <td>{pem.Tanggal}</td>
+            <td>{pem.jumlah}</td> 
+            <td>{pem.tanggal}</td>
             <td>{pem.akun.karyawan.nama}</td>
             <td>{pem.status}</td>
-            <td>
-              <Link to={`/pemeliharaan/detailPemeliharaan/${pem.id}`}>
-              <Button color="primary" size="sm">
-                <i className="fa fa-file"></i>
-                </Button>
-              </Link>
-            </td>
             <td>
               <Button onClick={this.onDelete.bind(this, pem.id)} color="danger" size="sm">
                 <i className="fa fa-trash"></i>
@@ -95,7 +88,7 @@ class Pemeliharaan extends Component {
   displayTeknisi(){
     var data = this.props.getAkunsQuery;
     if(data.loading){
-      return (<div>Loading Barang...</div>);
+      return (<div>Loading Akun...</div>);
     } else {
       return data.akuns.map(akun => {
         if(akun.karyawan.jabatan === 'Teknisi'){
@@ -154,10 +147,9 @@ class Pemeliharaan extends Component {
                     <th>No</th>
                     <th>Nama Inventaris</th>
                     <th>Jumlah</th>
-                    <th>tanggal</th>
+                    <th>Tanggal</th>
                     <th>Teknisi</th>
                     <th>Status</th>
-                    <th>Detail</th>
                     <th>Hapus</th>
                   </tr>
                   </thead>
@@ -179,8 +171,7 @@ class Pemeliharaan extends Component {
                 </nav>
               </CardBody>
             </Card>
-          </Col>
-          
+          </Col>     
         </Row>
         <Modal isOpen={this.state.modalIsOpen}>
           <ModalHeader>From Tambah Pemeliharaan</ModalHeader>

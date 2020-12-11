@@ -61,7 +61,7 @@ class DetailPengeluaranBarang extends Component {
               </FormGroup>
             </Col>  
           </Row>
-          <Row> 
+          <Row>  
             <Col md="4">
               <FormGroup row>
                 <Col md="6">

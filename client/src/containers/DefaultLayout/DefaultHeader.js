@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { NavLink, Link } from 'react-router-dom';
+import {graphql} from 'react-apollo';
 import { Badge, UncontrolledDropdown, DropdownItem, DropdownMenu, DropdownToggle, Nav, NavItem } from 'reactstrap';
 import PropTypes from 'prop-types';
+import {getPermintaanBarangsQuery} from '../../views/Logistik/queries/queries';
 
 import {  AppNavbarBrand, AppSidebarToggler } from '@coreui/react';
 import sygnet from '../../assets/img/brand/sygnet.svg'
@@ -17,9 +19,24 @@ class DefaultHeader extends Component {
     super(props);
     this.state = {
       nama: localStorage.getItem("nama"),
-      avatar: localStorage.getItem("avatar")
     }
   }
+
+  getPermintaanBarang(){
+    var data = this.props.getPermintaanBarangsQuery;
+    var jumlah = 0;
+    if(data.loading){
+      return (<div>Loading Pemeliharaan...</div>);
+    } else {
+      data.permintaanBarangs.map(permintaan => {
+        if(permintaan.status === 'Belum Disetujui')
+        jumlah++
+      })
+    }
+    return(jumlah);
+  }
+
+  
 
  
   render() {
@@ -38,7 +55,7 @@ class DefaultHeader extends Component {
 
         <Nav className="ml-auto" navbar>
           <NavItem className="d-md-down-none">
-            <NavLink to="#" className="nav-link"><i className="icon-bell"></i><Badge pill color="danger">5</Badge></NavLink>
+            <NavLink to="/permintaanBarang/permintaanBarang" className="nav-link"><i className="icon-bell"></i><Badge pill color="danger">{this.getPermintaanBarang()}</Badge></NavLink>
           </NavItem>
           <UncontrolledDropdown nav direction="down">
             <DropdownToggle nav>
@@ -64,4 +81,6 @@ class DefaultHeader extends Component {
 DefaultHeader.propTypes = propTypes;
 DefaultHeader.defaultProps = defaultProps;
 
-export default DefaultHeader;
+export default 
+graphql(getPermintaanBarangsQuery, {name:"getPermintaanBarangsQuery"})
+(DefaultHeader);

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import {graphql} from 'react-apollo';
 import * as compose from 'lodash.flowright';
+import Swal from 'sweetalert2';
 import {getVendorQuery, getVendorsQuery, updateVendorMutation} from '../queries/queries';
 import { 
   Card, 
@@ -74,6 +75,12 @@ class EditVendor extends Component {
       },
       refetchQueries:[{query:getVendorsQuery}],
     });
+    Swal.fire({
+      position: 'center',
+      icon: 'success',
+      title: 'Data Vendor Berhasil Diubah',
+      showConfirmButton: true,
+    })
   }
 
   displayVendor(){
@@ -125,6 +132,9 @@ class EditVendor extends Component {
                 {this.displayVendor()}
                 <Link to="/vendor/vendor">
                   <Button type="submit" color="primary" onClick={(e) => {this.submitForm(e)}} >Submit</Button>
+                </Link>
+                <Link to="/vendor/vendor">
+                  <Button color="danger">Batal</Button>
                 </Link>
             </Form>
                 </CardBody>

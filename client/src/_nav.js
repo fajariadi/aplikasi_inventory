@@ -53,17 +53,7 @@ export default {
           url: '/purchaseOrder/purchaseOrder',
           icon: 'fa fa-shopping-cart',
         },
-        {
-          name: 'Penyewaan Alat',
-          url: '/penyewaan/penyewaan',
-          icon: 'fa fa-handshake-o',
-        },
       ],
-    },
-    {
-      name: 'Laporan',
-      url: '/peralatan/pemeliharaan',
-      icon: 'fa fa-book',
     },
     {
       name: 'Data Master',

@@ -294,14 +294,18 @@ const BarangType = new GraphQLObjectType({
 	})
 });
 const KaryawanType = new GraphQLObjectType({
-	name: "Karyawan",
+	name: 'Karyawan',
 	fields: () => ({
 		id: {type: GraphQLID},
-		nama: {type: GraphQLString},
-		jabatan: { type: GraphQLString},
-		alamat: {type: GraphQLString},
-		noHp: {type: GraphQLString},
-		avatar: {type: GraphQLString},
+		nama: {type:GraphQLString},
+		tanggal_lahir: {type:GraphQLString},
+		jenis_kelamin: {type:GraphQLString},
+		agama: {type:GraphQLString},
+		tempat_lahir: {type:GraphQLString},
+		alamat: {type:GraphQLString},
+		no_kontak: {type:GraphQLString},
+		email: {type:GraphQLString},
+		jabatan: {type:GraphQLString},
 		divisi: {
 			type: DivisiType,
 			resolve(parent,args){

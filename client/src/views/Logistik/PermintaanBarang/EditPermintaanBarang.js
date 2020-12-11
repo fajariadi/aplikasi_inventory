@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import {graphql} from 'react-apollo';
 import * as compose from 'lodash.flowright';
+import Swal from 'sweetalert2';
 import {  getPermintaanBarangsQuery, getPermintaanBarangQuery, getBarangsQuery, getListRequestsQuery, addListRequestMutation, hapusManyListRequestMutation} from '../queries/queries';
 import {  
   Card, 
@@ -48,11 +49,10 @@ class EditPermintaanBarang extends Component {
     var listItem=[];
     if(this.state.requestItems.length === 0){
       permintaanBarang.listRequest.map(item => {
-        const newItem = { nama: item.nama_barang, jumlah: item.jumlah_barang, satuan: item.satuan, jenis: item.jenis, status: item.status};
+        const newItem = { nama: item.nama_barang, jumlah: item.jumlah_barang, satuan: item.satuan, jenis: item.jenis, status: item.status, harga: item.harga};
         listItem.push(newItem);
       })
       this.setState({requestItems : listItem});
-      console.log("pertama");
       return(
         <CardBody>
           <Form className="form-horizontal">
@@ -258,10 +258,12 @@ class EditPermintaanBarang extends Component {
     var jenis='';
     var satuan='';
     var jumlah='';
+    var harga=0;
     this.state.requestItems.map(item =>{
       if (item.nama === this.state.selected){
         nama = item.nama
         jumlah=item.jumlah
+        harga=item.harga
       }
     })
     return(
@@ -325,16 +327,17 @@ onUpdateItem(e){
     e.preventDefault();
     this.toggleModal();
     var sama = false;
-    var jum = 0; var jenis= ''; var sat=''; 
+    var jum = 0; var jenis= ''; var sat=''; var har=0;
     const data = this.props.getBarangsQuery;
     data.barangs.map(bar =>{
       if(bar.nama_barang === this.state.nama){
         jenis = bar.jenis_barang
         sat = bar.satuan
+        har = bar.harga
       }
     })
     if(this.state.requestItems.length === 0){
-      const newItem = { nama: this.state.nama, jumlah: this.state.jumlah, satuan: sat, jenis: jenis, status: this.state.status};
+      const newItem = { nama: this.state.nama, jumlah: this.state.jumlah, satuan: sat, jenis: jenis, status: this.state.status, harga: har};
       this.setState(state => {
         state.requestItems.push(newItem);
       });
@@ -353,7 +356,7 @@ onUpdateItem(e){
         
         }))
       } else {
-        const newItem = { nama: this.state.nama, jumlah: this.state.jumlah, satuan: sat, jenis: jenis, status: this.state.status};
+        const newItem = { nama: this.state.nama, jumlah: this.state.jumlah, satuan: sat, jenis: jenis, status: this.state.status,  harga: har};
         this.setState(state => {
           state.requestItems.push(newItem);
         });
@@ -385,6 +388,7 @@ onUpdateItem(e){
           },
         });
         this.state.requestItems.map(item => {
+          console.log(item.harga);
           return(
             this.props.addListRequestMutation({
               variables:{
@@ -393,6 +397,7 @@ onUpdateItem(e){
                 satuan: item.satuan,
                 jenis: item.jenis,
                 request_id: request_id,
+                harga: parseInt(item.harga),
                 status: 'Active',
               },
               refetchQueries:[{query:getPermintaanBarangsQuery}, {query:getListRequestsQuery}],
@@ -400,6 +405,12 @@ onUpdateItem(e){
           );
         });
       }
+      Swal.fire({
+        position: 'center',
+        icon: 'success',
+        title: 'Permintaan Barang Berhasil Diubah',
+        showConfirmButton: true,
+      })
   }
   
   render() {

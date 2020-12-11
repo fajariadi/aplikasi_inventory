@@ -3,11 +3,15 @@ const Schema = mongoose.Schema;
 
 const KaryawanSchema = new Schema({
 	nama: String,
-	jabatan: String,
+	tanggal_lahir: String,
+	jenis_kelamin: String,
+	agama: String,
+	tempat_lahir: String,
 	alamat: String,
-	noHp: String,
-	divisi_id: String,
-	avatar: String,
+	no_kontak: String,
+	email: String, 
+	jabatan: String,
+	divisi_id: String
 });
 
 module.exports = mongoose.model('Karyawan', KaryawanSchema);

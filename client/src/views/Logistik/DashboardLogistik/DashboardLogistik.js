@@ -1,5 +1,9 @@
 import React, { Component, lazy, Suspense } from 'react';
 import { Bar, Line } from 'react-chartjs-2';
+import {graphql} from 'react-apollo';
+import { Link } from 'react-router-dom';
+import * as compose from 'lodash.flowright';
+import {getPermintaanBarangsQuery, getAkunsQuery, getAllInventarisQuery, getPurchaseOrdersQuery, getPersediaanBarangsQuery, getPenerimaanBarangsQuery, getPengeluaranBarangsQuery} from '../queries/queries';
 import {
   ButtonDropdown,
   ButtonGroup,
@@ -13,11 +17,9 @@ import {
   DropdownMenu,
   DropdownToggle,
   Row,
+  Button
 
 } from 'reactstrap';
-import {graphql} from 'react-apollo';
-import * as compose from 'lodash.flowright';
-import { } from '../queries/queries';
 import { Redirect } from 'react-router-dom';
 import { CustomTooltips } from '@coreui/coreui-plugin-chartjs-custom-tooltips';
 import { getStyle } from '@coreui/coreui/dist/js/coreui-utilities'
@@ -235,7 +237,97 @@ class DashboardLogistik extends Component {
     }
   }
 
+  getPermintaanBarang(){
+    var data = this.props.getPermintaanBarangsQuery;
+    var jumlah = 0;
+    if(data.loading){
+      return (<div>Loading Pemeliharaan...</div>);
+    } else {
+      data.permintaanBarangs.map(permintaan => {
+        jumlah++
+      })
+    }
+    return(jumlah);
+  }
+
+  getPurchaseOrder(){
+    var data = this.props.getPurchaseOrdersQuery;
+    var jumlah = 0;
+    if(data.loading){
+      return (<div>Loading Pemeliharaan...</div>);
+    } else {
+      data.purchaseOrders.map(order => {
+        jumlah++
+      })
+    }
+    return(jumlah);
+  }
+
+  getPersediaanBarang(){
+    var data = this.props.getPersediaanBarangsQuery;
+    var jumlah = 0;
+    if(data.loading){
+      return (<div>Loading Pemeliharaan...</div>);
+    } else {
+      data.persediaanBarangs.map(persediaan => {
+        jumlah++
+      })
+    }
+    return(jumlah);
+  }
+
+  getInventaris(){
+    var data = this.props.getAllInventarisQuery;
+    var jumlah = 0;
+    if(data.loading){
+      return (<div>Loading Pemeliharaan...</div>);
+    } else {
+      data.allInventaris.map(inventaris => {
+        jumlah++
+      })
+    }
+    return(jumlah);
+  }
  
+  displayPenerimaanBarang(){
+    var data1 = this.props.getPenerimaanBarangsQuery;
+    var no = 0;
+    if(data1.loading){
+      return (<div>Loading Penerimaan Barang...</div>);
+    } else {
+      return data1.penerimaanBarangs.map(request => {
+        no++;
+        return(
+          <tr key={request.id}>
+            <td>{no}</td>
+            <td>{request.kode}</td>
+            <td>{request.tanggal}</td>
+            <td>{request.purchaseOrder.vendor.nama}</td>
+          </tr>
+        );
+      });
+    }
+  }
+
+  displayPengeluaranBarang(){
+    var data1 = this.props.getPengeluaranBarangsQuery;
+    var no = 0;
+    if(data1.loading){
+      return (<div>Loading Pengeluaran Barang...</div>);
+    } else {
+      return data1.pengeluaranBarangs.map(request => {
+        no++;
+        return(
+          <tr key={request.id}>
+            <td>{no}</td>
+            <td>{request.kode}</td>
+            <td>{request.tanggal}</td>
+            <td>{request.permintaanBarang.akun.karyawan.divisi.nama}</td>
+          </tr>
+        );
+      });
+    }
+  }
 
   render() {
     if(this.state.loggedIn === false){
@@ -260,7 +352,7 @@ class DashboardLogistik extends Component {
                     </DropdownMenu>
                   </ButtonDropdown>
                 </ButtonGroup>
-                <div className="text-value">12</div>
+                <div className="text-value">{this.getPermintaanBarang()}</div> 
                 <div>Permintaan Barang</div>
               </CardBody>
               <div className="chart-wrapper mx-3" style={{ height: '70px' }}>
@@ -284,8 +376,8 @@ class DashboardLogistik extends Component {
                     </DropdownMenu>
                   </Dropdown>
                 </ButtonGroup>
-                <div className="text-value">10</div>
-                <div>Waiting Purchase Order</div>
+                <div className="text-value">{this.getPurchaseOrder()}</div>
+                <div>Purchase Order</div>
               </CardBody>
               <div className="chart-wrapper" style={{ height: '70px' }}>
                 <Line data={cardChartData3} options={cardChartOpts3} height={70} />
@@ -308,8 +400,8 @@ class DashboardLogistik extends Component {
                     </DropdownMenu>
                   </Dropdown>
                 </ButtonGroup>
-                <div className="text-value">5</div>
-                <div>Users</div>
+                <div className="text-value">{this.getPersediaanBarang()}</div>
+                <div>Persediaan Barang</div>
               </CardBody>
               <div className="chart-wrapper mx-3" style={{ height: '70px' }}>
                 <Line data={cardChartData1} options={cardChartOpts1} height={70} />
@@ -332,8 +424,8 @@ class DashboardLogistik extends Component {
                     </DropdownMenu>
                   </ButtonDropdown>
                 </ButtonGroup>
-                <div className="text-value">150</div>
-                <div>Stok Tersedia</div>
+                <div className="text-value">{this.getInventaris()}</div>
+                <div>Inventaris</div>
               </CardBody>
               <div className="chart-wrapper mx-3" style={{ height: '70px' }}>
                 <Bar data={cardChartData4} options={cardChartOpts4} height={70} />
@@ -349,15 +441,16 @@ class DashboardLogistik extends Component {
               </CardHeader>
               <CardBody>
                 <Table responsive>
-                  <thead>
+                  <thead align="center">
                   <tr>
                     <th>No</th>
-                    <th>Kode Order</th>
+                    <th>Kode</th>
                     <th>Tanggal</th>
-                    <th>Status</th>
+                    <th>Vendor</th>
                   </tr>
                   </thead>
-                  <tbody>
+                  <tbody align="center">
+                    {this.displayPenerimaanBarang()}
                   </tbody>
                 </Table>
               </CardBody>
@@ -366,19 +459,20 @@ class DashboardLogistik extends Component {
           <Col xs="12" lg="6">
             <Card>
               <CardHeader>
-                <i className="fa fa-align-justify"></i> Daftar Pengambilan Barang
+                <i className="fa fa-align-justify"></i> Daftar Pengeluaran Barang
               </CardHeader>
               <CardBody>
                 <Table responsive>
-                  <thead>
+                  <thead align="center">
                   <tr>
                     <th>No</th>
-                    <th>Kode Request</th>
+                    <th>Kode</th>
                     <th>Tanggal</th>
-                    <th>Status</th>
+                    <th>Divisi</th>
                   </tr>
                   </thead>
-                  <tbody>
+                  <tbody align="center">
+                    {this.displayPengeluaranBarang()}
                   </tbody>
                 </Table>
               </CardBody>
@@ -415,4 +509,12 @@ class DashboardLogistik extends Component {
   }
 }
 
-export default (DashboardLogistik);
+export default compose(
+  graphql(getPermintaanBarangsQuery, {name:"getPermintaanBarangsQuery"}),
+  graphql(getPurchaseOrdersQuery, {name:"getPurchaseOrdersQuery"}),
+  graphql(getPersediaanBarangsQuery, {name:"getPersediaanBarangsQuery"}),
+  graphql(getAllInventarisQuery, {name:"getAllInventarisQuery"}),
+  graphql(getPenerimaanBarangsQuery, {name:"getPenerimaanBarangsQuery"}),
+  graphql(getPengeluaranBarangsQuery, {name:"getPengeluaranBarangsQuery"}),
+  graphql(getAkunsQuery, {name:"getAkunsQuery"}),
+)(DashboardLogistik);
