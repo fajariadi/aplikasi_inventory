@@ -1,5 +1,7 @@
 const graphql = require ('graphql');
 const _ = require('lodash');
+const path = require('path');
+const fs = require('fs');
 const Vendor = require('./models/VendorModel');
 const Peralatan = require('./models/PeralatanModel');
 const Divisi = require('./models/DivisiModel');
@@ -329,6 +331,13 @@ const AkunType = new GraphQLObjectType({
 		},
 	})
 });
+
+const FotoType = new GraphQLObjectType({
+	name: "Foto",
+	fields: () => ({
+		url: {type: GraphQLString},
+	})
+})
 
 const RootQuery = new GraphQLObjectType({
 	name: 'RootQueryType',
@@ -811,7 +820,7 @@ const Mutation = new GraphQLObjectType({
 					tanggal: args.tanggal,
 					tanggal_setuju: args.tanggal_setuju,
 					status: args.status,
-					akun_id:args.akun_id,
+					akun_id:args.akun_id, 
 				});
 				return purcahseOrder.save();
 			}
@@ -937,19 +946,29 @@ const Mutation = new GraphQLObjectType({
 			type: KaryawanType,
 			args:{
 				nama: {type: new GraphQLNonNull(GraphQLString)},
-				jabatan: {type: new GraphQLNonNull(GraphQLString)},
+				tanggal_lahir: {type: new GraphQLNonNull(GraphQLString)},
+				jenis_kelamin: {type: new GraphQLNonNull(GraphQLString)},
+				agama: {type: new GraphQLNonNull(GraphQLString)},
+				tempat_lahir: {type: new GraphQLNonNull(GraphQLString)},
 				alamat: {type: new GraphQLNonNull(GraphQLString)},
-				noHp: {type: new GraphQLNonNull(GraphQLString)},
-				avatar: {type: new GraphQLNonNull(GraphQLString)},
+				no_kontak: {type: new GraphQLNonNull(GraphQLString)},
+				email: {type: new GraphQLNonNull(GraphQLString)},
+				foto: {type: new GraphQLNonNull(GraphQLString)},
+				jabatan: {type: new GraphQLNonNull(GraphQLString)},
 				divisi_id: {type: new GraphQLNonNull(GraphQLID)}
 			},
 			resolve(parent, args){
 				let karyawan = new Karyawan({
 					nama: args.nama,
+					tanggal_lahir: args.tanggal_lahir,
+					jenis_kelamin: args.jenis_kelamin,
+					tempat_lahir: args.tempat_lahir,
+					agama: args.agama,
+					email: args.email,
 					jabatan: args.jabatan,
 					alamat:  args.alamat,
-					noHp:  args.noHp,
-					avatar:  args.avatar,
+					no_kontak:  args.no_kontak,
+					foto:  args.foto,
 					divisi_id:  args.divisi_id,
 				});
 				return karyawan.save();
@@ -1158,6 +1177,48 @@ const Mutation = new GraphQLObjectType({
 				return Pemeliharaan.deleteOne({_id:args.id});
 			}
 		},
+		editBiodataKaryawan:{
+			type: KaryawanType,
+			args: {
+				id: {type:GraphQLID},
+				nama: {type: new GraphQLNonNull(GraphQLString)},
+				tanggal_lahir: {type: new GraphQLNonNull(GraphQLString)},
+				jenis_kelamin: {type: new GraphQLNonNull(GraphQLString)},
+				agama: {type: new GraphQLNonNull(GraphQLString)},
+				tempat_lahir: {type: new GraphQLNonNull(GraphQLString)},
+				alamat: {type: new GraphQLNonNull(GraphQLString)},
+				no_kontak: {type: new GraphQLNonNull(GraphQLString)},
+				email: {type: new GraphQLNonNull(GraphQLString)},
+			},
+			resolve(parent, args){
+				return Karyawan.findOneAndUpdate({_id: args.id}, {nama: args.nama, tanggal_lahir: args.tanggal_lahir, jenis_kelamin: args.jenis_kelamin, agama: args.agama, tempat_lahir: args.tempat_lahir, alamat: args.alamat, no_kontak: args.no_kontak, email: args.email})
+			}
+		},
+		editAkun:{
+			type: AkunType,
+			args: { 
+				id: {type:GraphQLID},
+				username: {type: new GraphQLNonNull(GraphQLString)},
+				password: {type: new GraphQLNonNull(GraphQLString)},
+			},
+			resolve(parent, args){
+				return Akun.findOneAndUpdate({_id: args.id}, {username: args.username, password: args.password})
+			}
+		},
+		uploadFoto: {
+			type: FotoType,
+			resolve(parent, {foto}){
+				const {createredStream, filename} = foto;
+		
+				const stream = createredStream()
+				const pathName = path.join(__dirname, `/client/src/images/${filename}`)
+				stream.pipe(fs.createWriteStream(pathName))
+			
+				return {
+					url: `http://localhost:3000/client/src/images/${filename}`,
+				}
+			}
+		}
 	}
 });
 

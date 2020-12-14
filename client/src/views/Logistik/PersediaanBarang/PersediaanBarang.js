@@ -35,7 +35,7 @@ class PersediaanBarang extends Component {
     var data = this.props.getPersediaanBarangsQuery;
     var no = 0;
     if(data.loading){
-      return (<div>Loading Persediaan...</div>);
+      return
     } else {
       return data.persediaanBarangs.map(persediaan => {
          no++;

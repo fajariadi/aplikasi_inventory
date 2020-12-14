@@ -293,7 +293,7 @@ class DashboardLogistik extends Component {
     var data1 = this.props.getPenerimaanBarangsQuery;
     var no = 0;
     if(data1.loading){
-      return (<div>Loading Penerimaan Barang...</div>);
+      return
     } else {
       return data1.penerimaanBarangs.map(request => {
         no++;
@@ -313,7 +313,7 @@ class DashboardLogistik extends Component {
     var data1 = this.props.getPengeluaranBarangsQuery;
     var no = 0;
     if(data1.loading){
-      return (<div>Loading Pengeluaran Barang...</div>);
+      return
     } else {
       return data1.pengeluaranBarangs.map(request => {
         no++;

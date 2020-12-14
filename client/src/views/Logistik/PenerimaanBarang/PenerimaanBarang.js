@@ -63,7 +63,7 @@ class PenerimaanBarang extends Component {
     var data1 = this.props.getPenerimaanBarangsQuery;
     var no = 0;
     if(data1.loading){
-      return (<div>Loading Permintaan Barang...</div>);
+      return
     } else {
       return data1.penerimaanBarangs.map(request => {
         no++;
@@ -108,7 +108,7 @@ class PenerimaanBarang extends Component {
         });
         Swal.fire(
           'Dihapus!',
-          'Data Barang Telah Dihapus',
+          'Penerimaan Barang Telah Dihapus',
           'success'
         )
       }
@@ -139,15 +139,18 @@ class PenerimaanBarang extends Component {
   }
 
   submit(){
-    this.props.addPenerimaanBarang({
-      variables:{
-        kode: this.getKodeBaru(),
-        tanggal: new Date().toLocaleDateString(),
-        akun_id: this.state.akun_id,
-        purchase_id: this.state.purchase_id,
-      },
-      refetchQueries:[{query:getPenerimaanBarangsQuery}],
-    });
+    if(this.state.purchase_id !== ''){
+      this.props.addPenerimaanBarang({
+        variables:{
+          kode: this.getKodeBaru(),
+          tanggal: new Date().toLocaleDateString(),
+          akun_id: this.state.akun_id,
+          purchase_id: this.state.purchase_id,
+        },
+        refetchQueries:[{query:getPenerimaanBarangsQuery}],
+      });
+      this.props.history.push(`/penerimaanBarang/buatPenerimaanBarang/${this.state.purchase_id}`);
+    }
   }
   render() {
     return (
@@ -199,13 +202,11 @@ class PenerimaanBarang extends Component {
               <FormGroup>
               <Label htmlFor="name">Kode Purchase Order</Label>
                 <Input type="select" name="id" onChange={(e) =>this.setState({purchase_id:e.target.value})} id="id" required>
-                  <option>Kode</option>
+                  <option value="">Kode</option>
                   {this.displayPurchaseOrder()}
-                </Input>
+                </Input> 
               </FormGroup>
-              <Link to={`/penerimaanBarang/buatPenerimaanBarang/${this.state.purchase_id}`}>
-                <Button type="submit" color="primary" onClick={this.submit.bind(this)}>Submit</Button>  
-              </Link>      
+                <Button type="submit" color="primary" onClick={this.submit.bind(this)}>Submit</Button>   
               <Button color="danger" onClick={this.toggleModal.bind(this)}>Batal</Button>
             </Form>
           </ModalBody>  

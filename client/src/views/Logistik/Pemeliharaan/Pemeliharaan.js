@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {graphql} from 'react-apollo';
 import { Link } from 'react-router-dom';
 import * as compose from 'lodash.flowright';
+import Swal from 'sweetalert2';
 import {getPemeliharaansQuery, getAkunsQuery,hapusPemeliharaan,updateJumlahDiperbaikiInventaris,getAllInventarisQuery, addPemeliharaan, getBarangsQuery} from '../queries/queries';
 import { 
   Form,
@@ -40,7 +41,7 @@ class Pemeliharaan extends Component {
     var data = this.props.getPemeliharaansQuery;
     var no = 0;
     if(data.loading){
-      return (<div>Loading Pemeliharaan...</div>);
+      return
     } else {
       return data.pemeliharaans.map(pem => {
          no++;
@@ -64,18 +65,34 @@ class Pemeliharaan extends Component {
   }
 
   onDelete(pemeliharaan_id){
-    this.props.hapusPemeliharaan({
-      variables:{
-        id: pemeliharaan_id,        
-      },
-      refetchQueries:[{query:getPemeliharaansQuery}],
-    });
+    Swal.fire({
+      title: 'Apakah anda Yakin?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Ya, Saya Yakin!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.props.hapusPemeliharaan({
+          variables:{
+            id: pemeliharaan_id,        
+          },
+          refetchQueries:[{query:getPemeliharaansQuery}],
+        });
+        Swal.fire(
+          'Dihapus!',
+          'Pemeliharaan Telah Dihapus',
+          'success'
+        )
+      }
+    })
   }
 
   displayInventaris(){
     var data = this.props.getAllInventarisQuery;
     if(data.loading){
-      return (<div>Loading Inventaris...</div>);
+      return (<h4>Loading Inventaris...</h4>);
     } else {
       return data.allInventaris.map(inventaris => {
           return(
@@ -126,6 +143,12 @@ class Pemeliharaan extends Component {
           },
           refetchQueries:[{query:getAllInventarisQuery}]
     });
+    Swal.fire({
+      position: 'center',
+      icon: 'success',
+      title: 'Pemeliharaan Baru Berhasil Disimpan',
+      showConfirmButton: true,
+    })
   }
 
   render() {
@@ -180,7 +203,7 @@ class Pemeliharaan extends Component {
               <FormGroup>
               <Label htmlFor="name">Nama Inventaris</Label>
                 <Input type="select" name="nama" onChange={(e) =>this.setState({barang_id:e.target.value})} id="nama" required>
-                  <option>Pilih Inventaris</option>
+                  <option value="">Pilih Inventaris</option>
                   {this.displayInventaris()}
                 </Input>
               </FormGroup>
@@ -191,7 +214,7 @@ class Pemeliharaan extends Component {
               <FormGroup>
               <Label htmlFor="name">Nama Teknisi</Label>
                 <Input type="select" name="nama" onChange={(e) =>this.setState({akun_id:e.target.value})} id="nama" required>
-                  <option>Pilih Teknisi</option>
+                  <option value="">Pilih Teknisi</option>
                   {this.displayTeknisi()}
                 </Input>
               </FormGroup>          

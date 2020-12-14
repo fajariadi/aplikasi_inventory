@@ -105,6 +105,7 @@ class PermintaanBarang extends Component {
       },
       refetchQueries:[{query:getPermintaanBarangsQuery}],
     });
+    this.props.history.push("/permintaanBarang/buatPermintaanBarang");
   }
 
   render() {
@@ -122,11 +123,10 @@ class PermintaanBarang extends Component {
                   <h5>Daftar Permintaan Barang</h5>
                 </Col>
                 <Col>
-                  <Link to="/permintaanBarang/buatPermintaanBarang" className={'float-right mb-0'}>
-                    <Button color="primary" onClick={this.addRequestHandler.bind(this)}>
+                    <Button color="primary" onClick={this.addRequestHandler.bind(this)} className={'float-right mb-0'}>
                     <i className="fa fa-plus mr-2"></i>Buat Permintaan Barang
                     </Button>
-                  </Link>
+                  
                 </Col>
                 </Row>
               </CardHeader>

@@ -132,12 +132,13 @@ class BuatPermintaanBarang extends Component {
         request_id = request.id
       );
     });
-    this.props.hapusPermintaanBarangMutation({
+    this.props.hapusPermintaanBarangMutation({ 
       variables:{
         id: request_id,        
       },
       refetchQueries:[{query:getPermintaanBarangsQuery}],
     });
+    this.props.history.push("/permintaanBarang/permintaanBarang");
   }
 
 
@@ -236,6 +237,16 @@ class BuatPermintaanBarang extends Component {
 
 
   submitRequest = (e) => {
+    if(this.state.requestItems.length === 0){
+      Swal.fire({
+        position: 'center',
+        icon: 'error',
+        title: 'Permintaan Barang error',
+        text: 'Silahkan pilih barang',
+        showConfirmButton: true,
+      })
+    } else {
+
       var data = this.props.getPermintaanBarangsQuery;
       var request_id = '';
       data.permintaanBarangs.map(request => {
@@ -259,12 +270,14 @@ class BuatPermintaanBarang extends Component {
           })
         );
       });
+      this.props.history.push("/permintaanBarang/permintaanBarang");
       Swal.fire({
         position: 'center',
         icon: 'success',
         title: 'Permintaan Barang Berhasil Disimpan',
         showConfirmButton: true,
       })
+    }
   }
 
   onDeleteItem(nama){
@@ -295,7 +308,7 @@ class BuatPermintaanBarang extends Component {
               <CardHeader>
                 Form Permintaan Barang
                 <Link to="/permintaanBarang/permintaanBarang" className={'float-right mb-0'}>
-                  <Button label color="danger" onClick={this.onDelete.bind(this)}>
+                  <Button color="danger" onClick={this.onDelete.bind(this)}>
                       Batal
                   </Button>
                 </Link>
@@ -359,9 +372,7 @@ class BuatPermintaanBarang extends Component {
                   </Table>
                   <br />
                   <div align="center">  
-                  <Link to="/permintaanBarang/permintaanBarang">
                     <Button onClick={(e) => {this.submitRequest(e)}} color="primary">Submit</Button>
-                  </Link>
                   </div>
               </CardBody>
             </Card>

@@ -17,6 +17,7 @@ import {
   Label,
   Input
 } from 'reactstrap';
+import { element } from 'prop-types';
 
 class BuatPurchaseOrder extends Component {
   constructor(props){
@@ -47,6 +48,13 @@ class BuatPurchaseOrder extends Component {
         nama = order.akun.karyawan.nama,
         id = order.id
       );
+    });
+    this.props.updateVendorPurchaseOrderMutation({
+      variables:{
+        id:id,
+        vendor_id: "5e5deb9c2a448419e86f84a6",
+      },
+      refetchQueries:[{query:getPurchaseOrdersQuery}],
     });
     return(
       <div>
@@ -219,12 +227,14 @@ class BuatPurchaseOrder extends Component {
         order_id = order.id
       );
     });
+
     this.props.hapusPurchaseOrderMutation({
       variables:{
         id: order_id,        
       },
       refetchQueries:[{query:getPurchaseOrdersQuery}],
     });
+    this.props.history.push("/purchaseOrder/purchaseOrder");
   }
 
   createListPurchaseOrder(){
@@ -277,48 +287,67 @@ class BuatPurchaseOrder extends Component {
           }
         })
       } 
-      var data = this.props.getPurchaseOrdersQuery;
-                var orderid = '';
-                data.purchaseOrders.map(request => {
-                    return(
-                      orderid = request.id
-                    );
-                });
-                
-                items.map(item => {
-                  return(
-                    this.props.updateAllStatusListRequest({
-                      variables:{
-                        nama: item.nama,
-                        status: "Proses",
-                        order_id: orderid,
-                      },
-                      refetchQueries:[{query:getPurchaseOrdersQuery}],
-                    })
-                  )
-                })
-                items.map(item => {
-                  return(
-                    this.props.addListItemPurchaseOrder({
-                      variables:{
-                        nama_barang: item.nama,
-                        jumlah_barang: parseInt(item.jumlah),
-                        satuan: item.satuan,
-                        jenis: item.jenis,
-                        purchaseOrder_id: orderid,
-                        harga: parseInt(item.harga),
-                        status: 'Waiting',
-                      },
-                      refetchQueries:[{query:getPurchaseOrdersQuery}, {query:getListRequestsQuery}],
-                    })
-                  );
-                });
-                Swal.fire({
-                  position: 'center',
-                  icon: 'success',
-                  title: 'Pembelian Barang Berhasil Disimpan',
-                  showConfirmButton: true,
-                })
+      if(items.length === 0){
+        Swal.fire({
+          position: 'center',
+          icon: 'error',
+          title: 'Tidak Ada Daftar Barang',
+          text: 'Silahkan Pilih Vendor Lain',
+          showConfirmButton: true,
+        })
+      } else {
+        var data = this.props.getPurchaseOrdersQuery;
+          var orderid = '';
+          data.purchaseOrders.map(request => {
+            return(
+              orderid = request.id
+            );
+          });
+                  
+          items.map(item => {
+            return(
+              this.props.updateAllStatusListRequest({
+               variables:{
+                  nama: item.nama,
+                  status: "Proses",
+                  order_id: orderid,
+                },
+                refetchQueries:[{query:getPurchaseOrdersQuery}],
+               })
+             )
+          })
+          items.map(item => {
+            return(
+              this.props.addListItemPurchaseOrder({
+                variables:{
+                  nama_barang: item.nama,
+                  jumlah_barang: parseInt(item.jumlah),
+                  satuan: item.satuan,
+                  jenis: item.jenis,
+                  purchaseOrder_id: orderid,
+                  harga: parseInt(item.harga),
+                  status: 'Waiting',
+                },
+                refetchQueries:[{query:getPurchaseOrdersQuery}, {query:getListRequestsQuery}],
+              })
+            );
+          });
+          this.props.history.push("/purchaseOrder/purchaseOrder");
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'Pembelian Barang Berhasil Disimpan',
+            showConfirmButton: true,
+          })
+      }
+    } else {
+      Swal.fire({
+        position: 'center',
+        icon: 'error',
+        title: 'Pembelian Barang Gagal',
+        text: 'Silahkan Pilih Vendor Lain',
+        showConfirmButton: true,
+      })
     }
   }
 
@@ -329,12 +358,10 @@ class BuatPurchaseOrder extends Component {
           <Col>
             <Card>
               <CardHeader>
-                Form Buat Purchase Order
-                <Link to="/purchaseOrder/purchaseOrder" className={'float-right mb-0'}>
-                  <Button color="danger" onClick={this.onDelete.bind(this)}>
+                Form Buat Pembelian Barang
+                  <Button color="danger" onClick={this.onDelete.bind(this)} className={'float-right mb-0'}>
                       Batal
                   </Button>
-                </Link>
               </CardHeader>
               <CardBody>
                 {this.displayNewPurchaseOrder()}
@@ -357,9 +384,7 @@ class BuatPurchaseOrder extends Component {
                   </tbody>
                   </Table>
                   <div align="center">
-                    <Link to="/purchaseOrder/purchaseOrder">
                     <Button onClick={(e) => {this.createListPurchaseOrder(e)}} color="primary">Submit</Button>
-                    </Link>
                   </div>
               </CardBody>
             </Card>

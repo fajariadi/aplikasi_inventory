@@ -23,7 +23,7 @@ class PurchaseOrder extends Component {
     var data = this.props.getPurchaseOrdersQuery;
     var no = 0;
     if(data.loading){
-      return (<div>Loading Purchase Order...</div>);
+      return
     } else {
       return data.purchaseOrders.map(order => {
         no++;
@@ -55,6 +55,7 @@ class PurchaseOrder extends Component {
         status: 'Belum Disetujui',
         tanggal_setuju: '',
         akun_id: this.state.akun_id,
+        vendor_id:'',
       },
       refetchQueries:[{query:getPurchaseOrdersQuery}],
     })

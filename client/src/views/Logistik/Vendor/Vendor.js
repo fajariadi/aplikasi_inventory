@@ -72,7 +72,7 @@ class Vendor extends Component {
     var no = 0;
    
     if(data.loading){
-      return (<div>Loading books...</div>);
+      return;
     } else {
       return data.vendors.map(vendor => {
          no++;

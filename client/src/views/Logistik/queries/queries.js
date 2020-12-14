@@ -493,7 +493,7 @@ const addAkunMutation = gql`
 
 const addPurchaseOrderMutation = gql`
 	mutation($kode:String!, $tanggal:String!, $status:String!, $tanggal_setuju:String!, $akun_id:String!){
-		addPurchaseOrder(kode:$kode, tanggal:$tanggal, status:$status, tanggal_setuju:$tanggal_setuju, akun_id:$akun_id ){
+		addPurchaseOrder(kode:$kode, tanggal:$tanggal, status:$status, tanggal_setuju:$tanggal_setuju, akun_id:$akun_id){
 			kode
 			tanggal
 			status
@@ -1083,6 +1083,40 @@ const updateJumlahDiperbaikiInventaris = gql`
 		}
 	}
 `
+
+const editAkunMutation = gql`
+	mutation($id : ID, $username : String!, $password : String! ){
+		editAkun(id:$id, username:$username, password:$password){
+			id
+			username
+			password
+		}
+	}
+`
+
+const editBiodataKaryawanMutation = gql`
+	mutation($id : ID, $nama : String!,  $tanggal_lahir : String!, $jenis_kelamin : String!, $agama : String!, $tempat_lahir : String!, $alamat : String!, $no_kontak : String!, $email : String! ){
+		editBiodataKaryawan(id:$id, nama:$nama, tanggal_lahir:$tanggal_lahir, jenis_kelamin:$jenis_kelamin, agama:$agama, tempat_lahir:$tempat_lahir, alamat:$alamat, no_kontak:$no_kontak, email:$email){
+			id
+			tempat_lahir
+			tanggal_lahir
+			jenis_kelamin
+			agama
+			nama
+			alamat 
+			no_kontak
+			email
+		}
+	}
+`
+
+const uploadFotoMutation = gql`
+	mutation($foto: Upload!){
+		uploadFoto(foto: $foto){
+			url
+		}
+	}
+`
 export {
 	getVendorsQuery, 
 	getPeralatansQuery,
@@ -1156,6 +1190,9 @@ export {
 	getPemeliharaansQuery,
 	addPemeliharaan,
 	hapusPemeliharaan,
-	hapusAkunMutation
+	hapusAkunMutation, 
+	editAkunMutation,
+	editBiodataKaryawanMutation,
+	uploadFotoMutation
 
 };

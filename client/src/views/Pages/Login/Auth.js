@@ -23,6 +23,12 @@ class Auth extends Component {
       localStorage.setItem("password", akun.password);
       localStorage.setItem("user_id", akun.id);
       localStorage.setItem("nama", akun.karyawan.nama);
+      localStorage.setItem("tempat_lahir", akun.karyawan.tempat_lahir);
+      localStorage.setItem("tanggal_lahir", akun.karyawan.tanggal_lahir);
+      localStorage.setItem("jenis_kelamin", akun.karyawan.jenis_kelamin);
+      localStorage.setItem("agama", akun.karyawan.agama);
+      localStorage.setItem("no_kontak", akun.karyawan.no_kontak);
+      localStorage.setItem("email", akun.karyawan.email);
       localStorage.setItem("jabatan", akun.karyawan.jabatan);
       localStorage.setItem("alamat", akun.karyawan.alamat);
       localStorage.setItem("karyawan_id", akun.karyawan.id);

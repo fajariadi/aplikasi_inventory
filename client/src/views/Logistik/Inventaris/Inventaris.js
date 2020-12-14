@@ -39,7 +39,7 @@ class Inventaris extends Component {
     var data = this.props.getAllInventarisQuery;
     var no = 0;
     if(data.loading){
-      return (<div>Loading Persediaan...</div>);
+      return
     } else {
       return data.allInventaris.map(inventaris => {
          no++;

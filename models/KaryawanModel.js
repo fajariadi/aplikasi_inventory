@@ -10,6 +10,7 @@ const KaryawanSchema = new Schema({
 	alamat: String,
 	no_kontak: String,
 	email: String, 
+	foto:String,
 	jabatan: String,
 	divisi_id: String
 });

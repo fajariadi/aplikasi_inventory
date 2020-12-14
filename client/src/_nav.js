@@ -70,11 +70,6 @@ export default {
           url: '/vendor/vendor',
           icon: 'icon-home',
         },
-        {
-          name: 'User',
-          url: '/user/akun',
-          icon: 'icon-user',
-        },
 
       ],
     }, 

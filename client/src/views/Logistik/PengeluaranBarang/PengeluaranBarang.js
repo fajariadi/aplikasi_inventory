@@ -63,7 +63,7 @@ class PengeluaranBarang extends Component {
     var data1 = this.props.getPengeluaranBarangsQuery;
     var no = 0;
     if(data1.loading){
-      return (<div>Loading Pengeluaran Barang...</div>);
+      return
     } else {
       return data1.pengeluaranBarangs.map(request => {
         no++;
@@ -140,15 +140,18 @@ class PengeluaranBarang extends Component {
   }
 
   submit(){
-    this.props.addPengeluaranBarang({
-      variables:{
-        kode: this.getKodeBaru(),
-        tanggal: new Date().toLocaleDateString(),
-        akun_id: this.state.akun_id,
-        permintaan_id: this.state.permintaan_id,
-      },
-      refetchQueries:[{query:getPengeluaranBarangsQuery}],
-    });
+    if(this.state.permintaan_id !== ''){
+      this.props.addPengeluaranBarang({
+        variables:{
+          kode: this.getKodeBaru(),
+          tanggal: new Date().toLocaleDateString(),
+          akun_id: this.state.akun_id,
+          permintaan_id: this.state.permintaan_id,
+        },
+        refetchQueries:[{query:getPengeluaranBarangsQuery}],
+      });
+      this.props.history.push(`/pengeluaranBarang/buatPengeluaranBarang/${this.state.permintaan_id}`);
+    }
   }
   render() {
     return (
@@ -197,16 +200,14 @@ class PengeluaranBarang extends Component {
           <ModalHeader>Pilih Permintaangeluaran</ModalHeader>
           <ModalBody>
             <Form>
-              <FormGroup>
+              <FormGroup> 
               <Label htmlFor="name">Kode Permintaan Barang</Label>
                 <Input type="select" name="id" onChange={(e) =>this.setState({permintaan_id:e.target.value})} id="id" required>
-                  <option>Kode</option>
+                  <option vlaue="">Kode</option>
                   {this.displayPermintaanBarangs()}
                 </Input>
               </FormGroup>
-              <Link to={`/pengeluaranBarang/buatPengeluaranBarang/${this.state.permintaan_id}`}>
-                <Button type="submit" color="primary" onClick={this.submit.bind(this)}>Submit</Button>  
-              </Link>      
+                <Button type="submit" color="primary" onClick={this.submit.bind(this)}>Submit</Button>   
               <Button color="danger" onClick={this.toggleModal.bind(this)}>Batal</Button>
             </Form>
           </ModalBody>  

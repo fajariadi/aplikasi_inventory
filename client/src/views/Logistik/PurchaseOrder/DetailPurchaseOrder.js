@@ -92,7 +92,7 @@ class DetailPurchaseOrder extends Component {
           <hr />
           <Row>
             <Col>
-              {this.renderElement(purchaseOrder.akun.id)} 
+              {this.renderElement(purchaseOrder.akun.id, purchaseOrder.status)} 
             </Col>
             <Col>
               {this.renderElement2(purchaseOrder.tanggal_setuju)}
@@ -103,15 +103,13 @@ class DetailPurchaseOrder extends Component {
     }
   }
 
-  renderElement(akun_id){
-    if (this.state.akun_id === akun_id){
+  renderElement(akun_id, status){
+    if (this.state.akun_id === akun_id && status !== 'Disetujui'){
       return(
         <div align="center">
-          <Link to="/purchaseOrder/purchaseOrder">
             <Button onClick={this.onDelete.bind(this, this.props.match.params.id)} color="danger">
               <i className="fa fa-trash">Hapus Permintaan Barang</i>
             </Button>
-          </Link>
         </div>
       )
     }
@@ -121,16 +119,12 @@ class DetailPurchaseOrder extends Component {
     if(this.state.divisi ===  "Logistic" && tanggal === ''){
       return(
         <div align="center">
-          <Link>
             <Button onClick={this.onSetujuiPurchaseOrder.bind(this, this.props.match.params.id)} color="success">
               <i className="fa fa-check">Setujui Permintaan Barang</i>
             </Button>
-          </Link>
-          <Link >
             <Button onClick={this.onTolakPurchaseOrder.bind(this, this.props.match.params.id)} color="danger">
               <i className="fa fa-times">Tolak Permintaan Barang</i>
             </Button>
-          </Link>
         </div> 
       )
     }
@@ -191,6 +185,13 @@ class DetailPurchaseOrder extends Component {
       },
       refetchQueries:[{query:getPurchaseOrdersQuery}],
     });
+    this.props.updateStatusListRequestOnOrder({
+      variables:{
+        order_id: order_id,
+        status: 'Active',
+      },
+      refetchQueries:[{query:getPurchaseOrdersQuery}],
+    });
     Swal.fire({
       position: 'center',
       icon: 'success',
@@ -221,6 +222,7 @@ class DetailPurchaseOrder extends Component {
           },
           refetchQueries:[{query:getPurchaseOrdersQuery}],
         });
+        this.props.history.push("/purchaseOrder/purchaseOrder");
         Swal.fire(
           'Dihapus!',
           'Pembelian Barang Telah Dihapus',
