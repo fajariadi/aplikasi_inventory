@@ -49,6 +49,15 @@ const getPermintaanBarangsQuery = gql`
 				}
 			}
 		}
+		listRequest{
+			nama_barang
+			jumlah_barang
+			jenis
+			satuan
+			status
+			harga
+			id
+		}
 	}
 }
 `
@@ -85,6 +94,21 @@ const getOrdersQuery = gql`
 	}
 }
 `
+
+const getListItemPurchaseOrdersQuery = gql`
+{
+	listItemPurchaseOrders{
+		nama_barang
+		jumlah_barang
+		satuan
+		harga
+		id
+		jenis
+	}
+}
+`
+
+
 
 const getAkunsQuery = gql`
 {
@@ -152,6 +176,7 @@ const getPurchaseOrdersQuery = gql`
 		tanggal
 		tanggal_setuju
 		status
+		total_harga
 		id
 		akun{
 			username
@@ -196,17 +221,13 @@ const getPemeliharaansQuery = gql`
 		status
 		tanggal
 		id
-		akun{
-			username
-			karyawan{
+		karyawan{
+			nama
+			jabatan
+			divisi{
 				nama
-				jabatan
-				divisi{
-					nama
-				}
 			}
-			id
-		}	
+		}
 		inventaris{
 			jumlah
 			id
@@ -492,8 +513,8 @@ const addAkunMutation = gql`
 `
 
 const addPurchaseOrderMutation = gql`
-	mutation($kode:String!, $tanggal:String!, $status:String!, $tanggal_setuju:String!, $akun_id:String!){
-		addPurchaseOrder(kode:$kode, tanggal:$tanggal, status:$status, tanggal_setuju:$tanggal_setuju, akun_id:$akun_id){
+	mutation($kode:String!, $tanggal:String!, $status:String!, $tanggal_setuju:String!, $akun_id:String!, $vendor_id:String!){
+		addPurchaseOrder(kode:$kode, tanggal:$tanggal, status:$status, tanggal_setuju:$tanggal_setuju, akun_id:$akun_id, vendor_id:$vendor_id){
 			kode
 			tanggal
 			status
@@ -574,8 +595,8 @@ const addPengeluaranBarang = gql`
 	}
 `
 const addPemeliharaan = gql`
-	mutation($status:String!, $jumlah: Int!, $tanggal:String!, $akun_id: ID!, $inventaris_id: ID!,){
-		addPemeliharaan(status:$status, jumlah:$jumlah, tanggal:$tanggal, akun_id: $akun_id, inventaris_id: $inventaris_id,){
+	mutation($status:String!, $jumlah: Int!, $tanggal:String!, $karyawan_id: ID!, $inventaris_id: ID!,){
+		addPemeliharaan(status:$status, jumlah:$jumlah, tanggal:$tanggal, karyawan_id: $karyawan_id, inventaris_id: $inventaris_id,){
 			tanggal
 			id
 		}
@@ -747,6 +768,7 @@ const getPurchaseOrderQuery = gql`
 			status
 			kode
 			id
+			total_harga
 			tanggal_setuju
 			vendor{
 				nama
@@ -812,20 +834,18 @@ const getPemeliharaanQuery = gql`
 			status
 			tanggal
 			id
-			akun{
-				username
-				karyawan{
+			karyawan{
+				nama
+				jabatan
+				divisi{
 					nama
-					jabatan
-					divisi{
-						nama
-					}
 				}
-				id
-			}	
+			}
 			inventaris{
 				jumlah
+				id 
 				barang{
+					id
 					nama_barang
 				}
 			}
@@ -1060,9 +1080,44 @@ const updateJumlahInventaris = gql`
 	}
 `
 
+const updateRusakInventaris = gql`
+	mutation($id : ID, $jumlah : Int!, $jumlah_diperbaiki: Int! ){
+		updateRusakInventaris(id:$id, jumlah:$jumlah, jumlah_diperbaiki:$jumlah_diperbaiki){
+			id
+			jumlah
+			status
+			jumlah_diperbaiki
+			jumlah_dipakai
+		}
+	}
+`
+
+const updateTotalHargaPurchaseOrder = gql`
+	mutation($id : ID, $total_harga : Int! ){
+		updateTotalHargaPurchaseOrder(id:$id, total_harga:$total_harga){
+			id
+			status
+			total_harga
+		}
+	}
+`
+
+
+
+
+const updateStatusPemeliharaan = gql`
+	mutation($id : ID, $status:String!){
+		updateStatusPemeliharaan(id:$id, status:$status){
+			id
+			jumlah
+			status
+		}
+	}
+`
+
 const updateJumlahDipakaiInventaris = gql`
-	mutation($barang_id : ID, $jumlah_dipakai : Int! ){
-		updateJumlahDipakaiInventaris(barang_id:$barang_id, jumlah_dipakai:$jumlah_dipakai,){
+	mutation($id : ID, $jumlah_dipakai : Int! ){
+		updateJumlahDipakaiInventaris(id:$id, jumlah_dipakai:$jumlah_dipakai,){
 			id
 			jumlah
 			status
@@ -1073,8 +1128,8 @@ const updateJumlahDipakaiInventaris = gql`
 `
 
 const updateJumlahDiperbaikiInventaris = gql`
-	mutation($barang_id : ID, $jumlah_diperbaiki : Int! ){
-		updateJumlahDiperbaikiInventaris(barang_id:$barang_id, jumlah_diperbaiki:$jumlah_diperbaiki,){
+	mutation($id : ID, $jumlah_diperbaiki : Int! ){
+		updateJumlahDiperbaikiInventaris(id:$id, jumlah_diperbaiki:$jumlah_diperbaiki){
 			id
 			jumlah
 			status
@@ -1083,6 +1138,8 @@ const updateJumlahDiperbaikiInventaris = gql`
 		}
 	}
 `
+
+
 
 const editAkunMutation = gql`
 	mutation($id : ID, $username : String!, $password : String! ){
@@ -1153,6 +1210,7 @@ export {
 	updateStatusDonePermintaanBarang,
 	updateStatusListRequest,
 	getPurchaseOrdersQuery,
+	getListItemPurchaseOrdersQuery,
 	getPurchaseOrderQuery,
 	updateVendorPurchaseOrderMutation,
 	updateBarangMutation,
@@ -1193,6 +1251,9 @@ export {
 	hapusAkunMutation, 
 	editAkunMutation,
 	editBiodataKaryawanMutation,
-	uploadFotoMutation
+	uploadFotoMutation,
+	updateStatusPemeliharaan,
+	updateRusakInventaris,
+	updateTotalHargaPurchaseOrder
 
 };

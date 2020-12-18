@@ -55,7 +55,7 @@ class PurchaseOrder extends Component {
         status: 'Belum Disetujui',
         tanggal_setuju: '',
         akun_id: this.state.akun_id,
-        vendor_id:'',
+        vendor_id:'5e5deb9c2a448419e86f84a6',
       },
       refetchQueries:[{query:getPurchaseOrdersQuery}],
     })

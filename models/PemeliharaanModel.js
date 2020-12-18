@@ -5,7 +5,7 @@ const PemeliharaanSchema = new Schema({
 	jumlah:Number,
 	status:String,
     tanggal:String,
-    akun_id:String,
+    karyawan_id:String,
 	inventaris_id:String,
 });
 

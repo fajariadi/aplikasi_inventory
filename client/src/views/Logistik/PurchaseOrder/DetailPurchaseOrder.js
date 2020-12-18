@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import {graphql} from 'react-apollo';
 import * as compose from 'lodash.flowright';
 import Swal from 'sweetalert2';
-import {getPurchaseOrderQuery, hapusPurchaseOrderMutation, updateStatusListRequestOnOrder ,updateStatusListItemPurchaseOrder,  hapusManyListItemPurchaseOrder, getPurchaseOrdersQuery, updateStatusPurchaseOrder, getListRequestsQuery} from '../queries/queries';
+import {getPurchaseOrderQuery, hapusPurchaseOrderMutation,getListItemPurchaseOrdersQuery, updateStatusListRequestOnOrder ,updateStatusListItemPurchaseOrder,  hapusManyListItemPurchaseOrder, getPurchaseOrdersQuery, updateStatusPurchaseOrder, getListRequestsQuery} from '../queries/queries';
 import { Card, Button, CardBody, CardHeader, Col, Row, Table, Form, FormGroup, Label, Input } from 'reactstrap';
 
 class DetailPurchaseOrder extends Component {
@@ -159,14 +159,14 @@ class DetailPurchaseOrder extends Component {
         order_id: orderid,
         status: 'Delivery',
       },
-      refetchQueries:[{query:getPurchaseOrdersQuery}],
+      refetchQueries:[{query:getListRequestsQuery}],
     });
     this.props.updateStatusListItemPurchaseOrder({
       variables:{
         purchaseOrder_id: orderid,
         status: 'Delivery',
       },
-      refetchQueries:[{query:getPurchaseOrdersQuery}],
+      refetchQueries:[{query:getListItemPurchaseOrdersQuery}],
     })
     Swal.fire({
       position: 'center',
@@ -190,7 +190,7 @@ class DetailPurchaseOrder extends Component {
         order_id: order_id,
         status: 'Active',
       },
-      refetchQueries:[{query:getPurchaseOrdersQuery}],
+      refetchQueries:[{query:getListRequestsQuery}],
     });
     Swal.fire({
       position: 'center',
@@ -272,6 +272,7 @@ export default compose (
   graphql(getPurchaseOrdersQuery, {name:"getPurchaseOrdersQuery"}),
   graphql(hapusPurchaseOrderMutation, {name:"hapusPurchaseOrderMutation"}),
   graphql(hapusManyListItemPurchaseOrder, {name:"hapusManyListItemPurchaseOrder"}),
+  graphql(getListItemPurchaseOrdersQuery, {name:"getListItemPurchaseOrdersQuery"}),
   graphql(updateStatusPurchaseOrder, {name:"updateStatusPurchaseOrder"}),
   graphql(updateStatusListItemPurchaseOrder, {name:"updateStatusListItemPurchaseOrder"}),
   graphql(updateStatusListRequestOnOrder, {name:"updateStatusListRequestOnOrder"}),

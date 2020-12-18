@@ -3,7 +3,7 @@ import {graphql} from 'react-apollo';
 import { Link } from 'react-router-dom';
 import * as compose from 'lodash.flowright';
 import Swal from 'sweetalert2';
-import {getPemeliharaansQuery, getAkunsQuery,hapusPemeliharaan,updateJumlahDiperbaikiInventaris,getAllInventarisQuery, addPemeliharaan, getBarangsQuery} from '../queries/queries';
+import {getPemeliharaansQuery, getAkunsQuery,hapusPemeliharaan,updateJumlahDiperbaikiInventaris,getAllInventarisQuery, addPemeliharaan, getKaryawansQuery, getBarangsQuery} from '../queries/queries';
 import { 
   Form,
   Card, 
@@ -29,7 +29,7 @@ class Pemeliharaan extends Component {
     this.state = {
       nama:'',
       barang_id:'',
-      akun_id:'',
+      karyawan_id:'',
       jumlah: 0,
       modalIsOpen: false,  
       harga: 0,
@@ -51,12 +51,14 @@ class Pemeliharaan extends Component {
             <td>{pem.inventaris.barang.nama_barang}</td>
             <td>{pem.jumlah}</td> 
             <td>{pem.tanggal}</td>
-            <td>{pem.akun.karyawan.nama}</td>
+            <td>{pem.karyawan.nama}</td>
             <td>{pem.status}</td>
             <td>
-              <Button onClick={this.onDelete.bind(this, pem.id)} color="danger" size="sm">
-                <i className="fa fa-trash"></i>
-              </Button>
+              <Link to={`/pemeliharaan/detailPemeliharaan/${pem.id}`}>
+              <Button color="primary" size="sm">
+                <i className="fa fa-file"></i>
+                </Button>
+              </Link>
             </td>
           </tr>
         );
@@ -103,14 +105,14 @@ class Pemeliharaan extends Component {
   }
   
   displayTeknisi(){
-    var data = this.props.getAkunsQuery;
+    var data = this.props.getKaryawansQuery;
     if(data.loading){
-      return (<div>Loading Akun...</div>);
+      return (<div>Loading karyawan...</div>);
     } else {
-      return data.akuns.map(akun => {
-        if(akun.karyawan.jabatan === 'Teknisi'){
+      return data.karyawans.map(karyawan => {
+        if(karyawan.jabatan === 'Teknisi' && karyawan.divisi.nama === 'Logistic'){
           return(
-            <option key={akun.id} value={akun.id}>{akun.karyawan.nama}</option>
+            <option key={karyawan.id} value={karyawan.id}>{karyawan.nama}</option>
           )
         }
       });
@@ -126,30 +128,50 @@ class Pemeliharaan extends Component {
   submitForm(e){
     e.preventDefault();
     this.toggleModal();
-    this.props.addPemeliharaan({
-      variables:{
-        jumlah: parseInt(this.state.jumlah),
-        tanggal: new Date().toLocaleDateString(),
-        status: 'Diperbaiki',
-        akun_id: this.state.akun_id,
-        inventaris_id:this.state.barang_id,
-      },
-      refetchQueries:[{query:getPemeliharaansQuery}]
-    });
-    this.props.updateJumlahDiperbaikiInventaris({
+    var jumlah=0;
+    const data = this.props.getAllInventarisQuery;
+    if (data){
+        data.allInventaris.map(inven =>{
+        if(inven.id === this.state.barang_id){
+          jumlah = inven.jumlah
+        }
+      })
+    };
+    if (jumlah < this.state.jumlah){
+      Swal.fire({
+        position: 'center',
+        icon: 'error',
+        title: 'Jumlah Inventaris Salah',
+        text: 'Jumlah melebihi jumlah inventaris',
+        showConfirmButton: true,
+      })
+    } else {
+      this.props.addPemeliharaan({
         variables:{
-            barang_id:this.state.barang_id,
-            jumlah_diperbaiki: parseInt(this.state.jumlah),
+          jumlah: parseInt(this.state.jumlah),
+          tanggal: new Date().toLocaleDateString(),
+          status: 'Diperbaiki',
+          karyawan_id: this.state.karyawan_id,
+          inventaris_id:this.state.barang_id,
+        },
+        refetchQueries:[{query:getPemeliharaansQuery}]
+      });
+      this.props.updateJumlahDiperbaikiInventaris({
+          variables:{
+              id:this.state.barang_id,
+              jumlah_diperbaiki: parseInt(this.state.jumlah),
           },
           refetchQueries:[{query:getAllInventarisQuery}]
-    });
-    Swal.fire({
-      position: 'center',
-      icon: 'success',
-      title: 'Pemeliharaan Baru Berhasil Disimpan',
-      showConfirmButton: true,
-    })
+      });
+      Swal.fire({
+        position: 'center',
+        icon: 'success',
+        title: 'Pemeliharaan Baru Berhasil Disimpan',
+        showConfirmButton: true,
+      })
+    }
   }
+
 
   render() {
     return (
@@ -173,7 +195,7 @@ class Pemeliharaan extends Component {
                     <th>Tanggal</th>
                     <th>Teknisi</th>
                     <th>Status</th>
-                    <th>Hapus</th>
+                    <th>Detail</th>
                   </tr>
                   </thead>
                   <tbody align="center">
@@ -213,7 +235,7 @@ class Pemeliharaan extends Component {
               </FormGroup>    
               <FormGroup>
               <Label htmlFor="name">Nama Teknisi</Label>
-                <Input type="select" name="nama" onChange={(e) =>this.setState({akun_id:e.target.value})} id="nama" required>
+                <Input type="select" name="nama" onChange={(e) =>this.setState({karyawan_id:e.target.value})} id="nama" required>
                   <option value="">Pilih Teknisi</option>
                   {this.displayTeknisi()}
                 </Input>
@@ -237,4 +259,5 @@ export default compose(
   graphql(getBarangsQuery, {name:"getBarangsQuery"}),
   graphql(updateJumlahDiperbaikiInventaris, {name:"updateJumlahDiperbaikiInventaris"}),
   graphql(getAllInventarisQuery, {name:"getAllInventarisQuery"}),
+  graphql(getKaryawansQuery, {name:"getKaryawansQuery"}),
 )(Pemeliharaan);

@@ -49,11 +49,19 @@ class PengeluaranBarang extends Component {
     if(data.loading){
       return (<div>Loading Permintaan...</div>);
     } else {
-      return data.permintaanBarangs.map(permintaan => {
+    return  data.permintaanBarangs.map(permintaan => {
+        var lanjut = true;
           if(permintaan.status === 'Disetujui'){
-            return(
-                <option key={permintaan.id} value={permintaan.id}>{permintaan.kode}</option>
-              )
+            permintaan.listRequest.map(item => {
+              if(item.status !== 'Ready'){
+                lanjut = false;
+              }
+            })
+            if(lanjut){
+              return(
+                  <option key={permintaan.id} value={permintaan.id}>{permintaan.kode}</option>
+                )
+            }
           }
       });
     }

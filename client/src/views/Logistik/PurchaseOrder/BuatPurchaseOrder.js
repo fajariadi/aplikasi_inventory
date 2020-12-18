@@ -3,7 +3,7 @@ import { Link} from 'react-router-dom';
 import {graphql} from 'react-apollo';
 import * as compose from 'lodash.flowright';
 import Swal from 'sweetalert2';
-import { getVendorsQuery, getPurchaseOrdersQuery, addListItemPurchaseOrder, updateAllStatusListRequest, getListRequestsQuery, updateVendorPurchaseOrderMutation, hapusPurchaseOrderMutation} from '../queries/queries';
+import { getVendorsQuery, getPurchaseOrdersQuery, addListItemPurchaseOrder,updateTotalHargaPurchaseOrder, updateAllStatusListRequest, getListRequestsQuery, updateVendorPurchaseOrderMutation, hapusPurchaseOrderMutation} from '../queries/queries';
 import {  
   Card, 
   CardBody, 
@@ -49,13 +49,7 @@ class BuatPurchaseOrder extends Component {
         id = order.id
       );
     });
-    this.props.updateVendorPurchaseOrderMutation({
-      variables:{
-        id:id,
-        vendor_id: "5e5deb9c2a448419e86f84a6",
-      },
-      refetchQueries:[{query:getPurchaseOrdersQuery}],
-    });
+  
     return(
       <div>
         <Form className="form-horizontal">
@@ -125,6 +119,8 @@ class BuatPurchaseOrder extends Component {
   updateVendorPurchaseOrder(order_id, vendor){
     var id = vendor.substring(0,24);
     var jenis = vendor.substring(25);
+    console.log(id);
+    console.log(jenis);
     this.setState({jenis_usaha: jenis});
     this.setState({orderid: order_id});
     this.props.updateVendorPurchaseOrderMutation({
@@ -303,6 +299,13 @@ class BuatPurchaseOrder extends Component {
               orderid = request.id
             );
           });
+          this.props.updateTotalHargaPurchaseOrder({
+            variables:{
+              id: orderid,
+              total_harga: total,
+            },
+            refetchQueries:[{query:getPurchaseOrdersQuery}],
+          })
                   
           items.map(item => {
             return(
@@ -406,6 +409,6 @@ export default compose(
   graphql(updateVendorPurchaseOrderMutation, {name:"updateVendorPurchaseOrderMutation"}),
   graphql(addListItemPurchaseOrder, {name:"addListItemPurchaseOrder"}),
   graphql(hapusPurchaseOrderMutation, {name:"hapusPurchaseOrderMutation"}),
-  
-  
+  graphql(updateTotalHargaPurchaseOrder, {name:"updateTotalHargaPurchaseOrder"}),
+
 )(BuatPurchaseOrder);

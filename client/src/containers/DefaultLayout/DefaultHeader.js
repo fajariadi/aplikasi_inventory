@@ -23,14 +23,15 @@ class DefaultHeader extends Component {
   }
 
   getPermintaanBarang(){
-    var data = this.props.getPermintaanBarangsQuery;
+    const data = this.props.getPermintaanBarangsQuery;
     var jumlah = 0;
     if(data.loading){
       return (<div>Loading Pemeliharaan...</div>);
     } else {
       data.permintaanBarangs.map(permintaan => {
-        if(permintaan.status === 'Belum Disetujui')
-        jumlah++
+        if(permintaan.status === 'Belum Disetujui'){
+          jumlah++
+        }
       })
     }
     return(jumlah);

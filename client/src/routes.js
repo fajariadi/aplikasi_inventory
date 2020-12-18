@@ -59,9 +59,8 @@ const PengeluaranBarang = React.lazy(() => import('./views/Logistik/PengeluaranB
 const BuatPengeluaranBarang = React.lazy(() => import('./views/Logistik/PengeluaranBarang/BuatPengeluaranBarang'));
 const DetailPengeluaranBarang = React.lazy(() => import('./views/Logistik/PengeluaranBarang/DetailPengeluaranBarang'));
 const Pemeliharaan = React.lazy(() => import('./views/Logistik/Pemeliharaan/Pemeliharaan'));
+const DetailPemeliharaan = React.lazy(() => import('./views/Logistik/Pemeliharaan/DetailPemeliharaan'));
 
-const DataKaryawan = React.lazy(() => import('./views/HumanResource/Karyawan/DataKaryawan'));
-const TambahKaryawan = React.lazy(() => import('./views/HumanResource/Karyawan/TambahKaryawan'));
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
   { path: '/', exact: true, name: 'Home'  },
@@ -133,6 +132,7 @@ const routes = [
   { path: '/pengeluaranBarang/buatPengeluaranBarang/:id', exact: true, name: 'Buat Pengeluaran Barang', component: BuatPengeluaranBarang },
   { path: '/pengeluaranBarang/detailPengeluaranBarang/:id', exact: true, name: 'Detail Pengeluaran Barang', component: DetailPengeluaranBarang },
   { path: '/pemeliharaan/pemeliharaan', exact: true, name: 'Pemeliharaan Inventaris', component: Pemeliharaan },
+  { path: '/pemeliharaan/detailPemeliharaan/:id', exact: true, name: 'Detail Pemeliharaan Inventaris', component: DetailPemeliharaan },
 
 ];
 

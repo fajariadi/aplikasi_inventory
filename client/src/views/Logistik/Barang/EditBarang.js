@@ -26,7 +26,7 @@ class EditBarang extends Component {
       nama_barang:'',
       jenis_barang: '',
       satuan: '',
-      harga: '',
+      harga: 0,
       modalIsOpen: false,  
     };
   }

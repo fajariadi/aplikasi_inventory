@@ -1,9 +1,8 @@
-import React, { Component, lazy, Suspense } from 'react';
+import React, { Component } from 'react';
 import { Bar, Line } from 'react-chartjs-2';
 import {graphql} from 'react-apollo';
-import { Link } from 'react-router-dom';
 import * as compose from 'lodash.flowright';
-import {getPermintaanBarangsQuery, getAkunsQuery, getAllInventarisQuery, getPurchaseOrdersQuery, getPersediaanBarangsQuery, getPenerimaanBarangsQuery, getPengeluaranBarangsQuery} from '../queries/queries';
+import {getPermintaanBarangsQuery,  getAllInventarisQuery, getPurchaseOrdersQuery, getPersediaanBarangsQuery, getPenerimaanBarangsQuery, getPengeluaranBarangsQuery} from '../queries/queries';
 import {
   ButtonDropdown,
   ButtonGroup,
@@ -22,7 +21,7 @@ import {
 } from 'reactstrap';
 import { Redirect } from 'react-router-dom';
 import { CustomTooltips } from '@coreui/coreui-plugin-chartjs-custom-tooltips';
-import { getStyle } from '@coreui/coreui/dist/js/coreui-utilities'
+import { getStyle } from '@coreui/coreui/dist/js/coreui-utilities';
 
 
 const brandPrimary = getStyle('--primary')
@@ -238,10 +237,10 @@ class DashboardLogistik extends Component {
   }
 
   getPermintaanBarang(){
-    var data = this.props.getPermintaanBarangsQuery;
+    const data = this.props.getPermintaanBarangsQuery;
     var jumlah = 0;
     if(data.loading){
-      return (<div>Loading Pemeliharaan...</div>);
+      return (<div>Loading Permintaan...</div>);
     } else {
       data.permintaanBarangs.map(permintaan => {
         jumlah++
@@ -251,10 +250,10 @@ class DashboardLogistik extends Component {
   }
 
   getPurchaseOrder(){
-    var data = this.props.getPurchaseOrdersQuery;
+    const data = this.props.getPurchaseOrdersQuery;
     var jumlah = 0;
     if(data.loading){
-      return (<div>Loading Pemeliharaan...</div>);
+      return (<div>Loading Pembelian...</div>);
     } else {
       data.purchaseOrders.map(order => {
         jumlah++
@@ -264,10 +263,10 @@ class DashboardLogistik extends Component {
   }
 
   getPersediaanBarang(){
-    var data = this.props.getPersediaanBarangsQuery;
+   const data = this.props.getPersediaanBarangsQuery;
     var jumlah = 0;
     if(data.loading){
-      return (<div>Loading Pemeliharaan...</div>);
+      return (<div>Loading Persediaan...</div>);
     } else {
       data.persediaanBarangs.map(persediaan => {
         jumlah++
@@ -277,10 +276,10 @@ class DashboardLogistik extends Component {
   }
 
   getInventaris(){
-    var data = this.props.getAllInventarisQuery;
+    const data = this.props.getAllInventarisQuery;
     var jumlah = 0;
     if(data.loading){
-      return (<div>Loading Pemeliharaan...</div>);
+      return (<div>Loading Inventaris...</div>);
     } else {
       data.allInventaris.map(inventaris => {
         jumlah++
@@ -290,12 +289,12 @@ class DashboardLogistik extends Component {
   }
  
   displayPenerimaanBarang(){
-    var data1 = this.props.getPenerimaanBarangsQuery;
+    const data = this.props.getPenerimaanBarangsQuery;
     var no = 0;
-    if(data1.loading){
+    if(data.loading){
       return
     } else {
-      return data1.penerimaanBarangs.map(request => {
+      return data.penerimaanBarangs.map(request => {
         no++;
         return(
           <tr key={request.id}>
@@ -310,23 +309,23 @@ class DashboardLogistik extends Component {
   }
 
   displayPengeluaranBarang(){
-    var data1 = this.props.getPengeluaranBarangsQuery;
+    const data = this.props.getPengeluaranBarangsQuery;
     var no = 0;
-    if(data1.loading){
+    if(data.loading){
       return
     } else {
-      return data1.pengeluaranBarangs.map(request => {
+      return data.pengeluaranBarangs.map(pengeluaran => {
         no++;
         return(
-          <tr key={request.id}>
+          <tr key={pengeluaran.id}>
             <td>{no}</td>
-            <td>{request.kode}</td>
-            <td>{request.tanggal}</td>
-            <td>{request.permintaanBarang.akun.karyawan.divisi.nama}</td>
+            <td>{pengeluaran.kode}</td>
+            <td>{pengeluaran.tanggal}</td>
+            <td>{pengeluaran.permintaanBarang.akun.karyawan.divisi.nama}</td>
           </tr>
         );
       });
-    }
+    } 
   }
 
   render() {
@@ -516,5 +515,5 @@ export default compose(
   graphql(getAllInventarisQuery, {name:"getAllInventarisQuery"}),
   graphql(getPenerimaanBarangsQuery, {name:"getPenerimaanBarangsQuery"}),
   graphql(getPengeluaranBarangsQuery, {name:"getPengeluaranBarangsQuery"}),
-  graphql(getAkunsQuery, {name:"getAkunsQuery"}),
+  
 )(DashboardLogistik);

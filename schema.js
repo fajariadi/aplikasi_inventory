@@ -67,10 +67,10 @@ const PemeliharaanType = new GraphQLObjectType({
 		jumlah: {type: GraphQLInt},
 		status:{type:GraphQLString},
 		tanggal:{type:GraphQLString},
-		akun: {
-			type: AkunType,
+		karyawan: {
+			type: KaryawanType,
 			resolve(parent, args){
-				return Akun.findById(parent.akun_id);
+				return Karyawan.findById(parent.karyawan_id);
 			}
 		},
 		inventaris: {
@@ -281,7 +281,8 @@ const PurchaseOrderType = new GraphQLObjectType({
 			resolve(parent,args){ 
 				return ListItemPurchaseOrder.find({purchaseOrder_id: parent.id});
 			}
-		}
+		},
+		
 	})
 });
 
@@ -813,6 +814,7 @@ const Mutation = new GraphQLObjectType({
 				tanggal_setuju: {type: new GraphQLNonNull(GraphQLString)},
 				status: {type: new GraphQLNonNull(GraphQLString)},
 				akun_id: {type: new GraphQLNonNull(GraphQLString)},
+				vendor_id: {type: new GraphQLNonNull(GraphQLString)},
 			},
 			resolve(parent, args){
 				let purcahseOrder = new PurchaseOrder({
@@ -821,6 +823,7 @@ const Mutation = new GraphQLObjectType({
 					tanggal_setuju: args.tanggal_setuju,
 					status: args.status,
 					akun_id:args.akun_id, 
+					vendor_id:args.vendor_id, 
 				});
 				return purcahseOrder.save();
 			}
@@ -844,6 +847,16 @@ const Mutation = new GraphQLObjectType({
 			},
 			resolve(parent, args){
 				return PurchaseOrder.findOneAndUpdate({_id: args.id}, {status: args.status, tanggal_setuju:args.tanggal_setuju})
+			}
+		},
+		updateTotalHargaPurchaseOrder:{
+			type: PurchaseOrderType,
+			args: {
+				id:{type:GraphQLID},
+				total_harga: {type: new GraphQLNonNull(GraphQLInt)},
+			},
+			resolve(parent, args){
+				return PurchaseOrder.findOneAndUpdate({_id: args.id}, {total_harga: args.total_harga})
 			}
 		},
 		updateStatusDonePurchaseOrder:{
@@ -1080,6 +1093,17 @@ const Mutation = new GraphQLObjectType({
 				return Inventaris.findOneAndUpdate({barang_id: args.barang_id}, {jumlah: args.jumlah})
 			}
 		},
+		updateRusakInventaris:{
+			type: InventarisType,
+			args: {
+				id:{type:GraphQLID},
+				jumlah: {type: new GraphQLNonNull(GraphQLInt)},
+				jumlah_diperbaiki: {type: new GraphQLNonNull(GraphQLInt)},
+			},
+			resolve(parent, args){
+				return Inventaris.findOneAndUpdate({_id: args.id}, {jumlah: args.jumlah, jumlah_diperbaiki:args.jumlah_diperbaiki})
+			}
+		},
 		updateJumlahDipakaiInventaris:{
 			type: InventarisType,
 			args: {
@@ -1093,11 +1117,11 @@ const Mutation = new GraphQLObjectType({
 		updateJumlahDiperbaikiInventaris:{
 			type: InventarisType,
 			args: {
-				barang_id:{type:GraphQLID},
+				id:{type:GraphQLID},
 				jumlah_diperbaiki: {type: new GraphQLNonNull(GraphQLInt)},
 			},
 			resolve(parent, args){
-				return Inventaris.findOneAndUpdate({barang_id: args.barang_id}, {jumlah_diperbaiki: args.jumlah_diperbaiki})
+				return Inventaris.findOneAndUpdate({_id: args.id}, {jumlah_diperbaiki: args.jumlah_diperbaiki})
 			}
 		},
 		addPenerimaanBarang:{
@@ -1156,7 +1180,7 @@ const Mutation = new GraphQLObjectType({
 				status: {type: new GraphQLNonNull(GraphQLString)},
 				jumlah: {type: new GraphQLNonNull(GraphQLInt)},
 				tanggal: {type: new GraphQLNonNull(GraphQLString)},
-				akun_id: {type: new GraphQLNonNull(GraphQLID)},
+				karyawan_id: {type: new GraphQLNonNull(GraphQLID)},
 				inventaris_id: {type: new GraphQLNonNull(GraphQLID)},
 			},
 			resolve(parent, args){
@@ -1164,7 +1188,7 @@ const Mutation = new GraphQLObjectType({
 					status: args.status,
 					jumlah: args.jumlah,
 					tanggal: args.tanggal,
-					akun_id: args.akun_id,
+					karyawan_id: args.karyawan_id,
 					inventaris_id:  args.inventaris_id,
 				});
 				return pemeliharaan.save();
@@ -1175,6 +1199,16 @@ const Mutation = new GraphQLObjectType({
 			args: {id:{type:GraphQLID}},
 			resolve(parent,args){
 				return Pemeliharaan.deleteOne({_id:args.id});
+			}
+		},
+		updateStatusPemeliharaan:{
+			type: PemeliharaanType,
+			args: { 
+				id: {type:GraphQLID},
+				status: {type: new GraphQLNonNull(GraphQLString)},			
+			},
+			resolve(parent, args){
+				return Pemeliharaan.findOneAndUpdate({_id: args.id}, {status: args.status})
 			}
 		},
 		editBiodataKaryawan:{

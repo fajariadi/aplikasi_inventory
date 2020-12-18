@@ -24,13 +24,16 @@ class DetailPermintaanBarang extends Component {
 
   onDelete(request_id){
     const {permintaanBarang} = this.props.data;
-    var lanjut = false;
-    permintaanBarang.listRequest.map(item => {
-      if(item.status === 'Active' || item.status === 'Done' || item.status === 'Waiting'){
-        lanjut = true
-      }
-    })
-    if(lanjut===false){
+    var lanjut = true;
+    if(permintaanBarang){
+      permintaanBarang.listRequest.map(item => {
+        if(item.status === 'Proses' || item.status === 'Delivery' || item.status === 'Ready'){
+          lanjut = false
+        }
+      });
+    }
+    console.log(lanjut);
+    if(lanjut === false){
       Swal.fire({
         position: 'center',
         icon: 'error',
@@ -39,7 +42,6 @@ class DetailPermintaanBarang extends Component {
         showConfirmButton: true,
       })
     } else {
-
       Swal.fire({
         title: 'Apakah anda Yakin?',
         icon: 'warning',
