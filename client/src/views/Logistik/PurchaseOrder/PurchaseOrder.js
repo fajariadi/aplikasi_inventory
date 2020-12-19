@@ -59,12 +59,13 @@ class PurchaseOrder extends Component {
       },
       refetchQueries:[{query:getPurchaseOrdersQuery}],
     })
+    this.props.history.push("/purchaseOrder/buatPurchaseOrder");
   }
 
   getKodeBaru(){
     var kode = 'R';
-    var nomor = 1;
-    var data = this.props.getPurchaseOrdersQuery;
+    var nomor = 1; 
+    var data = this.props.getPurchaseOrdersQuery; // eslint-disable-next-line
     data.purchaseOrders.map(order => {
         nomor++;
     })
@@ -92,11 +93,9 @@ class PurchaseOrder extends Component {
                   Daftar Purchase Order
                 </Col>
                 <Col>
-                  <Link to="/purchaseOrder/buatPurchaseOrder" className={'float-right mb-0'}>
-                    <Button color="primary" size="sm"  onClick={this.addPurchaseOrder.bind(this)}>
+                    <Button color="primary" size="sm"  className={'float-right mb-0'} onClick={this.addPurchaseOrder.bind(this)}>
                         <i className="fa fa-plus"></i> Buat Purchase Order
                     </Button>
-                  </Link>
                 </Col>
                 </Row>
               </CardHeader>

@@ -16,7 +16,7 @@ import {
   DropdownMenu,
   DropdownToggle,
   Row,
-  Button
+
 
 } from 'reactstrap';
 import { Redirect } from 'react-router-dom';
@@ -241,7 +241,7 @@ class DashboardLogistik extends Component {
     var jumlah = 0;
     if(data.loading){
       return (<div>Loading Permintaan...</div>);
-    } else {
+    } else { // eslint-disable-next-line
       data.permintaanBarangs.map(permintaan => {
         jumlah++
       })
@@ -254,7 +254,7 @@ class DashboardLogistik extends Component {
     var jumlah = 0;
     if(data.loading){
       return (<div>Loading Pembelian...</div>);
-    } else {
+    } else { // eslint-disable-next-line
       data.purchaseOrders.map(order => {
         jumlah++
       })
@@ -267,7 +267,7 @@ class DashboardLogistik extends Component {
     var jumlah = 0;
     if(data.loading){
       return (<div>Loading Persediaan...</div>);
-    } else {
+    } else { // eslint-disable-next-line
       data.persediaanBarangs.map(persediaan => {
         jumlah++
       })
@@ -280,7 +280,7 @@ class DashboardLogistik extends Component {
     var jumlah = 0;
     if(data.loading){
       return (<div>Loading Inventaris...</div>);
-    } else {
+    } else { // eslint-disable-next-line
       data.allInventaris.map(inventaris => {
         jumlah++
       })
@@ -472,31 +472,6 @@ class DashboardLogistik extends Component {
                   </thead>
                   <tbody align="center">
                     {this.displayPengeluaranBarang()}
-                  </tbody>
-                </Table>
-              </CardBody>
-            </Card>
-          </Col>
-        </Row>
-        <Row>
-          <Col xs="12" lg="12">
-            <Card>
-              <CardHeader>
-                <i className="fa fa-align-justify"></i> Daftar Purchase Order
-              </CardHeader>
-              <CardBody>
-                <Table responsive>
-                  <thead>
-                  <tr>
-                    <th>No</th>
-                    <th>Kode Order</th>
-                    <th>Tanggal</th>
-                    <th>Vendor</th>
-                    <th>Jenis Barang</th>
-                    <th>Status</th>
-                  </tr>
-                  </thead>
-                  <tbody>
                   </tbody>
                 </Table>
               </CardBody>

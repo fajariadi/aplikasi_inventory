@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import {graphql, useMutation} from 'react-apollo';
-import {gql} from 'apollo-boost';
+import {graphql} from 'react-apollo';
 import * as compose from 'lodash.flowright';
 import Swal from 'sweetalert2';
 import { getDivisisQuery, addAkunMutation, editAkunMutation, getAkunsQuery, editBiodataKaryawanMutation, uploadFotoMutation, getKaryawansQuery} from '../queries/queries';
@@ -20,20 +19,12 @@ import {
   TabContent, TabPane, Nav, NavItem, NavLink
 } from 'reactstrap';
 
-export const UPLOAD_FILE = gql`
-  mutation uploadFile($file: Upload!) {
-    uploadFile(file: $file) {
-      url
-    }
-  }
-`;
 
 class Profile extends Component {
   constructor(props){
     super(props);
     this.toggle = this.toggle.bind(this);
     this.state = {
-      karyawan_id:'',
       newPassword:'',
       newUsername:'',
       confirmPassword:'',
@@ -45,6 +36,8 @@ class Profile extends Component {
       jenis_kelamin: localStorage.getItem("jenis_kelamin"),
       agama: localStorage.getItem("agama"),
       alamat: localStorage.getItem("alamat"),
+      jabatan: localStorage.getItem("jabatan"),
+      divisi: localStorage.getItem("divisi"),
       email: localStorage.getItem("email"),
       no_kontak: localStorage.getItem("no_kontak"),
       username: localStorage.getItem("username"),
@@ -458,7 +451,8 @@ class Profile extends Component {
                 <CardBody>
                 <center>
                   <h4>STATUS</h4>
-                </center>
+                  </center>
+                  {/*  eslint-disable-next-line */}
                   <Form className="form-horizontal" className="mr-4 ml-4 mt-4">
                   <Row> 
                     <Col md="12">
@@ -467,7 +461,7 @@ class Profile extends Component {
                           <Label htmlFor="name">Jabatan</Label>
                         </Col>
                         <Col md="9">
-                        <Input type="text" name="kode" id="kode" value={localStorage.getItem('jabatan')} disabled></Input> 
+                        <Input type="text" name="jabatan" id="jabatan" value={this.state.jabatan} disabled></Input> 
                         </Col>
                       </FormGroup>
                     </Col>  
@@ -479,7 +473,7 @@ class Profile extends Component {
                           <Label htmlFor="name">Divisi</Label>
                         </Col>
                         <Col md="9">
-                        <Input type="text" name="kode" id="kode" value={localStorage.getItem('divisi')} disabled></Input> 
+                        <Input type="text" name="divisi" id="divisi" value={this.state.divisi} disabled></Input> 
                         </Col>
                       </FormGroup>
                     </Col>  

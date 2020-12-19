@@ -133,7 +133,7 @@ class DetailPemeliharaan extends Component {
           }).then((result) => {
             if (result.isConfirmed) {
                 var data = this.props.getAllInventarisQuery;
-                var jumlah = 0;
+                var jumlah = 0; // eslint-disable-next-line
                 data.allInventaris.map (inv => {
                     if(inv.barang.id === barang_id){
                       return(

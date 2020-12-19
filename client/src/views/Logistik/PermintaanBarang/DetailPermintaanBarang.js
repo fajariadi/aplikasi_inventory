@@ -25,7 +25,7 @@ class DetailPermintaanBarang extends Component {
   onDelete(request_id){
     const {permintaanBarang} = this.props.data;
     var lanjut = true;
-    if(permintaanBarang){
+    if(permintaanBarang){ // eslint-disable-next-line
       permintaanBarang.listRequest.map(item => {
         if(item.status === 'Proses' || item.status === 'Delivery' || item.status === 'Ready'){
           lanjut = false

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Link} from 'react-router-dom';
 import {graphql} from 'react-apollo';
 import * as compose from 'lodash.flowright';
 import Swal from 'sweetalert2';
@@ -17,7 +16,6 @@ import {
   Label,
   Input
 } from 'reactstrap';
-import { element } from 'prop-types';
 
 class BuatPurchaseOrder extends Component {
   constructor(props){
@@ -137,7 +135,7 @@ class BuatPurchaseOrder extends Component {
     var total = 0;
     if(this.state.jenis_usaha !== ''){
       var data = this.props.getListRequestsQuery;
-      if(JSON.stringify(data) !== '{}') {
+      if(JSON.stringify(data) !== '{}') { // eslint-disable-next-line
         return data.listrequests.map(barang => {
           if(barang.jenis === this.state.jenis_usaha){
             if(barang.status === 'Active'){
@@ -148,7 +146,7 @@ class BuatPurchaseOrder extends Component {
                 total = total+har;
                 const newItem = { nama: barang.nama_barang, jumlah: barang.jumlah_barang, satuan: barang.satuan, jenis: barang.jenis, harga: har};
                 items.push(newItem);
-              } else {
+              } else { // eslint-disable-next-line
                 items.map(item => {
                   if(item.nama === barang.nama_barang){
                     sama = true;
@@ -157,7 +155,7 @@ class BuatPurchaseOrder extends Component {
                 });
                 if (sama === true){
                   var hrg=0;
-                   har = parseInt(barang.jumlah_barang)*parseInt(barang.harga);
+                   har = parseInt(barang.jumlah_barang)*parseInt(barang.harga); // eslint-disable-next-line
                    items.map(item =>{
                      if (item.nama === barang.nama_barang){
                        hrg = har + item.harga
@@ -237,8 +235,8 @@ class BuatPurchaseOrder extends Component {
     var items = [];
     var total = 0;
     if(this.state.jenis_usaha !== ''){
-      var data = this.props.getListRequestsQuery; 
-      if(JSON.stringify(data) !== '{}') {
+      var data = this.props.getListRequestsQuery;  
+      if(JSON.stringify(data) !== '{}') { // eslint-disable-next-line
         data.listrequests.map(barang => {
           if(barang.jenis === this.state.jenis_usaha){
             if(barang.status === 'Active'){
@@ -249,7 +247,7 @@ class BuatPurchaseOrder extends Component {
                   total = total+har;
                   const newItem = { nama: barang.nama_barang, jumlah: barang.jumlah_barang, satuan: barang.satuan, jenis: barang.jenis, harga: har};
                   items.push(newItem);
-                } else {
+                } else { // eslint-disable-next-line
                   items.map(item => {
                     if(item.nama === barang.nama_barang){
                       sama = true;
@@ -257,8 +255,8 @@ class BuatPurchaseOrder extends Component {
                     }
                   });
                   if (sama === true){
-                    var hrg=0;
-                     har = parseInt(barang.jumlah_barang)*parseInt(barang.harga);
+                    var hrg=0; 
+                     har = parseInt(barang.jumlah_barang)*parseInt(barang.harga); // eslint-disable-next-line
                      items.map(item =>{
                        if (item.nama === barang.nama_barang){
                          hrg = har + item.harga
@@ -291,7 +289,7 @@ class BuatPurchaseOrder extends Component {
           text: 'Silahkan Pilih Vendor Lain',
           showConfirmButton: true,
         })
-      } else {
+      } else { // eslint-disable-next-line
         var data = this.props.getPurchaseOrdersQuery;
           var orderid = '';
           data.purchaseOrders.map(request => {

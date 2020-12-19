@@ -47,7 +47,7 @@ class EditPermintaanBarang extends Component {
   displayRequestDetail(){
     const {permintaanBarang} = this.props.data;
     var listItem=[];
-    if(this.state.requestItems.length === 0){
+    if(this.state.requestItems.length === 0){ // eslint-disable-next-line
       permintaanBarang.listRequest.map(item => {
         const newItem = { nama: item.nama_barang, jumlah: item.jumlah_barang, satuan: item.satuan, jenis: item.jenis, status: item.status, harga: item.harga};
         listItem.push(newItem);
@@ -255,15 +255,11 @@ class EditPermintaanBarang extends Component {
 
   displayEditItem(){
     var nama='';
-    var jenis='';
-    var satuan='';
-    var jumlah='';
-    var harga=0;
+    var jumlah=''; // eslint-disable-next-line
     this.state.requestItems.map(item =>{
       if (item.nama === this.state.selected){
         nama = item.nama
         jumlah=item.jumlah
-        harga=item.harga
       }
     })
     return(
@@ -328,7 +324,7 @@ onUpdateItem(e){
     this.toggleModal();
     var sama = false;
     var jum = 0; var jenis= ''; var sat=''; var har=0;
-    const data = this.props.getBarangsQuery;
+    const data = this.props.getBarangsQuery; // eslint-disable-next-line
     data.barangs.map(bar =>{
       if(bar.nama_barang === this.state.nama){
         jenis = bar.jenis_barang
@@ -341,7 +337,7 @@ onUpdateItem(e){
       this.setState(state => {
         state.requestItems.push(newItem);
       });
-    } else {
+    } else { // eslint-disable-next-line
       this.state.requestItems.map(item => {
         if(item.nama === this.state.nama){
           sama = true;

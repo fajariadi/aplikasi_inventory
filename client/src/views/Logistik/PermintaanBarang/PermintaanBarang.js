@@ -74,7 +74,7 @@ class PermintaanBarang extends Component {
     var newKode = 'R';
     var kode = '';
     var nomor = 1;
-    var data = this.props.getPermintaanBarangsQuery;
+    var data = this.props.getPermintaanBarangsQuery; // eslint-disable-next-line
     data.permintaanBarangs.map(request => {
       if(request.kode !== ''){
         kode = request.kode

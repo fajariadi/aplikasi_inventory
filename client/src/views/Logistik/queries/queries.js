@@ -193,27 +193,6 @@ const getPurchaseOrdersQuery = gql`
 }
 `
 
-const getKaryawanQuery = gql`
-	query($id: ID){
-		karyawan(id: $id) {
-			nama
-			tanggal_lahir
-			jenis_kelamin
-			agama
-			tempat_lahir
-			alamat
-			no_kontak
-			email
-			jabatan
-			divisi{
-				nama
-				id
-			}
-			id
-		}
-	}
-`
-
 const getPemeliharaansQuery = gql`
 {
 	pemeliharaans {

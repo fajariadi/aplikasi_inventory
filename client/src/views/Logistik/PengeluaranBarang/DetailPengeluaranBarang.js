@@ -19,9 +19,6 @@ import {
 
 class DetailPengeluaranBarang extends Component {
 
-  constructor(props) {
-    super(props);
-  }
 
   displayPengeluaranBarangDetail(){
     const {pengeluaranBarang} = this.props.data;

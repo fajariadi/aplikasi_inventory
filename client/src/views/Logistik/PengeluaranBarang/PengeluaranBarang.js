@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {graphql} from 'react-apollo';
-import { Link, Redirect } from 'react-router-dom';
+import { Link} from 'react-router-dom';
 import * as compose from 'lodash.flowright';
 import Swal from 'sweetalert2';
 import {hapusPengeluaranBarang, getPermintaanBarangsQuery, getPengeluaranBarangsQuery, addPengeluaranBarang} from '../queries/queries';
@@ -48,10 +48,10 @@ class PengeluaranBarang extends Component {
     var data = this.props.getPermintaanBarangsQuery;
     if(data.loading){
       return (<div>Loading Permintaan...</div>);
-    } else {
+    } else { // eslint-disable-next-line
     return  data.permintaanBarangs.map(permintaan => {
         var lanjut = true;
-          if(permintaan.status === 'Disetujui'){
+          if(permintaan.status === 'Disetujui'){ // eslint-disable-next-line
             permintaan.listRequest.map(item => {
               if(item.status !== 'Ready'){
                 lanjut = false;
@@ -128,7 +128,7 @@ class PengeluaranBarang extends Component {
     var newKode = 'PE';
     var kode = '';
     var nomor = 1;
-    var data = this.props.getPengeluaranBarangsQuery;
+    var data = this.props.getPengeluaranBarangsQuery; // eslint-disable-next-line
     data.pengeluaranBarangs.map(request => {
       if(request.kode !== ''){
         kode = request.kode

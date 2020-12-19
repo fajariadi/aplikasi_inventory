@@ -48,7 +48,7 @@ class PenerimaanBarang extends Component {
     var data = this.props.getPurchaseOrdersQuery;
     if(data.loading){
       return (<div>Loading order...</div>);
-    } else {
+    } else { // eslint-disable-next-line
       return data.purchaseOrders.map(order => {
           if(order.status === 'Disetujui'){
             return(
@@ -119,7 +119,7 @@ class PenerimaanBarang extends Component {
     var newKode = 'PB';
     var kode = '';
     var nomor = 1;
-    var data = this.props.getPenerimaanBarangsQuery;
+    var data = this.props.getPenerimaanBarangsQuery; // eslint-disable-next-line
     data.penerimaanBarangs.map(request => {
       if(request.kode !== ''){
         kode = request.kode

@@ -169,11 +169,11 @@ class BuatPenerimaanBarang extends Component {
 
   Submit(jenis_usaha){
     if(jenis_usaha !== 'Perkakas'){
-        const {purchaseOrder} = this.props.data;
+        const {purchaseOrder} = this.props.data; // eslint-disable-next-line
         purchaseOrder.listItemPurchaseOrder.map(item => {
             var pers_id = '';
             var jumlah1=0;
-            var data = this.props.getPersediaanBarangsQuery;
+            var data = this.props.getPersediaanBarangsQuery; // eslint-disable-next-line
             data.persediaanBarangs.map(stock => {
                 if (item.nama_barang === stock.barang.nama_barang){
                     pers_id = stock.barang.id
@@ -189,8 +189,8 @@ class BuatPenerimaanBarang extends Component {
                     refetchQueries:[{query:getPersediaanBarangsQuery}],
                 });
             } else {
-                var id1='';
-                var data = this.props.getBarangsQuery;
+                var id1=''; // eslint-disable-next-line
+                var data = this.props.getBarangsQuery; // eslint-disable-next-line
                 data.barangs.map(bar => {
                     if(item.nama_barang === bar.nama_barang){
                         id1 = bar.id
@@ -207,11 +207,11 @@ class BuatPenerimaanBarang extends Component {
             }
         });
     } else {
-        const {purchaseOrder} = this.props.data;
+        const {purchaseOrder} = this.props.data; // eslint-disable-next-line
         purchaseOrder.listItemPurchaseOrder.map( item => {
             var data = this.props.getAllInventarisQuery;
             var inv_id = '';
-            var jumlah1=0;
+            var jumlah1=0; // eslint-disable-next-line
             data.allInventaris.map (inv => {
                 if (item.nama_barang === inv.barang.nama_barang){
                     inv_id = inv.barang.id
@@ -227,8 +227,8 @@ class BuatPenerimaanBarang extends Component {
                     refetchQueries:[{query:getAllInventarisQuery}],
                 });
             } else {
-                var id1='';
-                var data = this.props.getBarangsQuery;
+                var id1=''; // eslint-disable-next-line
+                var data = this.props.getBarangsQuery; // eslint-disable-next-line
                 data.barangs.map(bar => {
                     if(item.nama_barang === bar.nama_barang){
                         id1 = bar.id

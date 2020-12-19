@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {graphql} from 'react-apollo';
-import { Link, Redirect } from 'react-router-dom';
+import { Link} from 'react-router-dom';
 import * as compose from 'lodash.flowright';
 import Swal from 'sweetalert2';
 import {getPermintaanBarangQuery, getAllInventarisQuery, updateJumlahDipakaiInventaris, getPermintaanBarangsQuery, getPengeluaranBarangsQuery, getPersediaanBarangsQuery, getListRequestsQuery, getBarangsQuery, addPersediaanBarang, updateJumlahPersediaanBarang, updateStatusDonePermintaanBarang} from '../queries/queries';
@@ -168,11 +168,11 @@ class BuatPengeluaranBarang extends Component {
   }
 
   Submit(){
-    const {permintaanBarang} = this.props.data;
+    const {permintaanBarang} = this.props.data; // eslint-disable-next-line
     permintaanBarang.listRequest.map(item => {
         if(item.jenis !== 'Perkakas'){
             var data = this.props.getPersediaanBarangsQuery;
-            var jumlah1 = 0; var per_id='';
+            var jumlah1 = 0; var per_id=''; // eslint-disable-next-line
             data.persediaanBarangs.map(stock => {
                 if (item.nama_barang === stock.barang.nama_barang){
                     per_id = stock.barang.id
@@ -186,9 +186,9 @@ class BuatPengeluaranBarang extends Component {
                 },
                 refetchQueries:[{query:getPersediaanBarangsQuery}],
             });
-        } else {
+        } else { // eslint-disable-next-line
             var data = this.props.getAllInventarisQuery;
-            var inv_id = '';
+            var inv_id = ''; // eslint-disable-next-line
             data.allInventaris.map (inv => {
                 if (item.nama_barang === inv.barang.nama_barang){
                     inv_id = inv.barang.id

@@ -170,12 +170,11 @@ class BuatPermintaanBarang extends Component {
   displayEditItem(){
     var nama='';
     var jumlah='';
-    var harga=0;
+    // eslint-disable-next-line
     this.state.requestItems.map(item =>{
       if (item.nama === this.state.selected){
         nama = item.nama
         jumlah=item.jumlah
-        harga=item.harga
       }
     })
     return(
@@ -198,7 +197,7 @@ class BuatPermintaanBarang extends Component {
     this.toggleModal();
     var sama = false;
     var jum = 0; var jenis= ''; var sat=''; var har=0;
-    const data = this.props.getBarangsQuery;
+    const data = this.props.getBarangsQuery; // eslint-disable-next-line
     data.barangs.map(bar =>{
       if(bar.nama_barang === this.state.nama){
         jenis = bar.jenis_barang
@@ -211,7 +210,7 @@ class BuatPermintaanBarang extends Component {
       this.setState(state => {
         state.requestItems.push(newItem);
       });
-    } else {
+    } else { // eslint-disable-next-line
       this.state.requestItems.map(item => {
         if(item.nama === this.state.nama){
           sama = true;

@@ -108,7 +108,7 @@ class Pemeliharaan extends Component {
     var data = this.props.getKaryawansQuery;
     if(data.loading){
       return (<div>Loading karyawan...</div>);
-    } else {
+    } else { // eslint-disable-next-line
       return data.karyawans.map(karyawan => {
         if(karyawan.jabatan === 'Teknisi' && karyawan.divisi.nama === 'Logistic'){
           return(
@@ -130,7 +130,7 @@ class Pemeliharaan extends Component {
     this.toggleModal();
     var jumlah=0;
     const data = this.props.getAllInventarisQuery;
-    if (data){
+    if (data){ // eslint-disable-next-line
         data.allInventaris.map(inven =>{
         if(inven.id === this.state.barang_id){
           jumlah = inven.jumlah

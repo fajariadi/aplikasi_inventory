@@ -7,7 +7,7 @@ import {getPermintaanBarangsQuery} from '../../views/Logistik/queries/queries';
 
 import {  AppNavbarBrand, AppSidebarToggler } from '@coreui/react';
 import sygnet from '../../assets/img/brand/sygnet.svg'
-
+import * as compose from 'lodash.flowright';
 const propTypes = {
   children: PropTypes.node,
 };
@@ -27,7 +27,7 @@ class DefaultHeader extends Component {
     var jumlah = 0;
     if(data.loading){
       return (<div>Loading Pemeliharaan...</div>);
-    } else {
+    } else { // eslint-disable-next-line
       data.permintaanBarangs.map(permintaan => {
         if(permintaan.status === 'Belum Disetujui'){
           jumlah++
@@ -82,6 +82,7 @@ class DefaultHeader extends Component {
 DefaultHeader.propTypes = propTypes;
 DefaultHeader.defaultProps = defaultProps;
 
-export default 
-graphql(getPermintaanBarangsQuery, {name:"getPermintaanBarangsQuery"})
-(DefaultHeader);
+export default compose (
+  graphql(getPermintaanBarangsQuery, {name:"getPermintaanBarangsQuery"})
+)(DefaultHeader);
+
