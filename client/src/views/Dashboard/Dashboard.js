@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 
-
-
-
 class Dashboard extends Component {
   constructor(props) {
     super(props);
@@ -14,14 +11,11 @@ class Dashboard extends Component {
     this.state = {
       dropdownOpen: false,
       radioSelected: 2,
-    }; // eslint-disable-next-line
-    const username= localStorage.getItem("username")
-
-    let loggedIn = false 
+    };
       
     this.state = {
       nama: localStorage.getItem("nama"),
-      loggedIn
+      loggedIn: false
     }
   }
 
@@ -33,9 +27,7 @@ class Dashboard extends Component {
     }
     return (
       <div className="animated fadeIn">
-        
 
-       
       </div>
     );
   }
