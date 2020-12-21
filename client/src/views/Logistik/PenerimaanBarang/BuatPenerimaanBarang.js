@@ -39,18 +39,7 @@ class BuatPenerimaanBarang extends Component {
     });
   }
 
-  displayPurchaseOrder(){
-    var data = this.props.getPurchaseOrdersQuery;
-    if(data.loading){
-      return (<div>Loading order...</div>);
-    } else {
-      return data.purchaseOrders.map(order => {
-          return(
-            <option key={order.id} value={order.id}>{order.kode}</option>
-          )
-      });
-    }
-  }
+  
   displayNewPenerimaanbarang(){
     var data = this.props.getPenerimaanBarangsQuery;
     var tanggal = '';

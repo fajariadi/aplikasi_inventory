@@ -70,7 +70,6 @@ export default {
           url: '/vendor/vendor',
           icon: 'icon-home',
         },
-
       ],
     }, 
   ],

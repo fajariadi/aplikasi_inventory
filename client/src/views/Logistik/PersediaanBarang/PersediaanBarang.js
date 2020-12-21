@@ -61,9 +61,6 @@ class PersediaanBarang extends Component {
             <Card>
               <CardHeader>
                 <i className="fa fa-align-justify"></i>Persediaan Barang
-                <Button size="sm" color="primary" className="float-right mb-0">
-                  <i className="fa fa-plus"></i> Tambah Persediaan Barang
-                </Button>
               </CardHeader>
               <CardBody>
                 <Table hover bordered striped responsive size="sm">
@@ -81,18 +78,6 @@ class PersediaanBarang extends Component {
                   {this.displayPersediaanBarangs()}
                   </tbody>
                 </Table>
-                <nav>
-                  <Pagination>
-                    <PaginationItem><PaginationLink previous tag="button">Prev</PaginationLink></PaginationItem>
-                    <PaginationItem active>
-                      <PaginationLink tag="button">1</PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem><PaginationLink tag="button">2</PaginationLink></PaginationItem>
-                    <PaginationItem><PaginationLink tag="button">3</PaginationLink></PaginationItem>
-                    <PaginationItem><PaginationLink tag="button">4</PaginationLink></PaginationItem>
-                    <PaginationItem><PaginationLink next tag="button">Next</PaginationLink></PaginationItem>
-                  </Pagination>
-                </nav>
               </CardBody>
             </Card>
           </Col>
