@@ -22,6 +22,15 @@ import {
   Modal, ModalBody, ModalHeader
 } from 'reactstrap';
 
+import Table1 from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
+import TablePagination from '@material-ui/core/TablePagination';
+
 class PengeluaranBarang extends Component {
 
   constructor(props) {
@@ -34,9 +43,25 @@ class PengeluaranBarang extends Component {
       modalIsOpen: false,  
       harga: 0,
       sewa: 0,
+      page: 0, 
+      setPage: 0,
+      rowsPerPage: 5,
+      setRowsPerPage: 5,
     };
   }
 
+  getCountPengeluaranBarang(){
+    var data = this.props.getPengeluaranBarangsQuery;
+    var no = 0;
+    if (data.loading) {
+      return
+    } else {
+      data.pengeluaranBarangs.map(barang => {
+        no++
+      })
+    }
+    return no
+  }
  
   toggleModal(){
     this.setState({
@@ -76,23 +101,25 @@ class PengeluaranBarang extends Component {
       return data1.pengeluaranBarangs.map(request => {
         no++;
         return(
-          <tr key={request.id}>
-            <td>{no}</td>
-            <td>{request.kode}</td>
-            <td>{request.tanggal}</td>
-            <td>
-              <Link to={`/pengeluaranBarang/detailPengeluaranBarang/${request.id}`}>
+          <TableRow key={request.id}>
+            <TableCell component="th" scope="row">
+              {no}
+            </TableCell>
+            <TableCell align="center">{request.kode}</TableCell>
+            <TableCell align="center">{request.tanggal}</TableCell>
+            <TableCell align="center">
+            <Link to={`/pengeluaranBarang/detailPengeluaranBarang/${request.id}`}>
               <Button color="primary" size="sm">
                 <i className="fa fa-file"></i>
                 </Button>
               </Link>
-            </td>
-            <td>
-              <Button onClick={this.onDelete.bind(this, request.id)} color="danger" size="sm">
+            </TableCell>
+            <TableCell align="center">
+            <Button onClick={this.onDelete.bind(this, request.id)} color="danger" size="sm">
                 <i className="fa fa-trash"></i>
               </Button>
-            </td>
-          </tr>
+            </TableCell>
+          </TableRow>
         );
       });
     }
@@ -161,6 +188,28 @@ class PengeluaranBarang extends Component {
       this.props.history.push(`/pengeluaranBarang/buatPengeluaranBarang/${this.state.permintaan_id}`);
     }
   }
+
+  handleChangePage = (event, newPage) => {
+    this.setState({ setPage : newPage})
+  };
+
+  handleChangeRowsPerPage = (event) => {
+    this.setState({ 
+      setRowsPerPage : parseInt(event.target.value, 10),
+      rowsPerPage : parseInt(event.target.value, 10),
+      setPage : 0
+    })
+  };
+
+  displayTombolBuatPengeluaran(){
+    if (this.state.jabatan !== 'Admin'){
+      return(
+        <Button size="sm" color="primary" className="float-right mb-0" onClick={this.toggleModal.bind(this)}>
+          <i className="fa fa-plus"></i> Buat Pengeluaran Barang
+        </Button>
+      )
+    }
+  }
   render() {
     return (
       <div className="animated fadeIn">
@@ -168,44 +217,41 @@ class PengeluaranBarang extends Component {
            <Col>
             <Card>
               <CardHeader>
-                <i className="fa fa-align-justify"></i>Pengeluaran Barang
-                <Button size="sm" color="primary" className="float-right mb-0" onClick={this.toggleModal.bind(this)}>
-                  <i className="fa fa-plus"></i> Buat Pengeluaran Barang
-                </Button>
+                Pengeluaran Barang
+                {this.displayTombolBuatPengeluaran()}
               </CardHeader>
               <CardBody>
-                <Table hover bordered striped responsive size="sm">
-                  <thead align="center">
-                  <tr>
-                    <th>No</th>
-                    <th>Kode</th>
-                    <th>Tanggal</th>
-                    <th>Detail</th>
-                    <th>Hapus</th>
-                  </tr>
-                  </thead>
-                  <tbody align="center">
-                  {this.displayPengeluaranBarang()}
-                  </tbody>
-                </Table>
-                <nav>
-                  <Pagination>
-                    <PaginationItem><PaginationLink previous tag="button">Prev</PaginationLink></PaginationItem>
-                    <PaginationItem active>
-                      <PaginationLink tag="button">1</PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem><PaginationLink tag="button">2</PaginationLink></PaginationItem>
-                    <PaginationItem><PaginationLink tag="button">3</PaginationLink></PaginationItem>
-                    <PaginationItem><PaginationLink tag="button">4</PaginationLink></PaginationItem>
-                    <PaginationItem><PaginationLink next tag="button">Next</PaginationLink></PaginationItem>
-                  </Pagination>
-                </nav>
+                <TableContainer component={Paper}>
+                  <Table1 aria-label="simple table">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>No</TableCell>
+                        <TableCell align="center">Kode</TableCell>
+                        <TableCell align="center">Tanggal</TableCell>
+                        <TableCell align="center">Detail</TableCell>
+                        <TableCell align="center">Hapus</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                    {this.displayPengeluaranBarang()}
+                    </TableBody>
+                  </Table1>
+                </TableContainer>
+                <TablePagination
+                  rowsPerPageOptions={[5, 10, 25]}
+                  component="div"
+                  count={this.getCountPengeluaranBarang()}
+                  rowsPerPage={this.state.rowsPerPage}
+                  page={this.state.setPage}
+                  onChangePage={this.handleChangePage}
+                  onChangeRowsPerPage={this.handleChangeRowsPerPage}
+                />
               </CardBody>
             </Card>
           </Col>
         </Row>
         <Modal isOpen={this.state.modalIsOpen}>
-          <ModalHeader>Pilih Permintaangeluaran</ModalHeader>
+          <ModalHeader>Pilih Permintaan Barang</ModalHeader>
           <ModalBody>
             <Form>
               <FormGroup> 

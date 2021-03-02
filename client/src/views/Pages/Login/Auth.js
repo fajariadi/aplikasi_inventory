@@ -16,7 +16,30 @@ import { Redirect, Link } from 'react-router-dom';
 
 class Auth extends Component {
 
-  isLogin(){
+  displayError(){
+    return (
+      <div className="app flex-row align-items-center">
+      <Container>
+        <Row className="justify-content-center">
+          <Col md="5">
+            <CardGroup>
+              <Card className="p-4">
+                <CardBody className="text-center">
+                  <h1 className="text-center">Login</h1>
+                  <p className="text-muted text-center">Username atau Password Anda Salah</p>
+                  <Link to="/login" >
+                    <Button color="primary" >Coba Lagi</Button>
+                  </Link>
+                </CardBody>
+              </Card>
+            </CardGroup>
+          </Col>
+        </Row>
+      </Container>
+    </div>
+    )
+  }
+  doLogin(){
     const {akun} = this.props.data;
     if(akun){
       if(akun.karyawan.divisi.nama === 'Logistic' ||  akun.karyawan.divisi.nama === 'Purchasing' || akun.karyawan.jabatan === 'Admin' ){
@@ -39,57 +62,17 @@ class Auth extends Component {
           <Redirect to="/dashboardLogistik/dashboardLogistik" />
         )
       } else {
-        return (
-          <div className="app flex-row align-items-center">
-          <Container>
-            <Row className="justify-content-center">
-              <Col md="5">
-                <CardGroup>
-                  <Card className="p-4">
-                    <CardBody className="text-center">
-                      <h1 className="text-center">Login</h1>
-                      <p className="text-muted text-center">Username atau Password Anda Salah</p>
-                      <Link to="/login" >
-                        <Button color="primary" >Coba Lagi</Button>
-                      </Link>
-                    </CardBody>
-                  </Card>
-                </CardGroup>
-              </Col>
-            </Row>
-          </Container>
-        </div>
-        )
+        return(this.displayError())
       }
     } else {
-      return(
-        <div className="app flex-row align-items-center">
-          <Container>
-            <Row className="justify-content-center">
-              <Col md="5">
-                <CardGroup>
-                  <Card className="p-4">
-                    <CardBody className="text-center">
-                      <h1 className="text-center">Login</h1>
-                      <p className="text-muted text-center">Username atau Password Anda Salah</p>
-                      <Link to="/login" >
-                        <Button color="primary" >Coba Lagi</Button>
-                      </Link>
-                    </CardBody>
-                  </Card>
-                </CardGroup>
-              </Col>
-            </Row>
-          </Container>
-        </div>
-      )
+      return(this.displayError())
     }
   }
   
   render() { 
     return (
       <div>
-        {this.isLogin()}
+        {this.doLogin()}
       </div>
     );
   }

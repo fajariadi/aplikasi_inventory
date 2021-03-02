@@ -3,11 +3,8 @@ import { Link, Redirect } from 'react-router-dom';
 import {graphql} from 'react-apollo';
 import * as compose from 'lodash.flowright';
 import Swal from 'sweetalert2';
-import { hapusPermintaanBarangMutation, getPermintaanBarangsQuery, getBarangsQuery, getListRequestsQuery, addListRequestMutation} from '../queries/queries';
+import { hapusPermintaanBarangMutation,updateDivisiPermintaanBarangMutation, getPermintaanBarangsQuery, getBarangsQuery, getListRequestsQuery, addListRequestMutation, getDivisisQuery} from '../queries/queries';
 import {  
-  Card, 
-  CardBody, 
-  CardHeader, 
   Col, 
   Button, 
   Row, 
@@ -20,6 +17,11 @@ import {
   ModalHeader, 
   ModalBody,
 } from 'reactstrap';
+
+import Accordion from '@material-ui/core/Accordion';
+import AccordionSummary from '@material-ui/core/AccordionSummary';
+import AccordionDetails from '@material-ui/core/AccordionDetails';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore'; 
 
 class BuatPermintaanBarang extends Component {
   constructor(props){
@@ -42,6 +44,21 @@ class BuatPermintaanBarang extends Component {
       selected: '',
       loggedIn,
       modalEditIsOpen: false,
+      panel1: true,
+      panel2: true,
+    }
+  }
+
+  displayDivisis(){
+    var data = this.props.getDivisisQuery;
+    if(data.loading){
+      return
+    } else {
+      return data.divisis.map(divisi => {
+        return(
+          <option value={divisi.id}>{divisi.nama}</option>
+        )
+      })
     }
   }
 
@@ -56,7 +73,7 @@ class BuatPermintaanBarang extends Component {
       return(
         tanggal = request.tanggal,
         status = request.status,
-        divisi = request.akun.karyawan.divisi.nama,
+        divisi = request.divisi.id,
         kode = request.kode,
         nama = request.akun.karyawan.nama
       );
@@ -103,7 +120,9 @@ class BuatPermintaanBarang extends Component {
                   <Label htmlFor="name">Divisi</Label>
                 </Col>
                 <Col md="9">
-                <Input type="text" name="kode" id="kode" value={divisi} disabled></Input> 
+                <Input type="select" defaultValue={divisi} name="vendor" id="vendor"  onChange={(e) =>this.updateDivisiPermintaanBarang(kode, e.target.value)} required>
+                  {this.displayDivisis()}
+                </Input>
                 </Col>  
               </FormGroup>
             </Col>
@@ -122,6 +141,16 @@ class BuatPermintaanBarang extends Component {
       </div>
       
     );
+  }
+
+  updateDivisiPermintaanBarang(kode1, id){
+    this.props.updateDivisiPermintaanBarangMutation({
+      variables:{
+        kode:kode1,
+        divisi_id: id,
+      },
+      refetchQueries:[{query:getPermintaanBarangsQuery}],
+    });
   }
 
   onDelete(){
@@ -157,7 +186,7 @@ class BuatPermintaanBarang extends Component {
 
   toggleModal(){
     this.setState({
-      modalIsOpen: ! this.state.modalIsOpen
+      modalIsOpen: ! this.state.modalIsOpen,
     });
   }
   toggleModalEdit(nama){
@@ -222,7 +251,6 @@ class BuatPermintaanBarang extends Component {
           requestItems: state.requestItems.map(
             el => el.nama === this.state.nama? { ...el, jumlah : jum }: el
           )
-        
         }))
       } else {
         const newItem = { nama: this.state.nama, jumlah: this.state.jumlah, satuan: sat, jenis: jenis, harga: har};
@@ -245,7 +273,6 @@ class BuatPermintaanBarang extends Component {
         showConfirmButton: true,
       })
     } else {
-
       var data = this.props.getPermintaanBarangsQuery;
       var request_id = '';
       data.permintaanBarangs.map(request => {
@@ -294,7 +321,59 @@ class BuatPermintaanBarang extends Component {
     
     }))
   }
+
+  displayBarangRequest(){
+    return(
+      <Table hover bordered striped responsive size="sm">
+        <thead align="center">
+          <tr>
+            <th>Nama Barang</th>
+            <th>Jumlah</th>
+            <th>Satuan</th>
+            <th>Jenis Barang</th>
+            <th>Edit</th>
+            <th>Delete</th>
+          </tr>
+        </thead>
+        <tbody align="center">
+          {
+            this.state.requestItems.map(item => {
+              return (
+                <tr>
+                  <td>{item.nama}</td>
+                  <td>{item.jumlah}</td>
+                  <td>{item.satuan}</td>
+                  <td>{item.jenis}</td>
+                  <td>
+                    <Button onClick={this.toggleModalEdit.bind(this, item.nama)} color="success" size="sm">
+                      <i className="fa fa-pencil"></i>
+                    </Button>
+                  </td>
+                  <td>
+                    <Button onClick={this.onDeleteItem.bind(this, item.nama)} color="danger" size="sm">
+                      <i className="fa fa-trash"></i>
+                    </Button>
+                  </td>
+                </tr>
+              )
+            })
+          }
+        </tbody>
+      </Table>
+    )
+  }
   
+  handlePanel1Change = (panel) => (event) => {
+    this.setState({
+      panel1: ! this.state.panel1
+    });
+  };
+  handlePanel2Change = (panel) => (event) => {
+    this.setState({
+      panel2: ! this.state.panel2
+    });
+  };
+
   render() {
     if(this.state.loggedIn === false){
       return <Redirect to="/login" />
@@ -303,78 +382,43 @@ class BuatPermintaanBarang extends Component {
       <div className="animated fadeIn">
         <Row>
           <Col>
-            <Card>
-              <CardHeader>
-                Form Permintaan Barang
-                <Link to="/permintaanBarang/permintaanBarang" className={'float-right mb-0'}>
-                  <Button color="danger" onClick={this.onDelete.bind(this)}>
-                      Batal
-                  </Button>
-                </Link>
-              </CardHeader>
-              <CardBody>
-               <Form onSubmit={(e) => {this.addItem(e)}}>
+          <Accordion square expanded={this.state.panel1} onChange={this.handlePanel1Change()}>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="panel1a-content"
+              id="panel1a-header"
+            >
+            Form Permintaan Barang
+            </AccordionSummary>
+            <AccordionDetails>
+              <Form onSubmit={(e) => {this.addItem(e)}}>
                 <Row form>
                   <Col className="text-center">
                     {this.displayNewRequest()}
                   </Col>
-                  <Col md="2">
-                    
-                  </Col>
                 </Row>
-                
-                </Form>
-                <hr />
-                <Row>
-                  <Col>
-                    <h5>Daftar Barang</h5>
-                  </Col>
-                  <Col >
-                    <Button onClick={this.toggleModal.bind(this)} size="sm" color="success" className={'float-right mb-0'}><i className="fa fa-plus-circle"></i> Tambah Barang</Button>
-                  </Col>
-                </Row>
-                  <Table hover bordered striped responsive size="sm">
-                    <thead align="center">
-                    <tr>
-                      <th>Nama Barang</th>
-                      <th>Jumlah</th>
-                      <th>Satuan</th>
-                      <th>Jenis Barang</th>
-                      <th>Edit</th>
-                      <th>Delete</th>
-                    </tr>
-                    </thead>
-                    <tbody align="center">
-                      {
-                         this.state.requestItems.map(item => {
-                          return(
-                            <tr>
-                              <td>{item.nama}</td>
-                              <td>{item.jumlah}</td>
-                              <td>{item.satuan}</td>
-                              <td>{item.jenis}</td>
-                              <td>
-                                <Button onClick={this.toggleModalEdit.bind(this, item.nama)} color="success" size="sm">
-                                  <i className="fa fa-pencil"></i>
-                                </Button>
-                              </td>
-                              <td>
-                                <Button onClick={this.onDeleteItem.bind(this, item.nama)} color="danger" size="sm">
-                                  <i className="fa fa-trash"></i>
-                                </Button>
-                              </td>
-                            </tr>
-                          ) 
-                         })
-                      }
-                    </tbody>
-                  </Table>
-                  <br />
-                  <div align="center">  
-                    <Button onClick={(e) => {this.submitRequest(e)}} color="primary">Submit</Button>
-                  </div>
-              </CardBody>
-            </Card>
+              </Form>
+            </AccordionDetails>
+          </Accordion>
+          <Accordion square expanded={this.state.panel2} onChange={this.handlePanel2Change()}>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="panel1a-content"
+              id="panel1a-header"
+            >
+            Daftar Barang
+            </AccordionSummary>
+            <AccordionDetails>
+              {this.displayBarangRequest()}
+            </AccordionDetails>
+            <AccordionDetails>
+              <Button onClick={this.toggleModal.bind(this)} size="sm" color="success" className="ml-3 mb-0"><i className="fa fa-plus-circle"></i> Tambah Barang</Button>   
+            </AccordionDetails>
+          </Accordion>
+          <div align="center">  
+            <Button onClick={(e) => { this.submitRequest(e) }} color="primary" size="sm">Submit</Button>
+            <Button color="danger" onClick={this.onDelete.bind(this)} size="sm">Batal</Button>
+          </div>      
           </Col>
         </Row>
         <Modal isOpen={this.state.modalIsOpen}>
@@ -384,13 +428,13 @@ class BuatPermintaanBarang extends Component {
               <FormGroup>
                 <Label htmlFor="name">Nama Barang</Label>
                 <Input type="select" name="nama" onChange={(e) =>this.setState({nama:e.target.value})} id="nama" required>
-                  <option>Nama Barang</option>
+                  <option value="">Nama Barang</option>
                   {this.displayBarang()}
                 </Input>
               </FormGroup>
               <FormGroup>
                 <Label htmlFor="name">Jumlah Barang</Label>
-                <Input type="number" id="jumlah" onChange={(e) =>this.setState({jumlah:e.target.value})} placeholder="Jumlah Barang" required />
+                <Input type="number" id="jumlah" onChange={(e) =>this.setState({jumlah:e.target.value})} min="1" placeholder="Jumlah Barang" required />
               </FormGroup>
               <Button type="submit" color="primary">Tambah</Button>
               <Button color="danger" onClick={this.toggleModal.bind(this)}>Batal</Button>
@@ -414,9 +458,11 @@ class BuatPermintaanBarang extends Component {
 
 export default compose( 
   graphql(getBarangsQuery, {name:"getBarangsQuery"}),
+  graphql(getDivisisQuery, {name:"getDivisisQuery"}),
   graphql(getPermintaanBarangsQuery, {name:"getPermintaanBarangsQuery"}),
   graphql(getListRequestsQuery, {name:"getListRequestsQuery"}),
   graphql(addListRequestMutation, {name:"addListRequestMutation"}),
   graphql(hapusPermintaanBarangMutation, {name:"hapusPermintaanBarangMutation"}),
+  graphql(updateDivisiPermintaanBarangMutation, {name:"updateDivisiPermintaanBarangMutation"}),
   
 )(BuatPermintaanBarang);

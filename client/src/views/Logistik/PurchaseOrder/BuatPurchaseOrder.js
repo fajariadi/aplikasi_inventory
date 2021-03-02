@@ -117,8 +117,6 @@ class BuatPurchaseOrder extends Component {
   updateVendorPurchaseOrder(order_id, vendor){
     var id = vendor.substring(0,24);
     var jenis = vendor.substring(25);
-    console.log(id);
-    console.log(jenis);
     this.setState({jenis_usaha: jenis});
     this.setState({orderid: order_id});
     this.props.updateVendorPurchaseOrderMutation({

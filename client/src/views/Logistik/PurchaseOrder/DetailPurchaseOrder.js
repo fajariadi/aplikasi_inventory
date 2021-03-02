@@ -107,8 +107,8 @@ class DetailPurchaseOrder extends Component {
     if (this.state.akun_id === akun_id && status !== 'Disetujui'){
       return(
         <div align="center">
-            <Button onClick={this.onDelete.bind(this, this.props.match.params.id)} color="danger">
-              <i className="fa fa-trash">Hapus Permintaan Barang</i>
+            <Button onClick={this.onDelete.bind(this, this.props.match.params.id, status)} color="danger">
+              <i className="fa fa-trash">Hapus Pembelian Barang</i>
             </Button>
         </div>
       )
@@ -116,14 +116,14 @@ class DetailPurchaseOrder extends Component {
   }
 
   renderElement2(tanggal){
-    if(this.state.divisi ===  "Logistic" && tanggal === ''){
+    if(this.state.divisi === "Logistic" && tanggal === ''){
       return(
         <div align="center">
             <Button onClick={this.onSetujuiPurchaseOrder.bind(this, this.props.match.params.id)} color="success">
-              <i className="fa fa-check">Setujui Permintaan Barang</i>
+              <i className="fa fa-check">Pembelian Disetujui</i>
             </Button>
             <Button onClick={this.onTolakPurchaseOrder.bind(this, this.props.match.params.id)} color="danger">
-              <i className="fa fa-times">Tolak Permintaan Barang</i>
+              <i className="fa fa-times">Pembelian Ditolak</i>
             </Button>
         </div> 
       )
@@ -200,7 +200,7 @@ class DetailPurchaseOrder extends Component {
     })
   }
 
-  onDelete(orderid){
+  onDelete(orderid, status){
     Swal.fire({
       title: 'Apakah anda Yakin?',
       icon: 'warning',
@@ -210,6 +210,15 @@ class DetailPurchaseOrder extends Component {
       confirmButtonText: 'Ya, Saya Yakin!'
     }).then((result) => {
       if (result.isConfirmed) {
+        if(status === 'Belum Disetujui'){
+          this.props.updateStatusListRequestOnOrder({
+            variables:{
+              order_id: orderid,
+              status: 'Active',
+            },
+            refetchQueries:[{query:getListRequestsQuery}],
+          });
+        }
         this.props.hapusPurchaseOrderMutation({
           variables:{
             id: orderid,        
@@ -228,6 +237,7 @@ class DetailPurchaseOrder extends Component {
           'Pembelian Barang Telah Dihapus',
           'success'
         )
+
       }
     })
    

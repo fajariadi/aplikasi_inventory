@@ -207,6 +207,12 @@ const PermintaanBarangType = new GraphQLObjectType({
 			resolve(parent,args){
 				return ListRequest.find({request_id: parent.id});
 			}
+		}, 
+		divisi: {
+			type: DivisiType,
+			resolve(parent,args){
+				return Divisi.findById(parent.divisi_id)
+			}
 		}
 	})
 });
@@ -538,7 +544,7 @@ const RootQuery = new GraphQLObjectType({
 			type: PengeluaranBarangType,
 			args: {id:{type:GraphQLID}},
 			resolve(parent,args){
-				return PengeluaranBarang.findById(args.id);
+				return PengeluaranBarang.findById(args.id); 
 			}
 		},
 		pengeluaranBarangs:{
@@ -693,15 +699,17 @@ const Mutation = new GraphQLObjectType({
 				tanggal: {type: new GraphQLNonNull(GraphQLString)},
 				status: {type: new GraphQLNonNull(GraphQLString)},
 				kode: {type: new GraphQLNonNull(GraphQLString)},
+				divisi_id: {type: new GraphQLNonNull(GraphQLString)},
 				akun_id: {type: new GraphQLNonNull(GraphQLString)},
 				tanggal_setuju: {type: new GraphQLNonNull(GraphQLString)},
 				disetujui_id: {type: new GraphQLNonNull(GraphQLString)},
 			},
 			resolve(parent, args){
-				let permintaanBarang = new PermintaanBarang({
+				let permintaanBarang = new PermintaanBarang({       
 					tanggal: args.tanggal,
 					status:args.status,
 					kode: args.kode,
+					divisi_id: args.divisi_id,
 					akun_id: args.akun_id,
 					tanggal_setuju: args.tanggal_setuju,
 					disetujui_id: args.disetujui_id,
@@ -728,6 +736,16 @@ const Mutation = new GraphQLObjectType({
 			},
 			resolve(parent, args){
 				return PermintaanBarang.findOneAndUpdate({_id: args.id}, {status: args.status})
+			}
+		},
+		updateDivisiPermintaanBarang:{
+			type: PermintaanBarangType,
+			args: {
+				kode:{type:GraphQLString},
+				divisi_id: {type: new GraphQLNonNull(GraphQLString)},
+			},
+			resolve(parent, args){
+				return PermintaanBarang.findOneAndUpdate({kode: args.kode}, {divisi_id: args.divisi_id})
 			}
 		},
 		hapusPermintaanBarang:{
@@ -1162,7 +1180,7 @@ const Mutation = new GraphQLObjectType({
 					kode: args.kode,
 					tanggal: args.tanggal,
 					akun_id: args.akun_id,
-					permintaan_id:  args.permintaan_id,
+					permintaan_id: args.permintaan_id,
 				});
 				return pengeluaranBarang.save();
 			}
@@ -1183,8 +1201,8 @@ const Mutation = new GraphQLObjectType({
 				karyawan_id: {type: new GraphQLNonNull(GraphQLID)},
 				inventaris_id: {type: new GraphQLNonNull(GraphQLID)},
 			},
-			resolve(parent, args){
-				let pemeliharaan = new Pemeliharaan({
+			resolve(parent, args){ 
+				let pemeliharaan = new Pemeliharaan({ 
 					status: args.status,
 					jumlah: args.jumlah,
 					tanggal: args.tanggal,
@@ -1202,7 +1220,7 @@ const Mutation = new GraphQLObjectType({
 			}
 		},
 		updateStatusPemeliharaan:{
-			type: PemeliharaanType,
+			type: PemeliharaanType,    
 			args: { 
 				id: {type:GraphQLID},
 				status: {type: new GraphQLNonNull(GraphQLString)},			
@@ -1229,7 +1247,7 @@ const Mutation = new GraphQLObjectType({
 			}
 		},
 		editAkun:{
-			type: AkunType,
+			type: AkunType, 
 			args: { 
 				id: {type:GraphQLID},
 				username: {type: new GraphQLNonNull(GraphQLString)},

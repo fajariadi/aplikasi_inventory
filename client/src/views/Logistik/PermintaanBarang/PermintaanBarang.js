@@ -5,6 +5,15 @@ import * as compose from 'lodash.flowright';
 import { getPermintaanBarangsQuery, addPermintaanBarangMutation, hapusPermintaanBarangMutation, getListRequestsQuery, hapusManyListRequestMutation} from '../queries/queries';
 import { Button, Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Row, Table } from 'reactstrap';
 
+import Table1 from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
+import TablePagination from '@material-ui/core/TablePagination';
+
 class PermintaanBarang extends Component {
 
    constructor(props){
@@ -17,6 +26,7 @@ class PermintaanBarang extends Component {
       }
     this.state = {
       akun_id: localStorage.getItem("user_id"),
+      jabatan: localStorage.getItem("jabatan"),
       kode:'',
       nama:'',
       jumlah:'',
@@ -24,8 +34,25 @@ class PermintaanBarang extends Component {
       div_id:'',
       request_id:'',
       addRequest:false,
-      loggedIn
+      loggedIn,
+      page: 0, 
+      setPage: 0,
+      rowsPerPage: 5,
+      setRowsPerPage: 5,
       }
+  }
+
+  getCountPermintaanBarang(){
+    var data = this.props.getPermintaanBarangsQuery;
+    var no = 0;
+    if (data.loading) {
+      return
+    } else {
+      data.permintaanBarangs.map(barang => {
+        no++
+      })
+    }
+    return no
   }
 
   onDelete(request_id){
@@ -52,20 +79,22 @@ class PermintaanBarang extends Component {
       return data1.permintaanBarangs.map(request => {
         no++;
         return(
-          <tr key={request.id}>
-            <td>{no}</td>
-            <td>{request.kode}</td>
-            <td>{request.akun.karyawan.divisi.nama}</td>
-            <td>{request.tanggal}</td>
-            <td>{request.status}</td>
-            <td>
+          <TableRow key={request.id}>
+            <TableCell component="th" scope="row">
+              {no}
+            </TableCell>
+            <TableCell align="center">{request.kode}</TableCell>
+            <TableCell align="center">{request.divisi.nama}</TableCell>
+            <TableCell align="center">{request.tanggal}</TableCell>
+            <TableCell align="center">{request.status}</TableCell>
+            <TableCell align="center">
               <Link to={`/permintaanBarang/detailPermintaanBarang/${request.id}`}>
-              <Button color="primary" size="sm">
-                <i className="fa fa-file"></i>
+                <Button color="primary" size="sm">
+                  <i className="fa fa-file"></i>
                 </Button>
               </Link>
-            </td>
-          </tr>
+            </TableCell>
+          </TableRow>
         );
       });
     }
@@ -96,16 +125,39 @@ class PermintaanBarang extends Component {
   addRequestHandler(){
     this.props.addPermintaanBarangMutation({
       variables:{
-        tanggal: new Date().toLocaleDateString(),
+        tanggal: new Date().toLocaleDateString(), 
         status: 'Belum Disetujui',
         akun_id: this.state.akun_id,
         kode: this.getKodeBaru(),
+        divisi_id: localStorage.getItem("divisi_id"),
         tanggal_setuju: '',
         disetujui_id: '5f7d7b275e9e27240c35abcf',
       },
       refetchQueries:[{query:getPermintaanBarangsQuery}],
     });
     this.props.history.push("/permintaanBarang/buatPermintaanBarang");
+  }
+
+  handleChangePage = (event, newPage) => {
+    this.setState({ setPage : newPage})
+  };
+
+  handleChangeRowsPerPage = (event) => {
+    this.setState({ 
+      setRowsPerPage : parseInt(event.target.value, 10),
+      rowsPerPage : parseInt(event.target.value, 10),
+      setPage : 0
+    })
+  };
+
+  displayTombolBuatPermintaan(){
+    if (this.state.jabatan !== 'Admin'){
+      return(
+        <Button color="primary" onClick={this.addRequestHandler.bind(this)} className={'float-right mb-0'} size="sm">
+          <i className="fa fa-plus mr-2"></i>Buat Permintaan Barang
+        </Button>
+      )
+    }
   }
 
   render() {
@@ -118,48 +170,36 @@ class PermintaanBarang extends Component {
           <Col>
             <Card>
               <CardHeader>
-                <Row>
-                <Col>
-                  <h5>Daftar Permintaan Barang</h5>
-                </Col>
-                <Col>
-                    <Button color="primary" onClick={this.addRequestHandler.bind(this)} className={'float-right mb-0'}>
-                    <i className="fa fa-plus mr-2"></i>Buat Permintaan Barang
-                    </Button>
-                  
-                </Col>
-                </Row>
+                  Daftar Permintaan Barang
+                  {this.displayTombolBuatPermintaan()} 
               </CardHeader>
               <CardBody>
-                <Table hover bordered striped responsive size="sm">
-                  <thead align="center">
-                  <tr>
-                    <th>No</th>
-                    <th>Kode</th>
-                    <th>Divisi</th>
-                    <th>Tanggal</th>
-                    <th>Status</th>
-                    <th>Aksi</th>
-                    
-                  </tr>
-                  </thead>
-                  <tbody align="center">
-                  {this.displayRequest()}
-                  </tbody>
-                </Table>
-                
-                  <nav>
-                    <Pagination>
-                      <PaginationItem><PaginationLink previous tag="button">Prev</PaginationLink></PaginationItem>
-                      <PaginationItem active>
-                        <PaginationLink tag="button">1</PaginationLink>
-                      </PaginationItem>
-                      <PaginationItem><PaginationLink tag="button">2</PaginationLink></PaginationItem>
-                      <PaginationItem><PaginationLink tag="button">3</PaginationLink></PaginationItem>
-                      <PaginationItem><PaginationLink tag="button">4</PaginationLink></PaginationItem>
-                      <PaginationItem><PaginationLink next tag="button">Next</PaginationLink></PaginationItem>
-                    </Pagination>
-                  </nav>
+                <TableContainer component={Paper}>
+                  <Table1 aria-label="simple table">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>No</TableCell>
+                        <TableCell align="center">Kode</TableCell>
+                        <TableCell align="center">Divisi</TableCell>
+                        <TableCell align="center">Tanggal</TableCell>
+                        <TableCell align="center">Status</TableCell>
+                        <TableCell align="center">Detail</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                    {this.displayRequest()}
+                    </TableBody>
+                  </Table1>
+                </TableContainer>
+                <TablePagination
+                  rowsPerPageOptions={[5, 10, 25]}
+                  component="div"
+                  count={this.getCountPermintaanBarang()}
+                  rowsPerPage={this.state.rowsPerPage}
+                  page={this.state.setPage}
+                  onChangePage={this.handleChangePage}
+                  onChangeRowsPerPage={this.handleChangeRowsPerPage}
+                />
                 
               </CardBody>
             </Card>

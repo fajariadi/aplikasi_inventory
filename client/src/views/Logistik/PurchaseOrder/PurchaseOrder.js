@@ -5,6 +5,15 @@ import {graphql} from 'react-apollo';
 import { getPurchaseOrdersQuery, addPurchaseOrderMutation } from '../queries/queries';
 import { Card, CardBody, CardHeader, Col, Pagination, PaginationItem,Button, PaginationLink, Row, Table } from 'reactstrap';
 
+import Table1 from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
+import TablePagination from '@material-ui/core/TablePagination';
+
 class PurchaseOrder extends Component {
   constructor(props){
     super(props);
@@ -17,8 +26,27 @@ class PurchaseOrder extends Component {
     this.state = {
       loggedIn,
       akun_id: localStorage.getItem("user_id"),
+      jabatan: localStorage.getItem("jabatan"),
+      page: 0, 
+      setPage: 0,
+      rowsPerPage: 5,
+      setRowsPerPage: 5,
       }
   }
+
+  getCountPembelianBarang(){
+    var data = this.props.getPurchaseOrdersQuery;
+    var no = 0;
+    if (data.loading) {
+      return
+    } else {
+      data.purchaseOrders.map(barang => {
+        no++
+      })
+    }
+    return no
+  }
+
   displayAllPurchaseOrder(){
     var data = this.props.getPurchaseOrdersQuery;
     var no = 0;
@@ -28,20 +56,22 @@ class PurchaseOrder extends Component {
       return data.purchaseOrders.map(order => {
         no++;
         return(
-          <tr key={order.id}>
-            <td>{no}</td>
-            <td>{order.kode}</td>
-            <td>{order.vendor.nama}</td>
-            <td>{order.tanggal}</td>
-            <td>{order.status}</td>
-            <td>
+          <TableRow key={order.id}>
+            <TableCell component="th" scope="row">
+              {no}
+            </TableCell>
+            <TableCell align="center">{order.kode}</TableCell>
+            <TableCell align="center">{order.vendor.nama}</TableCell>
+            <TableCell align="center">{order.tanggal}</TableCell>
+            <TableCell align="center">{order.status}</TableCell>
+            <TableCell align="center">
               <Link to={`/purchaseOrder/detailPurchaseOrder/${order.id}`}>
-              <Button color="primary" size="sm">
-                <i className="fa fa-file"></i>
+                <Button color="primary" size="sm">
+                  <i className="fa fa-file"></i>
                 </Button>
               </Link>
-            </td>
-          </tr>
+            </TableCell>
+          </TableRow>
         );
       });
     }
@@ -78,6 +108,29 @@ class PurchaseOrder extends Component {
     }
     return kode;
   }
+
+  handleChangePage = (event, newPage) => {
+    this.setState({ setPage : newPage})
+  };
+
+  handleChangeRowsPerPage = (event) => {
+    this.setState({ 
+      setRowsPerPage : parseInt(event.target.value, 10),
+      rowsPerPage : parseInt(event.target.value, 10),
+      setPage : 0
+    })
+  };
+
+  displayTombolBuatPembelian(){
+    if (this.state.jabatan !== 'Admin'){
+      return(
+        <Button color="primary" size="sm"  className={'float-right mb-0'} onClick={this.addPurchaseOrder.bind(this)}>
+          <i className="fa fa-plus"></i> Buat Purchase Order
+        </Button>
+      )
+    }
+  }
+
   render() {
     if(this.state.loggedIn === false){
       return <Redirect to="/login" />
@@ -87,46 +140,37 @@ class PurchaseOrder extends Component {
         <Row>
           <Col>
             <Card>
-              <CardHeader>
-                <Row>
-                <Col>
-                  Daftar Purchase Order
-                </Col>
-                <Col>
-                    <Button color="primary" size="sm"  className={'float-right mb-0'} onClick={this.addPurchaseOrder.bind(this)}>
-                        <i className="fa fa-plus"></i> Buat Purchase Order
-                    </Button>
-                </Col>
-                </Row>
+              <CardHeader>  
+                Daftar Purchase Order
+                {this.displayTombolBuatPembelian()}                 
               </CardHeader>
               <CardBody>
-                <Table hover bordered striped responsive size="sm">
-                  <thead align="center">
-                  <tr>
-                    <th>No</th>
-                    <th>Kode</th>
-                    <th>Nama Vendor</th>
-                    <th>Tanggal</th>
-                    <th>Status</th>
-                    <th>Aksi</th>
-                  </tr>
-                  </thead>
-                  <tbody align="center">
-                  {this.displayAllPurchaseOrder()}
-                  </tbody>
-                </Table>
-                <nav>
-                  <Pagination>
-                    <PaginationItem><PaginationLink previous tag="button">Prev</PaginationLink></PaginationItem>
-                    <PaginationItem active>
-                      <PaginationLink tag="button">1</PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem><PaginationLink tag="button">2</PaginationLink></PaginationItem>
-                    <PaginationItem><PaginationLink tag="button">3</PaginationLink></PaginationItem>
-                    <PaginationItem><PaginationLink tag="button">4</PaginationLink></PaginationItem>
-                    <PaginationItem><PaginationLink next tag="button">Next</PaginationLink></PaginationItem>
-                  </Pagination>
-                </nav>
+                <TableContainer component={Paper}>
+                  <Table1 aria-label="simple table">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>No</TableCell>
+                        <TableCell align="center">Kode</TableCell>
+                        <TableCell align="center">Vendor</TableCell>
+                        <TableCell align="center">Tanggal</TableCell>
+                        <TableCell align="center">Status</TableCell>
+                        <TableCell align="center">Detail</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                    {this.displayAllPurchaseOrder()}
+                    </TableBody>
+                  </Table1>
+                </TableContainer>
+                <TablePagination
+                  rowsPerPageOptions={[5, 10, 25]}
+                  component="div"
+                  count={this.getCountPembelianBarang()}
+                  rowsPerPage={this.state.rowsPerPage}
+                  page={this.state.setPage}
+                  onChangePage={this.handleChangePage}
+                  onChangeRowsPerPage={this.handleChangeRowsPerPage}
+                />
               </CardBody>
             </Card>
           </Col>

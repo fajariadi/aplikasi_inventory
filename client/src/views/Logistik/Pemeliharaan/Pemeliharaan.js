@@ -22,11 +22,22 @@ import {
   Modal, ModalBody, ModalHeader
 } from 'reactstrap';
 
+import Table1 from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
+import TablePagination from '@material-ui/core/TablePagination';
+
+
 class Pemeliharaan extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
+      jabatan: localStorage.getItem("jabatan"),
       nama:'',
       barang_id:'',
       karyawan_id:'',
@@ -34,7 +45,24 @@ class Pemeliharaan extends Component {
       modalIsOpen: false,  
       harga: 0,
       sewa: 0,
-    };
+      page: 0, 
+      setPage: 0,
+      rowsPerPage: 5,
+      setRowsPerPage: 5,
+      }
+  }
+
+  getCountPemeliharaan(){
+    var data = this.props.getPemeliharaansQuery;
+    var no = 0;
+    if (data.loading) {
+      return
+    } else {
+      data.pemeliharaans.map(pem => {
+        no++
+      })
+    }
+    return no
   }
 
   displayPemeliharaan(){
@@ -46,21 +74,23 @@ class Pemeliharaan extends Component {
       return data.pemeliharaans.map(pem => {
          no++;
         return(
-          <tr key={pem.id}>
-            <td>{no}</td>
-            <td>{pem.inventaris.barang.nama_barang}</td>
-            <td>{pem.jumlah}</td> 
-            <td>{pem.tanggal}</td>
-            <td>{pem.karyawan.nama}</td>
-            <td>{pem.status}</td>
-            <td>
-              <Link to={`/pemeliharaan/detailPemeliharaan/${pem.id}`}>
+          <TableRow key={pem.id}>
+          <TableCell component="th" scope="row">
+            {no}
+          </TableCell>
+          <TableCell align="center">{pem.inventaris.barang.nama_barang}</TableCell>
+          <TableCell align="center">{pem.jumlah}</TableCell>
+          <TableCell align="center">{pem.tanggal}</TableCell>
+          <TableCell align="center">{pem.karyawan.nama}</TableCell>
+          <TableCell align="center">{pem.status}</TableCell>
+          <TableCell align="center">
+          <Link to={`/pemeliharaan/detailPemeliharaan/${pem.id}`}>
               <Button color="primary" size="sm">
                 <i className="fa fa-file"></i>
                 </Button>
               </Link>
-            </td>
-          </tr>
+          </TableCell>
+        </TableRow>
         );
       });
     }
@@ -125,18 +155,18 @@ class Pemeliharaan extends Component {
     });
   }
 
-  submitForm(e){
+  tambahPemeliharaan(e){
     e.preventDefault();
     this.toggleModal();
     var jumlah=0;
     const data = this.props.getAllInventarisQuery;
-    if (data){ // eslint-disable-next-line
+     // eslint-disable-next-line
         data.allInventaris.map(inven =>{
         if(inven.id === this.state.barang_id){
           jumlah = inven.jumlah
         }
       })
-    };
+    
     if (jumlah < this.state.jumlah){
       Swal.fire({
         position: 'center',
@@ -172,6 +202,28 @@ class Pemeliharaan extends Component {
     }
   }
 
+  handleChangePage = (event, newPage) => {
+    this.setState({ setPage : newPage})
+  };
+
+  handleChangeRowsPerPage = (event) => {
+    this.setState({ 
+      setRowsPerPage : parseInt(event.target.value, 10),
+      rowsPerPage : parseInt(event.target.value, 10),
+      setPage : 0
+    })
+  };
+
+  displayTombolBuatPemeliharaan(){
+    if (this.state.jabatan !== 'Admin'){
+      return(
+        <Button size="sm" color="primary" className="float-right mb-0" onClick={this.toggleModal.bind(this)}>
+          <i className="fa fa-plus"></i> Tambah Pemeliharaan
+        </Button>
+      )
+    }
+  }
+
 
   render() {
     return (
@@ -180,40 +232,37 @@ class Pemeliharaan extends Component {
            <Col>
             <Card>
               <CardHeader>
-                <i className="fa fa-align-justify"></i>Pemeliharaan Inventaris
-                <Button size="sm" color="primary" className="float-right mb-0" onClick={this.toggleModal.bind(this)}>
-                  <i className="fa fa-plus"></i> Tambah Pemeliharaan
-                </Button>
+                Pemeliharaan Inventaris
+                {this.displayTombolBuatPemeliharaan()}
               </CardHeader>
               <CardBody>
-                <Table hover bordered striped responsive size="sm">
-                  <thead align="center">
-                  <tr>
-                    <th>No</th>
-                    <th>Nama Inventaris</th>
-                    <th>Jumlah</th>
-                    <th>Tanggal</th>
-                    <th>Teknisi</th>
-                    <th>Status</th>
-                    <th>Detail</th>
-                  </tr>
-                  </thead>
-                  <tbody align="center">
-                  {this.displayPemeliharaan()}
-                  </tbody>
-                </Table>
-                <nav>
-                  <Pagination>
-                    <PaginationItem><PaginationLink previous tag="button">Prev</PaginationLink></PaginationItem>
-                    <PaginationItem active>
-                      <PaginationLink tag="button">1</PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem><PaginationLink tag="button">2</PaginationLink></PaginationItem>
-                    <PaginationItem><PaginationLink tag="button">3</PaginationLink></PaginationItem>
-                    <PaginationItem><PaginationLink tag="button">4</PaginationLink></PaginationItem>
-                    <PaginationItem><PaginationLink next tag="button">Next</PaginationLink></PaginationItem>
-                  </Pagination>
-                </nav>
+                <TableContainer component={Paper}>
+                  <Table1 aria-label="simple table">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>No</TableCell>
+                        <TableCell align="center">Nama Inventaris</TableCell>
+                        <TableCell align="center">Jumlah</TableCell>
+                        <TableCell align="center">Tanggal</TableCell>
+                        <TableCell align="center">Teknisi</TableCell>
+                        <TableCell align="center">Status</TableCell>
+                        <TableCell align="center">Detail</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                    {this.displayPemeliharaan()}
+                    </TableBody>
+                  </Table1>
+                </TableContainer>
+                <TablePagination
+                  rowsPerPageOptions={[5, 10, 25]}
+                  component="div"
+                  count={this.getCountPemeliharaan()}
+                  rowsPerPage={this.state.rowsPerPage}
+                  page={this.state.setPage}
+                  onChangePage={this.handleChangePage}
+                  onChangeRowsPerPage={this.handleChangeRowsPerPage}
+                />
               </CardBody>
             </Card>
           </Col>     
@@ -221,7 +270,7 @@ class Pemeliharaan extends Component {
         <Modal isOpen={this.state.modalIsOpen}>
           <ModalHeader>From Tambah Pemeliharaan</ModalHeader>
           <ModalBody>
-            <Form onSubmit={(e) => {this.submitForm(e)}}>
+            <Form onSubmit={(e) => {this.tambahPemeliharaan(e)}}>
               <FormGroup>
               <Label htmlFor="name">Nama Inventaris</Label>
                 <Input type="select" name="nama" onChange={(e) =>this.setState({barang_id:e.target.value})} id="nama" required>

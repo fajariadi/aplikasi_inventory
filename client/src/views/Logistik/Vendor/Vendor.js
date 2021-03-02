@@ -8,11 +8,8 @@ import {
   Card, 
   CardBody, 
   CardHeader, 
-  Col, 
-  Pagination, 
-  PaginationItem,
+  Col,   
   Button, 
-  PaginationLink, 
   Row, 
   Table,
   Form, 
@@ -22,10 +19,20 @@ import {
   ModalHeader, ModalBody, Modal
  } from 'reactstrap';
 
+ import Table1 from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
+import TablePagination from '@material-ui/core/TablePagination';
+
 class Vendor extends Component {
   constructor(props){
     super(props);
     this.state = {
+      jabatan: localStorage.getItem('jabatan'),
       selected: null,
       nama: '',
       jenis:'',
@@ -33,9 +40,25 @@ class Vendor extends Component {
       email:'',
       noTlp:'',
       modalIsOpen: false,
+      page: 0, 
+      setPage: 0,
+      rowsPerPage: 5,
+      setRowsPerPage: 5,
     }
   }
-
+  
+  getDataVendor(){
+    var data = this.props.getVendorsQuery;
+    var no = 0;
+    if (data.loading) {
+      return
+    } else {
+      data.vendors.map(barang => {
+        no++
+      })
+    }
+    return no
+  }
   toggleModal(){
     this.setState({
       modalIsOpen: ! this.state.modalIsOpen
@@ -69,35 +92,30 @@ class Vendor extends Component {
 
   displayVendors(){
     var data = this.props.getVendorsQuery;
+    var mulai = this.state.setPage*this.state.setRowsPerPage;
+    var akhir = this.state.setPage*this.state.setRowsPerPage+this.state.setRowsPerPage;
     var no = 0;
-   
     if(data.loading){
       return;
     } else {
       return data.vendors.map(vendor => {
          no++;
-        return(
-          <tr key={vendor.id}>
-            <td>{no}</td>
-            <td>{vendor.nama}</td>
-            <td>{vendor.jenis_usaha}</td>
-            <td>{vendor.alamat}</td>
-            <td>{vendor.email}</td>
-            <td>{vendor.noTlp}</td>
-            <td>
-              <Link to={`/vendor/editVendor/${vendor.id}`}>
-              <Button color="success" size="sm">
-                <i className="fa fa-pencil"></i>
-              </Button>
-              </Link>
-            </td>
-            <td>
-              <Button onClick={this.onDelete.bind(this, vendor.id)} color="danger" size="sm">
-                <i className="fa fa-trash"></i>
-              </Button>
-            </td>
-          </tr>
-        );
+         if (no > mulai && no < akhir+1){
+          return (
+            <TableRow key={vendor.id}>
+              <TableCell component="th" scope="row">
+                {no}
+              </TableCell>
+              <TableCell align="center">{vendor.nama}</TableCell>
+              <TableCell align="center">{vendor.jenis_usaha}</TableCell>
+              <TableCell align="center">{vendor.alamat}</TableCell>
+              <TableCell align="center">{vendor.email}</TableCell>
+              <TableCell align="center">{vendor.noTlp}</TableCell>
+              {this.displayTombolEdit(vendor.id)}
+              {this.displayTombolHapus(vendor.id)}
+            </TableRow>
+          );
+        }
       });
     }
   }
@@ -122,6 +140,81 @@ class Vendor extends Component {
     })
   }
 
+  displayTombolTambah(){
+    if(this.state.jabatan === 'Admin'){
+      return(
+        <Button size="sm" color="primary" className="float-right mb-0" onClick={this.toggleModal.bind(this)}>
+          <i className="fa fa-plus"></i> Tambah Data Vendor
+        </Button>
+      )
+    }
+  }
+   displayTombolEdit(vendor_id){
+    if(this.state.jabatan === 'Admin'){
+      return(
+        <TableCell align="center">
+          <Link to={`/vendor/editVendor/${vendor_id}`}>
+            <Button color="success" size="sm">
+              <i className="fa fa-pencil"></i>
+            </Button>
+          </Link>
+        </TableCell>
+      )
+    }
+   }
+  
+   displayTombolHapus(vendor_id){
+    if(this.state.jabatan === 'Admin'){
+      return(
+        <TableCell align="center">
+          <Button onClick={this.onDelete.bind(this, vendor_id)} color="danger" size="sm">
+            <i className="fa fa-trash"></i>
+          </Button>
+        </TableCell>
+      )
+    }
+   }
+
+   displayTabel(){
+     if(this.state.jabatan === 'Admin'){
+        return(
+          <TableRow>
+            <TableCell>No</TableCell>
+            <TableCell align="center">Nama Vendor</TableCell>
+            <TableCell align="center">Jenis Usaha</TableCell>
+            <TableCell align="center">Alamat</TableCell>
+            <TableCell align="center">Email</TableCell>
+            <TableCell align="center">No Telepon</TableCell>
+            <TableCell align="center">Edit</TableCell>
+            <TableCell align="center">Hapus</TableCell>
+          </TableRow>
+        )
+     } else {
+       return(
+        <TableRow>
+          <TableCell>No</TableCell>
+          <TableCell align="center">Nama Vendor</TableCell>
+          <TableCell align="center">Jenis Usaha</TableCell>
+          <TableCell align="center">Alamat</TableCell>
+          <TableCell align="center">Email</TableCell>
+          <TableCell align="center">No Telepon</TableCell>
+        </TableRow>
+       )
+     }
+   }
+
+   handleChangePage = (event, newPage) => {
+    this.setState({ setPage : newPage})
+  };
+
+  handleChangeRowsPerPage = (event) => {
+    this.setState({ 
+      setRowsPerPage : parseInt(event.target.value, 10),
+      rowsPerPage : parseInt(event.target.value, 10),
+      setPage : 0
+    })
+  };
+
   render() {
     return (
       <div className="animated fadeIn">
@@ -130,40 +223,28 @@ class Vendor extends Component {
             <Card>
               <CardHeader>
               <i className="fa fa-align-justify"></i>Data Vendor
-                <Button size="sm" color="primary" className="float-right mb-0" onClick={this.toggleModal.bind(this)}>
-                  <i className="fa fa-plus"></i> Tambah Data Vendor
-                </Button>
+              {this.displayTombolTambah()}
               </CardHeader>
               <CardBody>
-                <Table hover bordered striped responsive size="sm">
-                  <thead align="center">
-                  <tr>
-                    <th>No</th>
-                    <th>Nama Vendor</th>
-                    <th>Jenis Usaha</th>
-                    <th>Alamat</th>
-                    <th>Email</th>
-                    <th>No Telepon</th>
-                    <th>Edit</th>
-                    <th>Hapus</th>
-                  </tr>
-                  </thead>
-                  <tbody align="center">
-                    {this.displayVendors()}
-                  </tbody>
-                </Table>
-                <nav>
-                  <Pagination>
-                    <PaginationItem><PaginationLink previous tag="button">Prev</PaginationLink></PaginationItem>
-                    <PaginationItem active>
-                      <PaginationLink tag="button">1</PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem><PaginationLink tag="button">2</PaginationLink></PaginationItem>
-                    <PaginationItem><PaginationLink tag="button">3</PaginationLink></PaginationItem>
-                    <PaginationItem><PaginationLink tag="button">4</PaginationLink></PaginationItem>
-                    <PaginationItem><PaginationLink next tag="button">Next</PaginationLink></PaginationItem>
-                  </Pagination>
-                </nav>
+              <TableContainer component={Paper}>
+                  <Table1 aria-label="simple table">
+                    <TableHead>
+                      {this.displayTabel()}
+                    </TableHead>
+                    <TableBody>
+                      {this.displayVendors()}
+                    </TableBody>
+                  </Table1>
+                </TableContainer>
+                <TablePagination
+                  rowsPerPageOptions={[5, 10, 25]}
+                  component="div"
+                  count={this.getDataVendor()}
+                  rowsPerPage={this.state.rowsPerPage}
+                  page={this.state.setPage}
+                  onChangePage={this.handleChangePage}
+                  onChangeRowsPerPage={this.handleChangeRowsPerPage}
+                />
               </CardBody>
             </Card>
           </Col>

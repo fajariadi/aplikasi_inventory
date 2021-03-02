@@ -37,7 +37,7 @@ class EditBarang extends Component {
     });
   }
 
-  submitForm(e){
+  editBarang(e){
     const {barang} = this.props.data;
     var nama='';
     var jenis='';
@@ -112,6 +112,7 @@ class EditBarang extends Component {
                     <option value="Truk">Truk</option>
                     <option value="Drum">Drum</option>
                     <option value="Takaran">Takaran</option>
+                    <option value="Unit">Unit</option>
                 </Input>
                 </FormGroup>
                 <FormGroup>
@@ -141,7 +142,7 @@ class EditBarang extends Component {
                 <Form>
                 {this.displayBarang()}
                 <Link to="/barang/barang">
-                  <Button type="submit" color="primary" onClick={(e) => {this.submitForm(e)}} >Submit</Button>
+                  <Button type="submit" color="primary" onClick={(e) => {this.editBarang(e)}} >Submit</Button>
                 </Link>
                 <Link to="/barang/barang">
                   <Button color="danger">Batal</Button>

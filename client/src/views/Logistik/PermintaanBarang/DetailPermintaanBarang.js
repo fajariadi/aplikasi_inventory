@@ -19,29 +19,11 @@ class DetailPermintaanBarang extends Component {
       loggedIn,
       akun_id: localStorage.getItem("user_id"),
       divisi: localStorage.getItem("divisi"),
+      jabatan : localStorage.getItem("jabatan")
       }
   }
 
   onDelete(request_id){
-    const {permintaanBarang} = this.props.data;
-    var lanjut = true;
-    if(permintaanBarang){ // eslint-disable-next-line
-      permintaanBarang.listRequest.map(item => {
-        if(item.status === 'Proses' || item.status === 'Delivery' || item.status === 'Ready'){
-          lanjut = false
-        }
-      });
-    }
-    console.log(lanjut);
-    if(lanjut === false){
-      Swal.fire({
-        position: 'center',
-        icon: 'error',
-        title: 'Dilarang!!!',
-        text: 'Permintaan Barang Sedang diproses',
-        showConfirmButton: true,
-      })
-    } else {
       Swal.fire({
         title: 'Apakah anda Yakin?',
         icon: 'warning',
@@ -70,9 +52,7 @@ class DetailPermintaanBarang extends Component {
             'success'
           )
         }
-      })
-    }
-    
+      })    
    }
 
   displayRequestDetail(){
@@ -121,7 +101,7 @@ class DetailPermintaanBarang extends Component {
                   <Label htmlFor="name">Divisi</Label>
                 </Col>
                 <Col md="9">
-                <Input type="text" name="kode" id="kode" value={permintaanBarang.akun.karyawan.divisi.nama} disabled></Input> 
+                <Input type="text" name="kode" id="kode" value={permintaanBarang.divisi.nama} disabled></Input> 
                 </Col>  
               </FormGroup>
             </Col>
@@ -179,32 +159,44 @@ class DetailPermintaanBarang extends Component {
   }
 
   renderElement(akun_id, status){
-    if (this.state.akun_id === akun_id && status === 'Belum Disetujui'){
-      return(
-        <div align="center">
-        <Link to={`/permintaanBarang/editPermintaanBarang/${this.props.match.params.id}`}>
-          <Button color="warning">
-            <i className="fa fa-pencil" >Edit Permintaan Barang</i>
+      if (this.state.akun_id === akun_id && status === 'Belum Disetujui'){
+        return(
+          <div align="center">
+          <Link to={`/permintaanBarang/editPermintaanBarang/${this.props.match.params.id}`}>
+            <Button color="warning">
+              <i className="fa fa-pencil" >Edit Permintaan Barang</i>
+              </Button>
+          </Link>
+            <Button onClick={this.onDelete.bind(this, this.props.match.params.id)} color="danger">
+              <i className="fa fa-trash">Hapus Permintaan Barang</i>
             </Button>
-        </Link>
-          <Button onClick={this.onDelete.bind(this, this.props.match.params.id)} color="danger">
-            <i className="fa fa-trash">Hapus Permintaan Barang</i>
-          </Button>
-      </div>
-      )
-    } else {
-      return(
-        <div align="center">
-          <Button onClick={this.onDelete.bind(this, this.props.match.params.id)} color="danger">
-            <i className="fa fa-trash">Hapus Permintaan Barang</i>
-          </Button>
         </div>
-      )
-    }
+        )
+      } else {
+        const {permintaanBarang} = this.props.data;
+        var lanjut = true;
+        if(permintaanBarang){ // eslint-disable-next-line
+          permintaanBarang.listRequest.map(item => {
+            if(item.status === 'Proses' || item.status === 'Delivery' || item.status === 'Ready'){
+              lanjut = false
+            }
+          });
+        }
+        if(lanjut === true){
+          return(
+            <div align="center">
+              <Button onClick={this.onDelete.bind(this, this.props.match.params.id)} color="danger">
+                <i className="fa fa-trash">Hapus Permintaan Barang</i>
+              </Button>
+            </div>
+          )
+        } 
+        
+      } 
   }
 
   renderElement2(status){
-    if(this.state.divisi ===  "Logistic" && status === 'Belum Disetujui' ){
+    if(this.state.jabatan === "Manajer" && this.state.divisi === 'Logistic' && status === 'Belum Disetujui' ){
       return(
         <div align="center">
             <Button onClick={this.onSetujuiPermintaan.bind(this, this.props.match.params.id)} color="success">
@@ -248,7 +240,7 @@ class DetailPermintaanBarang extends Component {
         id:permintaan_id,
         status: 'Active',
       },
-      refetchQueries:[{query:getPermintaanBarangsQuery}, {query:getListRequestsQuery}],
+      refetchQueries:[{query:getListRequestsQuery}],
     });
     this.props.history.push("/permintaanBarang/permintaanBarang");
     Swal.fire({

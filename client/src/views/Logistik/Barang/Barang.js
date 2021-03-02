@@ -1,19 +1,16 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import {graphql} from 'react-apollo';
+import { graphql } from 'react-apollo';
 import * as compose from 'lodash.flowright';
 import Swal from 'sweetalert2';
-import {getBarangsQuery, addBarangMutation, hapusBarangMutation} from '../queries/queries';
-import { 
-  Card, 
-  CardBody, 
-  CardHeader, 
-  Col, 
-  Pagination, 
-  PaginationItem, 
-  PaginationLink, 
-  Row, 
-  Table, 
+import { getBarangsQuery, addBarangMutation, hapusBarangMutation } from '../queries/queries';
+import {
+  Card,
+  CardBody,
+  CardHeader,
+  Col,
+  Row,
+  Table,
   Button,
   FormGroup,
   Label,
@@ -24,37 +21,65 @@ import {
   Form,
 } from 'reactstrap';
 
+import Table1 from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
+import TablePagination from '@material-ui/core/TablePagination';
+
 class Barang extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      nama_barang:'',
+      jabatan: localStorage.getItem('jabatan'),
+      nama_barang: '',
       jenis_barang: '',
       satuan: '',
       harga: '',
-      modalIsOpen: false,  
+      modalIsOpen: false,
       success: false,
+      page: 0, 
+      setPage: 0,
+      rowsPerPage: 5,
+      setRowsPerPage: 5,
     };
   }
 
-  toggleModal(){
+
+  getDataBarang(){
+    var data = this.props.getBarangsQuery;
+    var no = 0;
+    if (data.loading) {
+      return
+    } else {
+      data.barangs.map(barang => {
+        no++
+      })
+    }
+    return no
+  }
+
+  toggleModal() {
     this.setState({
-      modalIsOpen: ! this.state.modalIsOpen
+      modalIsOpen: !this.state.modalIsOpen
     });
   }
 
-  submitForm(e){
+  submitForm(e) {
     e.preventDefault();
     this.toggleModal();
     this.props.addBarangMutation({
-      variables:{
-        nama_barang:this.state.nama_barang,
+      variables: {
+        nama_barang: this.state.nama_barang,
         jenis_barang: this.state.jenis_barang,
         satuan: this.state.satuan,
-        harga:parseInt(this.state.harga),
+        harga: parseInt(this.state.harga),
       },
-      refetchQueries:[{query:getBarangsQuery}]
+      refetchQueries: [{ query: getBarangsQuery }]
     });
     Swal.fire({
       position: 'center',
@@ -64,7 +89,7 @@ class Barang extends Component {
     })
   }
 
-  onDelete(barang_id){
+  onDelete(barang_id) {
     Swal.fire({
       title: 'Apakah anda Yakin?',
       icon: 'warning',
@@ -75,10 +100,10 @@ class Barang extends Component {
     }).then((result) => {
       if (result.isConfirmed) {
         this.props.hapusBarangMutation({
-          variables:{
-            id: barang_id,        
+          variables: {
+            id: barang_id,
           },
-          refetchQueries:[{query:getBarangsQuery}],
+          refetchQueries: [{ query: getBarangsQuery }],
         });
         Swal.fire(
           'Dihapus!',
@@ -89,38 +114,108 @@ class Barang extends Component {
     })
   }
 
-  displayBarang(){
+  displayBarang() {
     var data = this.props.getBarangsQuery;
+    var mulai = this.state.setPage*this.state.setRowsPerPage;
+    var akhir = this.state.setPage*this.state.setRowsPerPage+this.state.setRowsPerPage;
     var no = 0;
-    if(data.loading){
-      return (<div>Loading Daftar Barang...</div>);
+    if (data.loading) {
+      return (<h5>Loading Daftar Barang...</h5>);
     } else {
       return data.barangs.map(barang => {
         no++;
-        return(
-          <tr key={barang.id}>
-            <td>{no}</td>
-            <td>{barang.nama_barang}</td>
-            <td>{barang.jenis_barang}</td>
-            <td>{barang.satuan}</td>
-            <td>{barang.harga}</td>
-            <td>
-              <Link to={`/barang/editBarang/${barang.id}`}>
-              <Button color="success" size="sm">
-                <i className="fa fa-pencil"></i>
-              </Button>
-              </Link>
-            </td>
-            <td>
-              <Button onClick={this.onDelete.bind(this, barang.id)} color="danger" size="sm">
-                <i className="fa fa-trash"></i>
-              </Button>
-            </td>
-          </tr>
-        );
+        if (no > mulai && no < akhir+1){
+          return (
+            <TableRow key={barang.id}>
+              <TableCell component="th" scope="row">
+                {no}
+              </TableCell>
+              <TableCell align="center">{barang.nama_barang}</TableCell>
+              <TableCell align="center">{barang.jenis_barang}</TableCell>
+              <TableCell align="center">{barang.satuan}</TableCell>
+              <TableCell align="center">{barang.harga}</TableCell>
+              {this.displayTombolEdit(barang.id)}
+              {this.displayTombolHapus(barang.id)}
+            </TableRow>
+          );
+        }
       });
     }
   }
+
+  displayTombolTambah() {
+    if (this.state.jabatan === 'Admin') {
+      return (
+        <Button size="sm" color="primary" className="float-right mb-0" onClick={this.toggleModal.bind(this)}>
+          <i className="fa fa-plus"></i> Tambah Data Barang
+        </Button>
+      )
+    }
+  }
+
+  displayTombolEdit(barang_id) {
+    if (this.state.jabatan === 'Admin') {
+      return (
+        <TableCell align="center">
+          <Link to={`/barang/editBarang/${barang_id}`}>
+            <Button color="success" size="sm">
+              <i className="fa fa-pencil"></i>
+            </Button>
+          </Link>
+        </TableCell>
+      )
+    }
+  }
+
+  displayTombolHapus(barang_id) {
+    if (this.state.jabatan === 'Admin') {
+      return (
+        <TableCell align="center">
+          <Button onClick={this.onDelete.bind(this, barang_id)} color="danger" size="sm">
+            <i className="fa fa-trash"></i>
+          </Button>
+        </TableCell>
+      )
+    }
+  }
+
+  displayTabel() {
+    if (this.state.jabatan === 'Admin') {
+      return (
+        <TableRow>
+          <TableCell>No</TableCell>
+          <TableCell align="center">Nama Barang</TableCell>
+          <TableCell align="center">Jenis Barang</TableCell>
+          <TableCell align="center">Satuan</TableCell>
+          <TableCell align="center">Harga</TableCell>
+          <TableCell align="center">Edit</TableCell>
+          <TableCell align="center">Hapus</TableCell>
+        </TableRow>
+      )
+    } else {
+      return (
+        <TableRow>
+          <TableCell>No</TableCell>
+          <TableCell align="center">Nama Barang</TableCell>
+          <TableCell align="center">Jenis Barang</TableCell>
+          <TableCell align="center">Satuan</TableCell>
+          <TableCell align="center">Harga</TableCell>
+        </TableRow>
+      )
+    }
+  }
+
+  handleChangePage = (event, newPage) => {
+    this.setState({ setPage : newPage})
+  };
+
+  handleChangeRowsPerPage = (event) => {
+    this.setState({ 
+      setRowsPerPage : parseInt(event.target.value, 10),
+      rowsPerPage : parseInt(event.target.value, 10),
+      setPage : 0
+    })
+  };
 
   render() {
     return (
@@ -130,39 +225,28 @@ class Barang extends Component {
             <Card>
               <CardHeader>
                 <i className="fa fa-align-justify"></i> Data Barang
-                <Button size="sm" color="primary" className="float-right mb-0" onClick={this.toggleModal.bind(this)}>
-                  <i className="fa fa-plus"></i> Tambah Data Barang
-                </Button>
+                {this.displayTombolTambah()}
               </CardHeader>
               <CardBody>
-                <Table hover bordered striped responsive size="sm">
-                  <thead align="center">
-                  <tr>
-                    <th>No</th>
-                    <th>Nama Barang</th>
-                    <th>Jenis Barang</th>
-                    <th>Satuan</th>
-                    <th>Harga (Rp)</th>
-                    <th>Edit</th>
-                    <th>Hapus</th>
-                  </tr>
-                  </thead>
-                  <tbody align="center">
-                    {this.displayBarang()}
-                  </tbody>
-                </Table>
-                <nav>
-                  <Pagination>
-                    <PaginationItem><PaginationLink previous tag="button">Prev</PaginationLink></PaginationItem>
-                    <PaginationItem active>
-                      <PaginationLink tag="button">1</PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem><PaginationLink tag="button">2</PaginationLink></PaginationItem>
-                    <PaginationItem><PaginationLink tag="button">3</PaginationLink></PaginationItem>
-                    <PaginationItem><PaginationLink tag="button">4</PaginationLink></PaginationItem>
-                    <PaginationItem><PaginationLink next tag="button">Next</PaginationLink></PaginationItem>
-                  </Pagination>
-                </nav>
+                <TableContainer component={Paper}>
+                  <Table1 aria-label="simple table">
+                    <TableHead>
+                      {this.displayTabel()}
+                    </TableHead>
+                    <TableBody>
+                      {this.displayBarang()}
+                    </TableBody>
+                  </Table1>
+                </TableContainer>
+                <TablePagination
+                  rowsPerPageOptions={[5, 10, 25]}
+                  component="div"
+                  count={this.getDataBarang()}
+                  rowsPerPage={this.state.rowsPerPage}
+                  page={this.state.setPage}
+                  onChangePage={this.handleChangePage}
+                  onChangeRowsPerPage={this.handleChangeRowsPerPage}
+                />
               </CardBody>
             </Card>
           </Col>
@@ -170,18 +254,18 @@ class Barang extends Component {
         <Modal isOpen={this.state.modalIsOpen}>
           <ModalHeader>Form Tambah Data Barang</ModalHeader>
           <ModalBody>
-            <Form onSubmit={(e) => {this.submitForm(e)}}>
+            <Form onSubmit={(e) => { this.submitForm(e) }}>
               <FormGroup>
                 <Label htmlFor="name">Nama Barang</Label>
-                <Input type="text" id="name" placeholder="Masukkan Nama Barang" onChange={(e) =>this.setState({nama_barang:e.target.value})} required />
+                <Input type="text" id="name" placeholder="Masukkan Nama Barang" onChange={(e) => this.setState({ nama_barang: e.target.value })} required />
               </FormGroup>
               <FormGroup>
                 <Label htmlFor="name">Jenis Barang</Label>
-                <Input type="text" id="jenis" placeholder="Masukkan Jenis Barang" onChange={(e) =>this.setState({jenis_barang:e.target.value})} required />
+                <Input type="text" id="jenis" placeholder="Masukkan Jenis Barang" onChange={(e) => this.setState({ jenis_barang: e.target.value })} required />
               </FormGroup>
               <FormGroup>
                 <Label htmlFor="name">Satuan</Label>
-                <Input type="select" name="satuan" id="satuan" onChange={(e) =>this.setState({satuan:e.target.value})}>
+                <Input type="select" name="satuan" id="satuan" onChange={(e) => this.setState({ satuan: e.target.value })}>
                   <option>Satuan</option>
                   <option value="Kg">Kg</option>
                   <option value="Buah">Buah</option>
@@ -198,17 +282,17 @@ class Barang extends Component {
                   <option value="Truk">Truk</option>
                   <option value="Drum">Drum</option>
                   <option value="Takaran">Takaran</option>
-                  <option value="Takaran">Unit</option>
+                  <option value="Unit">Unit</option>
                 </Input>
               </FormGroup>
               <FormGroup>
                 <Label htmlFor="name">Harga Barang</Label>
-                <Input type="number" id="harga" placeholder="Masukkan Harga Barang" onChange={(e) =>this.setState({harga:e.target.value})} required />
+                <Input type="number" id="harga" placeholder="Masukkan Harga Barang" onChange={(e) => this.setState({ harga: e.target.value })} required />
               </FormGroup>
               <Button type="submit" color="primary">Submit</Button>
               <Button color="danger" onClick={this.toggleModal.bind(this)}>Batal</Button>
             </Form>
-          </ModalBody>  
+          </ModalBody>
         </Modal>
       </div>
 
@@ -217,7 +301,7 @@ class Barang extends Component {
 }
 
 export default compose(
-  graphql(getBarangsQuery, {name:"getBarangsQuery"}),
-  graphql(addBarangMutation, {name:"addBarangMutation"}),
-  graphql(hapusBarangMutation, {name:"hapusBarangMutation"})
+  graphql(getBarangsQuery, { name: "getBarangsQuery" }),
+  graphql(addBarangMutation, { name: "addBarangMutation" }),
+  graphql(hapusBarangMutation, { name: "hapusBarangMutation" })
 )(Barang);
