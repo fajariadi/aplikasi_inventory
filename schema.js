@@ -539,7 +539,6 @@ const RootQuery = new GraphQLObjectType({
 				return PenerimaanBarang.find({});
 			}
 		},
-
 		pengeluaranBarang:{
 			type: PengeluaranBarangType,
 			args: {id:{type:GraphQLID}},

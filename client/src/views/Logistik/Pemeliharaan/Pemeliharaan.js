@@ -10,11 +10,7 @@ import {
   CardBody, 
   CardHeader, 
   Col, 
-  Pagination, 
-  PaginationItem, 
-  PaginationLink, 
   Row,  
-  Table,
   Button,
   FormGroup,
   Label,
@@ -57,7 +53,7 @@ class Pemeliharaan extends Component {
     var no = 0;
     if (data.loading) {
       return
-    } else {
+    } else { // eslint-disable-next-line
       data.pemeliharaans.map(pem => {
         no++
       })

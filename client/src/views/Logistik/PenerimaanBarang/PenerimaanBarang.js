@@ -10,11 +10,7 @@ import {
   CardBody, 
   CardHeader, 
   Col, 
-  Pagination, 
-  PaginationItem, 
-  PaginationLink, 
   Row, 
-  Table,
   Button,
   FormGroup,
   Label,
@@ -56,7 +52,7 @@ class PenerimaanBarang extends Component {
     var no = 0;
     if (data.loading) {
       return
-    } else {
+    } else { // eslint-disable-next-line
       data.penerimaanBarangs.map(barang => {
         no++
       })

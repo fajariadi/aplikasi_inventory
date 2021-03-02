@@ -7,13 +7,8 @@ import {
   CardBody, 
   CardHeader, 
   Col, 
-  Pagination, 
-  PaginationItem, 
-  PaginationLink, 
   Row, 
   Table,
-  Button,
-
 } from 'reactstrap';
 
 class PersediaanBarang extends Component {

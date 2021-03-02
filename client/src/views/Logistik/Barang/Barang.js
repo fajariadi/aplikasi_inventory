@@ -10,7 +10,6 @@ import {
   CardHeader,
   Col,
   Row,
-  Table,
   Button,
   FormGroup,
   Label,
@@ -55,7 +54,7 @@ class Barang extends Component {
     var no = 0;
     if (data.loading) {
       return
-    } else {
+    } else { // eslint-disable-next-line
       data.barangs.map(barang => {
         no++
       })
@@ -121,7 +120,7 @@ class Barang extends Component {
     var no = 0;
     if (data.loading) {
       return (<h5>Loading Daftar Barang...</h5>);
-    } else {
+    } else { // eslint-disable-next-line
       return data.barangs.map(barang => {
         no++;
         if (no > mulai && no < akhir+1){

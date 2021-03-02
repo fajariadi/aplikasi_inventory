@@ -1,14 +1,11 @@
 import React, { Component } from 'react';
 import {graphql} from 'react-apollo';
-import { Link} from 'react-router-dom';
 import * as compose from 'lodash.flowright';
 import Swal from 'sweetalert2';
-import {getPermintaanBarangQuery, getAllInventarisQuery, updateJumlahDipakaiInventaris, getPermintaanBarangsQuery, getPengeluaranBarangsQuery, getPersediaanBarangsQuery, getListRequestsQuery, getBarangsQuery, addPersediaanBarang, updateJumlahPersediaanBarang, updateStatusDonePermintaanBarang} from '../queries/queries';
+import {getPermintaanBarangQuery,hapusPengeluaranBarang, getAllInventarisQuery, updateJumlahDipakaiInventaris, getPermintaanBarangsQuery, getPengeluaranBarangsQuery, getPersediaanBarangsQuery, getListRequestsQuery, getBarangsQuery, addPersediaanBarang, updateJumlahPersediaanBarang, updateStatusDonePermintaanBarang} from '../queries/queries';
 import { 
   Form,
-  Card, 
   CardBody, 
-  CardHeader, 
   Col, 
   Row, 
   Table,
@@ -17,6 +14,11 @@ import {
   Label,
   Input,
 } from 'reactstrap';
+
+import Accordion from '@material-ui/core/Accordion';
+import AccordionSummary from '@material-ui/core/AccordionSummary';
+import AccordionDetails from '@material-ui/core/AccordionDetails';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore'; 
 
 class BuatPengeluaranBarang extends Component {
 
@@ -29,6 +31,8 @@ class BuatPengeluaranBarang extends Component {
       modalIsOpen: false,  
       harga: 0,
       sewa: 0,
+      panel1: true,
+      panel2: true,
     };
   }
 
@@ -64,7 +68,17 @@ class BuatPengeluaranBarang extends Component {
                 <Input type="text" name="kode" id="kode" value={kode} disabled></Input> 
                 </Col>
               </FormGroup>
-            </Col>  
+            </Col>
+            <Col md="4">
+              <FormGroup row>
+              <Col md="3">
+                  <Label htmlFor="name">Dikeluarkan Oleh</Label>
+                </Col>
+                <Col md="9">
+                <Input type="text" name="kode" id="kode" value={nama} disabled></Input> 
+                </Col> 
+              </FormGroup>
+            </Col>   
             <Col md="4">
               <FormGroup row>
               <Col md="3">
@@ -75,16 +89,7 @@ class BuatPengeluaranBarang extends Component {
                 </Col> 
               </FormGroup>
             </Col>  
-            <Col md="4">
-              <FormGroup row>
-              <Col md="3">
-                  <Label htmlFor="name">Dikeluarkan Oleh</Label>
-                </Col>
-                <Col md="9">
-                <Input type="text" name="kode" id="kode" value={nama} disabled></Input> 
-                </Col> 
-              </FormGroup>
-            </Col>  
+             
           </Row>
         </Form>
         </CardBody>
@@ -112,10 +117,20 @@ class BuatPengeluaranBarang extends Component {
             <Col md="4">
               <FormGroup row>
               <Col md="3">
-                  <Label htmlFor="name">Penerima</Label>
+                  <Label htmlFor="name">Divisi</Label>
                 </Col>
                 <Col md="9">
-                <Input type="text" name="kode" id="kode" value={permintaanBarang.akun.karyawan.nama} disabled></Input> 
+                <Input type="text" name="kode" id="kode" value={permintaanBarang.divisi.nama} disabled></Input> 
+                </Col> 
+              </FormGroup>
+            </Col>  
+            <Col md="4">
+              <FormGroup row>
+              <Col md="3">
+                  <Label htmlFor="name">Tanggal</Label>
+                </Col>
+                <Col md="9">
+                <Input type="text" name="kode" id="kode" value={permintaanBarang.tanggal} disabled></Input> 
                 </Col> 
               </FormGroup>
             </Col>  
@@ -145,11 +160,6 @@ class BuatPengeluaranBarang extends Component {
               }
             </tbody>
           </Table>
-          <div align="center">
-            <Link to="/pengeluaranBarang/pengeluaranBarang">
-                <Button onClick={this.Submit.bind(this)} color="primary">Submit</Button>
-            </Link>
-          </div>
         </CardBody>
       )
     }
@@ -198,6 +208,7 @@ class BuatPengeluaranBarang extends Component {
           },
           refetchQueries:[{query:getPermintaanBarangsQuery}],
     });
+    this.props.history.push("/pengeluaranBarang/pengeluaranBarang");
     Swal.fire({
       position: 'center',
       icon: 'success',
@@ -206,23 +217,76 @@ class BuatPengeluaranBarang extends Component {
     })
   }
 
+  onDelete(){
+    var data = this.props.getPengeluaranBarangsQuery;
+    var pengeluaran_id = '';
+    data.pengeluaranBarangs.map(request => {
+      return(
+        pengeluaran_id = request.id
+      );
+    });
+    this.props.hapusPengeluaranBarang({
+      variables:{
+        id: pengeluaran_id,        
+      },
+      refetchQueries:[{query:getPengeluaranBarangsQuery}],
+    });
+    this.props.history.push("/pengeluaranBarang/pengeluaranBarang");
+  }
+
+  handlePanel1Change = (panel) => (event) => {
+    this.setState({
+      panel1: ! this.state.panel1
+    });
+  };
+  handlePanel2Change = (panel) => (event) => {
+    this.setState({
+      panel2: ! this.state.panel2
+    });
+  };
+
   render() {
     return (
       <div className="animated fadeIn">
         <Row>
            <Col>
-            <Card>
-              <CardHeader>
-                <i className="fa fa-align-justify"></i>Form Pengeluaran Barang
-                <Link to="/pengeluaranBarang/pengeluaranBarang" className={'float-right mb-0'}>
-                  <Button color="danger">
-                      Batal
-                  </Button>
-                </Link>
-              </CardHeader>
-              {this.displayNewPengeluaranBarang()}
-              {this.displayPermintaanBarangDetail()}
-            </Card>
+            
+              <Accordion square expanded={this.state.panel1} onChange={this.handlePanel1Change()}>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="panel1a-content"
+              id="panel1a-header"
+            >
+            Form Pengeluaran Barang
+            </AccordionSummary>
+            <AccordionDetails>
+              <Form onSubmit={(e) => {this.addItem(e)}}>
+                <Row form>
+                  <Col className="text-center">
+                  {this.displayNewPengeluaranBarang()}
+                  </Col>
+                </Row>
+              </Form>
+            </AccordionDetails>
+          </Accordion>
+          <Accordion square expanded={this.state.panel2} onChange={this.handlePanel2Change()}>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="panel1a-content"
+              id="panel1a-header"
+            >
+            Detail Permintaan Barang
+            </AccordionSummary>
+            <AccordionDetails>
+            {this.displayPermintaanBarangDetail()}
+            </AccordionDetails>
+          </Accordion>
+          <div align="center">  
+            <Button onClick={(e) => { this.Submit(e) }} color="primary" size="sm">Submit</Button>
+            <Button color="danger" onClick={this.onDelete.bind(this)} size="sm">Batal</Button>
+          </div> 
+              
+            
           </Col>
         </Row>
         
@@ -252,5 +316,6 @@ export default compose(
   graphql(updateJumlahPersediaanBarang, {name:"updateJumlahPersediaanBarang"}),
   graphql(updateJumlahDipakaiInventaris, {name:"updateJumlahDipakaiInventaris"}), 
   graphql(updateStatusDonePermintaanBarang, {name:"updateStatusDonePermintaanBarang"}),
+  graphql(hapusPengeluaranBarang, {name:"hapusPengeluaranBarang"}),
   
 )(BuatPengeluaranBarang);

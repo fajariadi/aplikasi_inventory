@@ -40,6 +40,16 @@ class DetailPengeluaranBarang extends Component {
             <Col md="4">
               <FormGroup row>
               <Col md="3">
+                  <Label htmlFor="name">Dibuat Oleh</Label>
+                </Col>
+                <Col md="9">
+                <Input type="text" name="kode" id="kode" value={pengeluaranBarang.permintaanBarang.akun.karyawan.nama} disabled></Input> 
+                </Col> 
+              </FormGroup>
+            </Col>  
+            <Col md="4">
+              <FormGroup row>
+              <Col md="3">
                   <Label htmlFor="name">Tanggal</Label>
                 </Col>
                 <Col md="9">
@@ -47,16 +57,7 @@ class DetailPengeluaranBarang extends Component {
                 </Col> 
               </FormGroup>
             </Col>  
-            <Col md="4">
-              <FormGroup row>
-              <Col md="3">
-                  <Label htmlFor="name">Penerima</Label>
-                </Col>
-                <Col md="9">
-                <Input type="text" name="kode" id="kode" value={pengeluaranBarang.akun.karyawan.nama} disabled></Input> 
-                </Col> 
-              </FormGroup>
-            </Col>  
+            
           </Row>
           <Row>  
             <Col md="4">
@@ -72,20 +73,20 @@ class DetailPengeluaranBarang extends Component {
             <Col md="4">
               <FormGroup row>
               <Col md="3">
-                  <Label htmlFor="name">Dibuat Oleh</Label>
+                  <Label htmlFor="name">Divisi</Label>
                 </Col>
                 <Col md="9">
-                <Input type="text" name="kode" id="kode" value={pengeluaranBarang.permintaanBarang.akun.karyawan.nama} disabled></Input> 
+                <Input type="text" name="kode" id="kode" value={pengeluaranBarang.permintaanBarang.divisi.nama} disabled></Input> 
                 </Col> 
               </FormGroup>
             </Col>  
             <Col md="4">
               <FormGroup row>
               <Col md="3">
-                  <Label htmlFor="name">Divisi</Label>
+                  <Label htmlFor="name">Tanggal</Label>
                 </Col>
                 <Col md="9">
-                <Input type="text" name="kode" id="kode" value={pengeluaranBarang.permintaanBarang.akun.karyawan.divisi.nama} disabled></Input> 
+                <Input type="text" name="kode" id="kode" value={pengeluaranBarang.permintaanBarang.tanggal} disabled></Input> 
                 </Col> 
               </FormGroup>
             </Col>

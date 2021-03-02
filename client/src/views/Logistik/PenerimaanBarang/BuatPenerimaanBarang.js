@@ -1,14 +1,11 @@
 import React, { Component } from 'react';
 import {graphql} from 'react-apollo';
-import { Link } from 'react-router-dom';
 import * as compose from 'lodash.flowright';
 import Swal from 'sweetalert2';
 import {getPurchaseOrderQuery, getAllInventarisQuery, hapusPenerimaanBarang, updateJumlahInventaris, getPurchaseOrdersQuery, getPenerimaanBarangsQuery, getPersediaanBarangsQuery, getListRequestsQuery, getBarangsQuery, addPersediaanBarang, updateJumlahPersediaanBarang, updateStatusListRequestOnOrder, updateStatusDonePurchaseOrder} from '../queries/queries';
 import { 
   Form,
-  Card, 
   CardBody, 
-  CardHeader, 
   Col, 
   Row, 
   Table,

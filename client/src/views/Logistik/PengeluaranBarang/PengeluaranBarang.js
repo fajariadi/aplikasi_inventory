@@ -9,12 +9,8 @@ import {
   Card, 
   CardBody, 
   CardHeader, 
-  Col, 
-  Pagination, 
-  PaginationItem, 
-  PaginationLink, 
+  Col,  
   Row, 
-  Table,
   Button,
   FormGroup,
   Label,
@@ -55,7 +51,7 @@ class PengeluaranBarang extends Component {
     var no = 0;
     if (data.loading) {
       return
-    } else {
+    } else { // eslint-disable-next-line
       data.pengeluaranBarangs.map(barang => {
         no++
       })

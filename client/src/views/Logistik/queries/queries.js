@@ -308,17 +308,14 @@ const getPengeluaranBarangsQuery = gql`
 				jabatan
 			}
 		}
-		permintaanBarang{
+		permintaanBarang {
 			tanggal
 			status
-			kode
 			id
-			tanggal_setuju
-			disetujui{
-				username
-				karyawan{
+			kode
+			divisi{
 				nama
-				}
+				id
 			}
 			akun{
 				username
@@ -327,6 +324,7 @@ const getPengeluaranBarangsQuery = gql`
 					nama
 					divisi{
 						nama
+						id
 					}
 				}
 			}
@@ -550,7 +548,7 @@ const addInventaris = gql`
 `
 
 const addPenerimaanBarang = gql`
-	mutation($kode:String!, $tanggal:String!, $akun_id: ID!, $purchase_id: ID!,){
+	mutation($kode:String!, $tanggal:String!, $akun_id: ID!, $purchase_id: ID!){
 		addPenerimaanBarang(kode:$kode, tanggal:$tanggal, akun_id: $akun_id, purchase_id: $purchase_id,){
 			tanggal
 			kode
@@ -560,7 +558,7 @@ const addPenerimaanBarang = gql`
 `
 
 const addKaryawanMutation = gql`
-	mutation($nama:String!, $jabatan:String!, $alamat:String!, $noHp:String!, $avatar:String!, $divisi_id: ID!,){
+	mutation($nama:String!, $jabatan:String!, $alamat:String!, $noHp:String!, $avatar:String!, $divisi_id: ID!){
 		addKaryawan(nama:$nama, jabatan:$jabatan, alamat:$alamat, noHp:$noHp , avatar:$avatar, divisi_id: $divisi_id,){
 			nama
 			jabatan
@@ -570,10 +568,10 @@ const addKaryawanMutation = gql`
 `
 
 const addPengeluaranBarang = gql`
-	mutation($kode:String!, $tanggal:String!, $akun_id: ID!, $permintaan_id: ID!,){
-		addPengeluaranBarang(kode:$kode, tanggal:$tanggal, akun_id: $akun_id, permintaan_id: $permintaan_id,){
-			tanggal
+	mutation($kode:String!, $tanggal:String!, $akun_id: ID!, $permintaan_id: ID!){
+		addPengeluaranBarang(kode:$kode, tanggal:$tanggal, akun_id:$akun_id, permintaan_id:$permintaan_id){
 			kode
+			tanggal
 			id
 		}
 	}
@@ -890,17 +888,14 @@ const getPengeluaranBarangQuery = gql`
 					jabatan
 				}
 			}
-			permintaanBarang{
+			permintaanBarang {
 				tanggal
 				status
-				kode
 				id
-				tanggal_setuju
-				disetujui{
-					username
-					karyawan{
+				kode
+				divisi{
 					nama
-					}
+					id
 				}
 				akun{
 					username
@@ -909,6 +904,7 @@ const getPengeluaranBarangQuery = gql`
 						nama
 						divisi{
 							nama
+							id
 						}
 					}
 				}

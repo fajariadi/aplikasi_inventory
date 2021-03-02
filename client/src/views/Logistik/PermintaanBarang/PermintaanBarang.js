@@ -3,7 +3,7 @@ import { Redirect, Link } from 'react-router-dom';
 import {graphql} from 'react-apollo';
 import * as compose from 'lodash.flowright';
 import { getPermintaanBarangsQuery, addPermintaanBarangMutation, hapusPermintaanBarangMutation, getListRequestsQuery, hapusManyListRequestMutation} from '../queries/queries';
-import { Button, Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Row, Table } from 'reactstrap';
+import { Button, Card, CardBody, CardHeader, Col, Row } from 'reactstrap';
 
 import Table1 from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -47,7 +47,7 @@ class PermintaanBarang extends Component {
     var no = 0;
     if (data.loading) {
       return
-    } else {
+    } else { // eslint-disable-next-line
       data.permintaanBarangs.map(barang => {
         no++
       })

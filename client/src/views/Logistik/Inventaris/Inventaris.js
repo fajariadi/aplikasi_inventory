@@ -7,9 +7,6 @@ import {
   CardBody, 
   CardHeader, 
   Col, 
-  Pagination, 
-  PaginationItem, 
-  PaginationLink, 
   Row, 
   Table,
 

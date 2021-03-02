@@ -3,7 +3,7 @@ import { Link, Redirect} from 'react-router-dom';
 import * as compose from 'lodash.flowright';
 import {graphql} from 'react-apollo';
 import { getPurchaseOrdersQuery, addPurchaseOrderMutation } from '../queries/queries';
-import { Card, CardBody, CardHeader, Col, Pagination, PaginationItem,Button, PaginationLink, Row, Table } from 'reactstrap';
+import { Card, CardBody, CardHeader, Col, Button, Row } from 'reactstrap';
 
 import Table1 from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -39,7 +39,7 @@ class PurchaseOrder extends Component {
     var no = 0;
     if (data.loading) {
       return
-    } else {
+    } else { // eslint-disable-next-line
       data.purchaseOrders.map(barang => {
         no++
       })

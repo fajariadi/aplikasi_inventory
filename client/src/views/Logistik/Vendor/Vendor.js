@@ -11,7 +11,6 @@ import {
   Col,   
   Button, 
   Row, 
-  Table,
   Form, 
   FormGroup, 
   Label,
@@ -52,7 +51,7 @@ class Vendor extends Component {
     var no = 0;
     if (data.loading) {
       return
-    } else {
+    } else { // eslint-disable-next-line
       data.vendors.map(barang => {
         no++
       })
@@ -97,7 +96,7 @@ class Vendor extends Component {
     var no = 0;
     if(data.loading){
       return;
-    } else {
+    } else { // eslint-disable-next-line
       return data.vendors.map(vendor => {
          no++;
          if (no > mulai && no < akhir+1){
