@@ -4,17 +4,12 @@ import {graphql} from 'react-apollo';
 import * as compose from 'lodash.flowright';
 import {getPermintaanBarangsQuery,  getAllInventarisQuery, getPurchaseOrdersQuery, getPersediaanBarangsQuery, getPenerimaanBarangsQuery, getPengeluaranBarangsQuery} from '../queries/queries';
 import {
-  ButtonDropdown,
-  ButtonGroup,
   Card,
   CardHeader,
   Table,
   CardBody,
   Col,
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownToggle,
+  
   Row,
 
 
@@ -246,7 +241,7 @@ class DashboardLogistik extends Component {
         jumlah++
       })
     }
-    return(jumlah);
+    return jumlah;
   }
 
   getPurchaseOrder(){
@@ -259,7 +254,7 @@ class DashboardLogistik extends Component {
         jumlah++
       })
     }
-    return(jumlah);
+    return jumlah;
   }
 
   getPersediaanBarang(){
@@ -272,7 +267,7 @@ class DashboardLogistik extends Component {
         jumlah++
       })
     }
-    return(jumlah);
+    return jumlah;
   }
 
   getInventaris(){
@@ -285,7 +280,7 @@ class DashboardLogistik extends Component {
         jumlah++
       })
     }
-    return(jumlah);
+    return jumlah;
   }
  
   displayPenerimaanBarang(){
@@ -293,17 +288,19 @@ class DashboardLogistik extends Component {
     var no = 0;
     if(data.loading){
       return
-    } else {
+    } else { // eslint-disable-next-line
       return data.penerimaanBarangs.map(request => {
         no++;
-        return(
-          <tr key={request.id}>
-            <td>{no}</td>
-            <td>{request.kode}</td>
-            <td>{request.tanggal}</td>
-            <td>{request.purchaseOrder.vendor.nama}</td>
-          </tr>
-        );
+        if (no < 6){
+          return(
+            <tr key={request.id}>
+              <td>{no}</td>
+              <td>{request.kode}</td>
+              <td>{request.tanggal}</td>
+              <td>{request.purchaseOrder.vendor.nama}</td>
+            </tr>
+          );
+        }
       });
     }
   }
@@ -313,17 +310,19 @@ class DashboardLogistik extends Component {
     var no = 0;
     if(data.loading){
       return
-    } else {
+    } else { // eslint-disable-next-line
       return data.pengeluaranBarangs.map(pengeluaran => {
         no++;
-        return(
-          <tr key={pengeluaran.id}>
-            <td>{no}</td>
-            <td>{pengeluaran.kode}</td>
-            <td>{pengeluaran.tanggal}</td>
-            <td>{pengeluaran.permintaanBarang.akun.karyawan.divisi.nama}</td>
-          </tr>
-        );
+        if (no < 6){
+          return(
+            <tr key={pengeluaran.id}>
+              <td>{no}</td>
+              <td>{pengeluaran.kode}</td>
+              <td>{pengeluaran.tanggal}</td>
+              <td>{pengeluaran.permintaanBarang.akun.karyawan.divisi.nama}</td>
+            </tr>
+          );
+        }
       });
     } 
   }
@@ -338,19 +337,6 @@ class DashboardLogistik extends Component {
           <Col xs="12" sm="6" lg="3">
             <Card className="text-white bg-info">
               <CardBody className="pb-0">
-                <ButtonGroup className="float-right">
-                  <ButtonDropdown id='card1' isOpen={this.state.card1} toggle={() => { this.setState({ card1: !this.state.card1 }); }}>
-                    <DropdownToggle caret className="p-0" color="transparent">
-                      <i className="icon-settings"></i>
-                    </DropdownToggle>
-                    <DropdownMenu right>
-                      <DropdownItem>Action</DropdownItem>
-                      <DropdownItem>Another action</DropdownItem>
-                      <DropdownItem disabled>Disabled action</DropdownItem>
-                      <DropdownItem>Something else here</DropdownItem>
-                    </DropdownMenu>
-                  </ButtonDropdown>
-                </ButtonGroup>
                 <div className="text-value">{this.getPermintaanBarang()}</div> 
                 <div>Permintaan Barang</div>
               </CardBody>
@@ -363,18 +349,6 @@ class DashboardLogistik extends Component {
            <Col xs="12" sm="6" lg="3">
             <Card className="text-white bg-warning">
               <CardBody className="pb-0">
-                <ButtonGroup className="float-right">
-                  <Dropdown id='card3' isOpen={this.state.card3} toggle={() => { this.setState({ card3: !this.state.card3 }); }}>
-                    <DropdownToggle caret className="p-0" color="transparent">
-                      <i className="icon-settings"></i>
-                    </DropdownToggle>
-                    <DropdownMenu right>
-                      <DropdownItem>Action</DropdownItem>
-                      <DropdownItem>Another action</DropdownItem>
-                      <DropdownItem>Something else here</DropdownItem>
-                    </DropdownMenu>
-                  </Dropdown>
-                </ButtonGroup>
                 <div className="text-value">{this.getPurchaseOrder()}</div>
                 <div>Purchase Order</div>
               </CardBody>
@@ -387,18 +361,6 @@ class DashboardLogistik extends Component {
           <Col xs="12" sm="6" lg="3">
             <Card className="text-white bg-primary">
               <CardBody className="pb-0">
-                <ButtonGroup className="float-right">
-                  <Dropdown id='card2' isOpen={this.state.card2} toggle={() => { this.setState({ card2: !this.state.card2 }); }}>
-                    <DropdownToggle className="p-0" color="transparent">
-                      <i className="icon-location-pin"></i>
-                    </DropdownToggle>
-                    <DropdownMenu right>
-                      <DropdownItem>Action</DropdownItem>
-                      <DropdownItem>Another action</DropdownItem>
-                      <DropdownItem>Something else here</DropdownItem>
-                    </DropdownMenu>
-                  </Dropdown>
-                </ButtonGroup>
                 <div className="text-value">{this.getPersediaanBarang()}</div>
                 <div>Persediaan Barang</div>
               </CardBody>
@@ -411,18 +373,6 @@ class DashboardLogistik extends Component {
           <Col xs="12" sm="6" lg="3">
             <Card className="text-white bg-success">
               <CardBody className="pb-0">
-                <ButtonGroup className="float-right">
-                  <ButtonDropdown id='card4' isOpen={this.state.card4} toggle={() => { this.setState({ card4: !this.state.card4 }); }}>
-                    <DropdownToggle caret className="p-0" color="transparent">
-                      <i className="icon-settings"></i>
-                    </DropdownToggle>
-                    <DropdownMenu right>
-                      <DropdownItem>Action</DropdownItem>
-                      <DropdownItem>Another action</DropdownItem>
-                      <DropdownItem>Something else here</DropdownItem>
-                    </DropdownMenu>
-                  </ButtonDropdown>
-                </ButtonGroup>
                 <div className="text-value">{this.getInventaris()}</div>
                 <div>Inventaris</div>
               </CardBody>

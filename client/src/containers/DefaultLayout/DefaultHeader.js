@@ -34,7 +34,7 @@ class DefaultHeader extends Component {
         }
       })
     }
-    return(jumlah);
+    return (jumlah);
   }
 
   
@@ -60,7 +60,7 @@ class DefaultHeader extends Component {
           </NavItem>
           <UncontrolledDropdown nav direction="down">
             <DropdownToggle nav>
-              <img src={'../../assets/img/avatars/5.jpg'} className="img-avatar" alt="admin@bootstrapmaster.com" />
+              <img src={'../../assets/img/avatars/default-user.png'} className="img-avatar" alt="admin@bootstrapmaster.com" />
             </DropdownToggle>
             <DropdownMenu right>
               <DropdownItem header tag="div" className="text-center"><strong>{this.state.nama}</strong></DropdownItem>

@@ -39,20 +39,20 @@ class DetailPenerimaanBarang extends Component {
             <Col md="4">
               <FormGroup row>
               <Col md="3">
-                  <Label htmlFor="name">Tanggal</Label>
-                </Col>
-                <Col md="9">
-                <Input type="text" name="kode" id="kode" value={penerimaanBarang.tanggal} disabled></Input> 
-                </Col> 
-              </FormGroup>
-            </Col>  
-            <Col md="4">
-              <FormGroup row>
-              <Col md="3">
                   <Label htmlFor="name">Penerima</Label>
                 </Col>
                 <Col md="9">
                 <Input type="text" name="kode" id="kode" value={penerimaanBarang.akun.karyawan.nama} disabled></Input> 
+                </Col> 
+              </FormGroup>
+            </Col> 
+            <Col md="4">
+              <FormGroup row>
+              <Col md="3">
+                  <Label htmlFor="name">Tanggal</Label>
+                </Col>
+                <Col md="9">
+                <Input type="text" name="kode" id="kode" value={penerimaanBarang.tanggal} disabled></Input> 
                 </Col> 
               </FormGroup>
             </Col>  
@@ -78,6 +78,16 @@ class DetailPenerimaanBarang extends Component {
                 </Col> 
               </FormGroup>
             </Col>  
+            <Col md="4">
+              <FormGroup row>
+              <Col md="3">
+                  <Label htmlFor="name">Tanggal</Label>
+                </Col>
+                <Col md="9">
+                <Input type="text" name="kode" id="kode" value={penerimaanBarang.purchaseOrder.tanggal} disabled></Input> 
+                </Col> 
+              </FormGroup>
+            </Col>
           </Row>
           
         </Form>

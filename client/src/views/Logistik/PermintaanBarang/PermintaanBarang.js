@@ -42,13 +42,13 @@ class PermintaanBarang extends Component {
       }
   }
 
-  getCountPermintaanBarang(){
+  getDataPermintaanBarang(){
     var data = this.props.getPermintaanBarangsQuery;
     var no = 0;
     if (data.loading) {
       return
     } else { // eslint-disable-next-line
-      data.permintaanBarangs.map(barang => {
+      data.permintaanBarangs.map(permintaan => {
         no++
       })
     }
@@ -74,7 +74,7 @@ class PermintaanBarang extends Component {
     var data1 = this.props.getPermintaanBarangsQuery;
     var no = 0;
     if(data1.loading){
-      return (<div>Loading Permintaan Barang...</div>);
+      return
     } else {
       return data1.permintaanBarangs.map(request => {
         no++;
@@ -194,13 +194,12 @@ class PermintaanBarang extends Component {
                 <TablePagination
                   rowsPerPageOptions={[5, 10, 25]}
                   component="div"
-                  count={this.getCountPermintaanBarang()}
+                  count={this.getDataPermintaanBarang()}
                   rowsPerPage={this.state.rowsPerPage}
                   page={this.state.setPage}
                   onChangePage={this.handleChangePage}
                   onChangeRowsPerPage={this.handleChangeRowsPerPage}
                 />
-                
               </CardBody>
             </Card>
           </Col>

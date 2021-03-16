@@ -792,6 +792,16 @@ const Mutation = new GraphQLObjectType({
 				return ListRequest.deleteOne({_id:args.id});
 			}
 		},
+		updateStatusListRequestOnSetujui:{
+			type: ListRequestType,
+			args: {
+				id:{type:GraphQLID},
+				status: {type: GraphQLString},
+			},
+			resolve(parent, args){
+				return ListRequest.findOneAndUpdate({_id: args.id}, {status: args.status})
+			}
+		},
 		updateStatusListRequest:{
 			type: ListRequestType,
 			args: {
@@ -800,6 +810,16 @@ const Mutation = new GraphQLObjectType({
 			},
 			resolve(parent, args){
 				return ListRequest.updateMany({request_id: args.id}, {status: args.status})
+			}
+		},
+		updateOneStatusListRequest:{
+			type: ListRequestType,
+			args: {
+				id:{type:GraphQLID},
+				status: {type: GraphQLString},
+			},
+			resolve(parent, args){
+				return ListRequest.findOneAndUpdate({_id: args.id}, {status: args.status})
 			}
 		},
 		updateStatusListRequestOnOrder:{
@@ -812,6 +832,17 @@ const Mutation = new GraphQLObjectType({
 				return ListRequest.updateMany({order_id: args.order_id}, {status: args.status})
 			}
 		},
+		updateStatusDoneListRequest:{
+			type: ListRequestType,
+			args: {
+				request_id:{type:GraphQLID},
+				status: {type: GraphQLString},
+			},
+			resolve(parent, args){
+				return ListRequest.updateMany({request_id: args.request_id}, {status: args.status})
+			}
+		},
+		
 		updateAllStatusListRequest:{
 			type: ListRequestType,
 			args: {
@@ -1039,15 +1070,15 @@ const Mutation = new GraphQLObjectType({
 					jumlah: args.jumlah,
 					status: args.status,
 					barang_id:  args.barang_id,
-				});
+				}); 
 				return persbarang.save();
 			}
 		},
-		hapusPersediaanBarang:{
+		hapusPersediaanBarang:{ 
 			type: PersediaanBarangType,
-			args: {id:{type:GraphQLID}},
+			args: {barang_id:{type:GraphQLID}},
 			resolve(parent,args){
-				return PersediaanBarang.deleteOne({_id:args.id});
+				return PersediaanBarang.deleteOne({barang_id: args.barang_id});
 			}
 		},
 		updateJumlahPersediaanBarang:{
@@ -1059,7 +1090,7 @@ const Mutation = new GraphQLObjectType({
 			resolve(parent, args){
 				return PersediaanBarang.findOneAndUpdate({barang_id: args.barang_id}, {jumlah: args.jumlah})
 			}
-		},
+		}, 
 		addInventaris:{
 			type: InventarisType,
 			args:{

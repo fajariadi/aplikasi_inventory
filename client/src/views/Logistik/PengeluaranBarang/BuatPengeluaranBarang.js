@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {graphql} from 'react-apollo';
 import * as compose from 'lodash.flowright';
 import Swal from 'sweetalert2';
-import {getPermintaanBarangQuery,hapusPengeluaranBarang, getAllInventarisQuery, updateJumlahDipakaiInventaris, getPermintaanBarangsQuery, getPengeluaranBarangsQuery, getPersediaanBarangsQuery, getListRequestsQuery, getBarangsQuery, addPersediaanBarang, updateJumlahPersediaanBarang, updateStatusDonePermintaanBarang} from '../queries/queries';
+import {getPermintaanBarangQuery, updateStatusDoneListRequest, hapusPengeluaranBarang, hapusPersediaanBarang,  getAllInventarisQuery, updateJumlahDipakaiInventaris, getPermintaanBarangsQuery, getPengeluaranBarangsQuery, getPersediaanBarangsQuery, getListRequestsQuery, getBarangsQuery, addPersediaanBarang, updateJumlahPersediaanBarang, updateStatusDonePermintaanBarang} from '../queries/queries';
 import { 
   Form,
   CardBody, 
@@ -177,13 +177,22 @@ class BuatPengeluaranBarang extends Component {
                     jumlah1 = stock.jumlah
                 }
             });  
-            this.props.updateJumlahPersediaanBarang({
+            if ( jumlah1 > item.jumlah_barang){
+              this.props.updateJumlahPersediaanBarang({
                 variables:{
                   barang_id: per_id,
                   jumlah: parseInt(jumlah1)-parseInt(item.jumlah_barang),
                 },
                 refetchQueries:[{query:getPersediaanBarangsQuery}],
-            });
+              });
+            } else {
+              this.props.hapusPersediaanBarang({
+                variables:{
+                  barang_id: per_id,        
+                },
+                refetchQueries:[{query:getPersediaanBarangsQuery}],
+              })
+            }   
         } else { // eslint-disable-next-line
             var data = this.props.getAllInventarisQuery;
             var inv_id = ''; // eslint-disable-next-line
@@ -208,6 +217,13 @@ class BuatPengeluaranBarang extends Component {
           },
           refetchQueries:[{query:getPermintaanBarangsQuery}],
     });
+    this.props.updateStatusDoneListRequest({
+      variables:{
+          request_id: this.props.match.params.id,
+          status: 'Done',
+        },
+        refetchQueries:[{query:getListRequestsQuery}],
+  });
     this.props.history.push("/pengeluaranBarang/pengeluaranBarang");
     Swal.fire({
       position: 'center',
@@ -317,5 +333,7 @@ export default compose(
   graphql(updateJumlahDipakaiInventaris, {name:"updateJumlahDipakaiInventaris"}), 
   graphql(updateStatusDonePermintaanBarang, {name:"updateStatusDonePermintaanBarang"}),
   graphql(hapusPengeluaranBarang, {name:"hapusPengeluaranBarang"}),
+  graphql(updateStatusDoneListRequest, {name:"updateStatusDoneListRequest"}),
+  graphql(hapusPersediaanBarang, {name:"hapusPersediaanBarang"}),
   
 )(BuatPengeluaranBarang);

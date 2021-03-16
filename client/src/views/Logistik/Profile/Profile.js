@@ -432,20 +432,6 @@ class Profile extends Component {
       <div className="animated fadeIn">
         <Row>
           <Col xs="12" lg="3">
-            <Row>
-              <Card>
-                <CardBody>
-                  <center>
-                    <img src={'../../assets/img/avatars/5.jpg'} style={{width: "60%"}} alt="admin@bootstrapmaster.com" />
-                  </center>
-                  <div align="center">
-                    <Button color="success" size="sm" className="mt-4" >
-                      <i className="fa fa-pencil"></i> Ganti Foto (masih error)
-                    </Button>
-                  </div>
-                </CardBody>
-              </Card>
-            </Row>
             <Row xs="12">
               <Card style={{width: "100%"}} >
                 <CardBody>

@@ -3,7 +3,7 @@ import { Redirect, Link } from 'react-router-dom';
 import {graphql} from 'react-apollo';
 import * as compose from 'lodash.flowright';
 import Swal from 'sweetalert2';
-import { getPermintaanBarangQuery, getPermintaanBarangsQuery, hapusPermintaanBarangMutation, hapusManyListRequestMutation, updateStatusPermintaanBarang, updateStatusListRequest, getListRequestsQuery} from '../queries/queries';
+import { getPermintaanBarangQuery, updateOneStatusListRequest, getPermintaanBarangsQuery, updateStatusListRequestOnSetujui, hapusPermintaanBarangMutation, getPersediaanBarangsQuery, hapusManyListRequestMutation, updateStatusPermintaanBarang, updateStatusListRequest, getListRequestsQuery} from '../queries/queries';
 import { Button, Card, CardBody, CardHeader, Col, Row, Table, Form, FormGroup, Label, Input } from 'reactstrap';
 
 class DetailPermintaanBarang extends Component {
@@ -227,6 +227,78 @@ class DetailPermintaanBarang extends Component {
   }
 
   onSetujuiPermintaan(permintaan_id){
+    const data1 = this.props.getListRequestsQuery;
+    const data2 = this.props.getPersediaanBarangsQuery;
+    var jumlah = 0; // eslint-disable-next-line
+    data2.persediaanBarangs.map(pers =>{
+      jumlah = pers.jumlah; // eslint-disable-next-line
+      data1.listrequests.map(list => {
+        if (list.status === 'Waiting' || list.status === 'Ready'){
+          if (pers.barang.nama_barang === list.nama_barang){
+            if (jumlah >= list.jumlah_barang){
+              jumlah = jumlah - list.jumlah_barang;
+              if (list.status === 'Waiting'){
+                this.props.updateStatusListRequestOnSetujui({
+                  variables:{
+                    id:list.id,
+                    status: 'Ready',
+                  },
+                  refetchQueries:[{query:getListRequestsQuery}],
+                });
+              }
+            } else {
+              this.props.updateStatusListRequestOnSetujui({
+                variables:{
+                  id:list.id,
+                  status: 'Active',
+                },
+                refetchQueries:[{query:getListRequestsQuery}],
+              });
+            }
+          }
+        }
+      })
+    })
+    var items = [];
+    data1.listrequests.map(list => {
+      if (list.permintaanBarang.id === permintaan_id){
+        if(items.length === 0){
+          const newItem = { nama: list.nama_barang, list_id: list.id, request_id : list.permintaanBarang.id};
+          items.push(newItem);
+        } else { 
+          var sama = false;// eslint-disable-next-line
+          items.map(item => {
+            if(item.nama === list.nama_barang){
+              sama = true
+            }
+          });
+          if (sama === false){
+            const newItem = { nama: list.nama_barang, list_id: list.id, request_id : list.permintaanBarang.id};
+            items.push(newItem);
+          }
+        }
+      }
+    })
+    data2.persediaanBarangs.map( pers => {
+      var i = 0;
+      items.map( item => {
+        if (pers.barang.nama_barang !== item.nama){
+          i++;
+        } else {
+          items.splice(i, 1);
+        }
+      })
+    })
+    items.map ( item => {
+      this.props.updateOneStatusListRequest({
+        variables:{
+          id:item.list_id,
+          status: 'Active',
+        },
+        refetchQueries:[{query:getListRequestsQuery}],
+      });
+    })
+    
     this.props.updateStatusPermintaanBarang({
       variables:{
         id:permintaan_id,
@@ -234,13 +306,6 @@ class DetailPermintaanBarang extends Component {
         tanggal_setuju: new Date().toLocaleDateString(),
       },
       refetchQueries:[{query:getPermintaanBarangsQuery}],
-    });
-    this.props.updateStatusListRequest({
-      variables:{
-        id:permintaan_id,
-        status: 'Active',
-      },
-      refetchQueries:[{query:getListRequestsQuery}],
     });
     this.props.history.push("/permintaanBarang/permintaanBarang");
     Swal.fire({
@@ -326,4 +391,8 @@ export default compose (
     graphql(getListRequestsQuery, {name:"getListRequestsQuery"}),
     graphql(hapusPermintaanBarangMutation, {name:"hapusPermintaanBarangMutation"}),
     graphql(hapusManyListRequestMutation, {name:"hapusManyListRequestMutation"}),
+    graphql(getPersediaanBarangsQuery, {name:"getPersediaanBarangsQuery"}),
+    graphql(updateStatusListRequestOnSetujui, {name:"updateStatusListRequestOnSetujui"}),
+    graphql(updateOneStatusListRequest, {name:"updateOneStatusListRequest"}),
+    
 )(DetailPermintaanBarang);

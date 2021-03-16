@@ -79,6 +79,7 @@ const getListRequestsQuery = gql`
 		permintaanBarang{
 			status
 			tanggal
+			id
 		}
 	}
 }
@@ -598,8 +599,8 @@ const hapusManyListItemPurchaseOrder = gql`
 	}
 `
 const hapusPersediaanBarang = gql`
-	mutation($id:ID!){
-		hapusPersediaanBarang(id: $id){
+	mutation($barang_id:ID!){
+		hapusPersediaanBarang(barang_id:$barang_id){
 			jumlah
 			status
 			id
@@ -996,6 +997,15 @@ const updateStatusDonePurchaseOrder = gql`
 	}
 `
 
+const updateStatusListRequestOnSetujui = gql`
+	mutation($id : ID, $status : String! ){
+		updateStatusListRequestOnSetujui(id:$id, status:$status){
+			id
+			status
+		}
+	}
+`
+
 const updateStatusListRequest = gql`
 	mutation($id : ID, $status : String! ){
 		updateStatusListRequest(id:$id, status:$status){
@@ -1019,6 +1029,23 @@ const updateStatusListRequestOnOrder = gql`
 		}
 	}
 `
+const updateStatusDoneListRequest = gql`
+	mutation( $request_id: ID, $status : String!){
+		updateStatusDoneListRequest(request_id:$request_id, status:$status ){
+			status
+		}
+	}
+`
+
+const updateOneStatusListRequest = gql`
+	mutation( $id: ID, $status : String!){
+		updateOneStatusListRequest(id:$id, status:$status ){
+			id
+			status
+		}
+	}
+`
+
 const updateStatusListItemPurchaseOrder = gql`
 	mutation($purchaseOrder_id: ID, $status : String! ){
 		updateStatusListItemPurchaseOrder(purchaseOrder_id:$purchaseOrder_id, status:$status){
@@ -1247,6 +1274,9 @@ export {
 	updateStatusPemeliharaan,
 	updateRusakInventaris,
 	updateTotalHargaPurchaseOrder,
-	updateDivisiPermintaanBarangMutation
+	updateDivisiPermintaanBarangMutation,
+	updateStatusDoneListRequest,
+	updateStatusListRequestOnSetujui,
+	updateOneStatusListRequest
 
 };
