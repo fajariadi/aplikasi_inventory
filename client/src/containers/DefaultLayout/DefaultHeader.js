@@ -27,12 +27,16 @@ class DefaultHeader extends Component {
     var jumlah = 0;
     if(data.loading){
       return (<div>Loading Pemeliharaan...</div>);
-    } else { // eslint-disable-next-line
-      data.permintaanBarangs.map(permintaan => {
-        if(permintaan.status === 'Belum Disetujui'){
-          jumlah++
+    } else { 
+        if (data.permintaanBarangs !== undefined){// eslint-disable-next-line
+          data.permintaanBarangs.map(permintaan => {
+            if(permintaan.status === 'Belum Disetujui'){
+              jumlah++
+            }
+          })
+        } else {
+          window.location.reload(false);
         }
-      })
     }
     return (jumlah);
   }

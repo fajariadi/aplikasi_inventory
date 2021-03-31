@@ -27,6 +27,8 @@ class PermintaanBarang extends Component {
     this.state = {
       akun_id: localStorage.getItem("user_id"),
       jabatan: localStorage.getItem("jabatan"),
+      divisi : localStorage.getItem("divisi"),
+      sortType : 'desc',
       kode:'',
       nama:'',
       jumlah:'',
@@ -72,33 +74,46 @@ class PermintaanBarang extends Component {
 
   displayRequest(){
     var data1 = this.props.getPermintaanBarangsQuery;
+    var mulai = this.state.setPage*this.state.setRowsPerPage;
+    var akhir = this.state.setPage*this.state.setRowsPerPage+this.state.setRowsPerPage;
     var no = 0;
     if(data1.loading){
       return
     } else {
-      return data1.permintaanBarangs.map(request => {
-        no++;
-        return(
-          <TableRow key={request.id}>
-            <TableCell component="th" scope="row">
-              {no}
-            </TableCell>
-            <TableCell align="center">{request.kode}</TableCell>
-            <TableCell align="center">{request.divisi.nama}</TableCell>
-            <TableCell align="center">{request.tanggal}</TableCell>
-            <TableCell align="center">{request.status}</TableCell>
-            <TableCell align="center">
-              <Link to={`/permintaanBarang/detailPermintaanBarang/${request.id}`}>
-                <Button color="primary" size="sm">
-                  <i className="fa fa-file"></i>
-                </Button>
-              </Link>
-            </TableCell>
-          </TableRow>
-        );
-      });
+      if (data1.permintaanBarangs !== undefined){
+        data1.permintaanBarangs.sort((a, b) =>{
+          const isReversed = (this.state.sortType === 'asc') ? 1 : -1;
+          return isReversed * a.kode.localeCompare(b.kode)
+        }); // eslint-disable-next-line
+        return data1.permintaanBarangs.map(request => {
+          no++;
+          if (no > mulai && no < akhir+1){
+            return(
+              <TableRow key={request.id}>
+                <TableCell component="th" scope="row">
+                  {no}
+                </TableCell>
+                <TableCell align="center">{request.kode}</TableCell>
+                <TableCell align="center">{request.divisi.nama}</TableCell>
+                <TableCell align="center">{request.tanggal}</TableCell>
+                <TableCell align="center">{request.status}</TableCell>
+                <TableCell align="center">
+                  <Link to={`/permintaanBarang/detailPermintaanBarang/${request.id}`}>
+                    <Button color="primary" size="sm">
+                      <i className="fa fa-file"></i>
+                    </Button>
+                  </Link>
+                </TableCell>
+              </TableRow>
+            );
+          }
+        });
+      }else {
+        window.location.reload(false);
+      }
     }
   }
+  
   getKodeBaru(){
     var newKode = 'R';
     var kode = '';
@@ -123,6 +138,7 @@ class PermintaanBarang extends Component {
   }
 
   addRequestHandler(){
+    console.log(this.state.akun_id);
     this.props.addPermintaanBarangMutation({
       variables:{
         tanggal: new Date().toLocaleDateString(), 
@@ -151,7 +167,7 @@ class PermintaanBarang extends Component {
   };
 
   displayTombolBuatPermintaan(){
-    if (this.state.jabatan !== 'Admin'){
+    if (this.state.jabatan !== 'Admin' && this.state.divisi === "Logistic"){
       return(
         <Button color="primary" onClick={this.addRequestHandler.bind(this)} className={'float-right mb-0'} size="sm">
           <i className="fa fa-plus mr-2"></i>Buat Permintaan Barang
@@ -195,9 +211,9 @@ class PermintaanBarang extends Component {
                   rowsPerPageOptions={[5, 10, 25]}
                   component="div"
                   count={this.getDataPermintaanBarang()}
-                  rowsPerPage={this.state.rowsPerPage}
                   page={this.state.setPage}
                   onChangePage={this.handleChangePage}
+                  rowsPerPage={this.state.rowsPerPage}
                   onChangeRowsPerPage={this.handleChangeRowsPerPage}
                 />
               </CardBody>

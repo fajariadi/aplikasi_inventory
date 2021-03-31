@@ -193,7 +193,9 @@ class BuatPurchaseOrder extends Component {
       }
     } else{
       return(
-        <div align="center">Pilih Vendor</div>
+        <tr align="center">
+          Pilih Vendor
+        </tr>
       )
     }
   }
@@ -201,7 +203,7 @@ class BuatPurchaseOrder extends Component {
    displayVendor(){
     var data = this.props.getVendorsQuery;
     if(data.loading){
-      return (<div>Loading Divisi...</div>);
+      return 
     } else {
       return data.vendors.map(vendor => {
         return(
@@ -364,10 +366,11 @@ class BuatPurchaseOrder extends Component {
               </CardHeader>
               <CardBody>
                 {this.displayNewPurchaseOrder()}
-                <hr />
-                <Row align="center">
-                  <h5>Daftar Kebutuhan Barang</h5>
-                </Row>
+              </CardBody>
+              <CardHeader>
+               Daftar Kebutuhan Barang
+              </CardHeader>
+              <CardBody>
                 <Table hover bordered striped responsive size="sm">
                   <thead align="center">
                     <tr>

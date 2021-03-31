@@ -259,7 +259,7 @@ class DetailPermintaanBarang extends Component {
         }
       })
     })
-    var items = [];
+    var items = [];// eslint-disable-next-line
     data1.listrequests.map(list => {
       if (list.permintaanBarang.id === permintaan_id){
         if(items.length === 0){
@@ -278,9 +278,9 @@ class DetailPermintaanBarang extends Component {
           }
         }
       }
-    })
+    })// eslint-disable-next-line
     data2.persediaanBarangs.map( pers => {
-      var i = 0;
+      var i = 0;// eslint-disable-next-line
       items.map( item => {
         if (pers.barang.nama_barang !== item.nama){
           i++;
@@ -288,7 +288,7 @@ class DetailPermintaanBarang extends Component {
           items.splice(i, 1);
         }
       })
-    })
+    })// eslint-disable-next-line
     items.map ( item => {
       this.props.updateOneStatusListRequest({
         variables:{

@@ -35,6 +35,8 @@ class Barang extends Component {
     super(props);
     this.state = {
       jabatan: localStorage.getItem('jabatan'),
+      q:'',
+      setQ:'',
       nama_barang: '',
       jenis_barang: '',
       satuan: '',
@@ -115,7 +117,7 @@ class Barang extends Component {
 
   displayBarang() {
     var data = this.props.getBarangsQuery;
-    var mulai = this.state.setPage*this.state.setRowsPerPage;
+    var mulai = this.state.setPage*this.state.setRowsPerPage; 
     var akhir = this.state.setPage*this.state.setRowsPerPage+this.state.setRowsPerPage;
     var no = 0;
     if (data.loading) {
@@ -227,6 +229,7 @@ class Barang extends Component {
                 {this.displayTombolTambah()}
               </CardHeader>
               <CardBody>
+              
                 <TableContainer component={Paper}>
                   <Table1 aria-label="simple table">
                     <TableHead>
@@ -282,6 +285,8 @@ class Barang extends Component {
                   <option value="Drum">Drum</option>
                   <option value="Takaran">Takaran</option>
                   <option value="Unit">Unit</option>
+                  <option value="Pack">Pack</option>
+                  <option value="Box">Box</option>
                 </Input>
               </FormGroup>
               <FormGroup>

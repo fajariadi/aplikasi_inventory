@@ -33,6 +33,9 @@ class PengeluaranBarang extends Component {
     super(props);
     this.state = {
       akun_id: localStorage.getItem("user_id"),
+      jabatan: localStorage.getItem("jabatan"),
+      divisi: localStorage.getItem("divisi"),
+      sortType: 'desc',
       nama:'',
       permintaan_id:'',
       jumlah: 0,
@@ -90,34 +93,54 @@ class PengeluaranBarang extends Component {
 
   displayPengeluaranBarang(){
     var data1 = this.props.getPengeluaranBarangsQuery;
+    var mulai = this.state.setPage*this.state.setRowsPerPage;
+    var akhir = this.state.setPage*this.state.setRowsPerPage+this.state.setRowsPerPage;
     var no = 0;
     if(data1.loading){
       return
     } else {
-      return data1.pengeluaranBarangs.map(request => {
-        no++;
-        return(
-          <TableRow key={request.id}>
-            <TableCell component="th" scope="row">
-              {no}
-            </TableCell>
-            <TableCell align="center">{request.kode}</TableCell>
-            <TableCell align="center">{request.tanggal}</TableCell>
-            <TableCell align="center">
-            <Link to={`/pengeluaranBarang/detailPengeluaranBarang/${request.id}`}>
-              <Button color="primary" size="sm">
-                <i className="fa fa-file"></i>
-                </Button>
-              </Link>
-            </TableCell>
-            <TableCell align="center">
-            <Button onClick={this.onDelete.bind(this, request.id)} color="danger" size="sm">
-                <i className="fa fa-trash"></i>
-              </Button>
-            </TableCell>
-          </TableRow>
-        );
-      });
+      if (data1.pengeluaranBarangs !== undefined){
+        data1.pengeluaranBarangs.sort((a, b) =>{
+          const isReversed = (this.state.sortType === 'asc') ? 1 : -1;
+          return isReversed * a.kode.localeCompare(b.kode)
+        }); // eslint-disable-next-line
+        return data1.pengeluaranBarangs.map(request => {
+          no++;
+          if (no > mulai && no < akhir+1){
+            return(
+              <TableRow key={request.id}>
+                <TableCell component="th" scope="row">
+                  {no}
+                </TableCell>
+                <TableCell align="center">{request.kode}</TableCell>
+                <TableCell align="center">{request.tanggal}</TableCell>
+                <TableCell align="center">
+                <Link to={`/pengeluaranBarang/detailPengeluaranBarang/${request.id}`}>
+                  <Button color="primary" size="sm">
+                    <i className="fa fa-file"></i>
+                    </Button>
+                  </Link>
+                </TableCell>
+                {this.displayTombolHapus(request.id)}
+              </TableRow>
+            );
+          }
+        });
+      }else {
+        window.location.reload(false);
+      }
+    } 
+  }
+
+  displayTombolHapus(request_id){
+    if (this.state.jabatan !== "Admin" && this.state.divisi === "Logistic"){
+      return(
+        <TableCell align="center">
+          <Button onClick={this.onDelete.bind(this, request_id)} color="danger" size="sm">
+            <i className="fa fa-trash"></i>
+          </Button>
+        </TableCell>
+      )
     }
   }
 
@@ -198,11 +221,34 @@ class PengeluaranBarang extends Component {
   };
 
   displayTombolBuatPengeluaran(){
-    if (this.state.jabatan !== 'Admin'){
+    if (this.state.jabatan !== 'Admin' && this.state.divisi === "Logistic"){
       return(
         <Button size="sm" color="primary" className="float-right mb-0" onClick={this.toggleModal.bind(this)}>
           <i className="fa fa-plus"></i> Buat Pengeluaran Barang
         </Button>
+      )
+    }
+  }
+
+  displayTabel(){
+    if (this.state.jabatan !== "Admin" && this.state.divisi === "Logistic"){
+      return(
+        <TableRow>
+          <TableCell>No</TableCell>
+          <TableCell align="center">Kode</TableCell>
+          <TableCell align="center">Tanggal</TableCell>
+          <TableCell align="center">Detail</TableCell>
+          <TableCell align="center">Hapus</TableCell>
+        </TableRow>
+      )
+    } else {
+      return(
+        <TableRow>
+          <TableCell>No</TableCell>
+          <TableCell align="center">Kode</TableCell>
+          <TableCell align="center">Tanggal</TableCell>
+          <TableCell align="center">Detail</TableCell>
+        </TableRow>
       )
     }
   }
@@ -220,13 +266,7 @@ class PengeluaranBarang extends Component {
                 <TableContainer component={Paper}>
                   <Table1 aria-label="simple table">
                     <TableHead>
-                      <TableRow>
-                        <TableCell>No</TableCell>
-                        <TableCell align="center">Kode</TableCell>
-                        <TableCell align="center">Tanggal</TableCell>
-                        <TableCell align="center">Detail</TableCell>
-                        <TableCell align="center">Hapus</TableCell>
-                      </TableRow>
+                      {this.displayTabel()}
                     </TableHead>
                     <TableBody>
                     {this.displayPengeluaranBarang()}
@@ -253,7 +293,7 @@ class PengeluaranBarang extends Component {
               <FormGroup> 
               <Label htmlFor="name">Kode Permintaan Barang</Label>
                 <Input type="select" name="id" onChange={(e) =>this.setState({permintaan_id:e.target.value})} id="id" required>
-                  <option vlaue="">Kode</option>
+                  <option value="">Kode</option>
                   {this.displayPermintaanBarangs()}
                 </Input>
               </FormGroup>

@@ -27,6 +27,7 @@ class PurchaseOrder extends Component {
       loggedIn,
       akun_id: localStorage.getItem("user_id"),
       jabatan: localStorage.getItem("jabatan"),
+      divisi: localStorage.getItem("divisi"),
       page: 0, 
       setPage: 0,
       rowsPerPage: 5,
@@ -34,13 +35,13 @@ class PurchaseOrder extends Component {
       }
   }
 
-  getCountPembelianBarang(){
+  getDataPurchaseOrder(){
     var data = this.props.getPurchaseOrdersQuery;
     var no = 0;
     if (data.loading) {
       return
     } else { // eslint-disable-next-line
-      data.purchaseOrders.map(barang => {
+      data.purchaseOrders.map(order => {
         no++
       })
     }
@@ -49,31 +50,43 @@ class PurchaseOrder extends Component {
 
   displayAllPurchaseOrder(){
     var data = this.props.getPurchaseOrdersQuery;
+    var mulai = this.state.setPage*this.state.setRowsPerPage; 
+    var akhir = this.state.setPage*this.state.setRowsPerPage+this.state.setRowsPerPage;
     var no = 0;
     if(data.loading){
       return
     } else {
-      return data.purchaseOrders.map(order => {
-        no++;
-        return(
-          <TableRow key={order.id}>
-            <TableCell component="th" scope="row">
-              {no}
-            </TableCell>
-            <TableCell align="center">{order.kode}</TableCell>
-            <TableCell align="center">{order.vendor.nama}</TableCell>
-            <TableCell align="center">{order.tanggal}</TableCell>
-            <TableCell align="center">{order.status}</TableCell>
-            <TableCell align="center">
-              <Link to={`/purchaseOrder/detailPurchaseOrder/${order.id}`}>
-                <Button color="primary" size="sm">
-                  <i className="fa fa-file"></i>
-                </Button>
-              </Link>
-            </TableCell>
-          </TableRow>
-        );
-      });
+      if (data.purchaseOrders !== undefined){
+        data.purchaseOrders.sort((a, b) =>{
+          const isReversed = (this.state.sortType === 'asc') ? 1 : -1;
+          return isReversed * a.kode.localeCompare(b.kode)
+        }); // eslint-disable-next-line
+        return data.purchaseOrders.map(order => {
+          no++;
+          if (no > mulai && no < akhir+1){
+            return(
+              <TableRow key={order.id}>
+                <TableCell component="th" scope="row">
+                  {no}
+                </TableCell>
+                <TableCell align="center">{order.kode}</TableCell>
+                <TableCell align="center">{order.vendor.nama}</TableCell>
+                <TableCell align="center">{order.tanggal}</TableCell>
+                <TableCell align="center">{order.status}</TableCell>
+                <TableCell align="center">
+                  <Link to={`/purchaseOrder/detailPurchaseOrder/${order.id}`}>
+                    <Button color="primary" size="sm">
+                      <i className="fa fa-file"></i>
+                    </Button>
+                  </Link>
+                </TableCell>
+              </TableRow>
+            );
+          }
+        });
+      }else {
+        window.location.reload(false);
+      }
     }
   }
 
@@ -93,18 +106,24 @@ class PurchaseOrder extends Component {
   }
 
   getKodeBaru(){
-    var kode = 'R';
+    var newKode = 'PO';
+    var kode ='';
     var nomor = 1; 
     var data = this.props.getPurchaseOrdersQuery; // eslint-disable-next-line
     data.purchaseOrders.map(order => {
-        nomor++;
+      if(order.kode !== ''){
+        kode = order.kode
+      } 
     })
+    if(kode !== ''){
+      nomor = parseInt(kode.substring(2,5))+1
+    }
     if(nomor < 10){
-      kode = kode+"00"+nomor;
+      kode = newKode+"00"+nomor;
     }else if (nomor >= 10 && nomor < 100){
-      kode = kode+"0"+nomor;
+      kode = newKode+"0"+nomor;
     }else {
-      kode = kode+""+nomor;
+      kode = newKode+""+nomor;
     }
     return kode;
   }
@@ -122,10 +141,10 @@ class PurchaseOrder extends Component {
   };
 
   displayTombolBuatPembelian(){
-    if (this.state.jabatan !== 'Admin'){
+    if (this.state.jabatan !== 'Admin' && this.state.divisi === "Purchasing"){
       return(
         <Button color="primary" size="sm"  className={'float-right mb-0'} onClick={this.addPurchaseOrder.bind(this)}>
-          <i className="fa fa-plus"></i> Buat Purchase Order
+          <i className="fa fa-plus"></i> Buat Pembelian Barang
         </Button>
       )
     }
@@ -141,7 +160,7 @@ class PurchaseOrder extends Component {
           <Col>
             <Card>
               <CardHeader>  
-                Daftar Purchase Order
+                Daftar Pembelian Barang
                 {this.displayTombolBuatPembelian()}                 
               </CardHeader>
               <CardBody>
@@ -165,7 +184,7 @@ class PurchaseOrder extends Component {
                 <TablePagination
                   rowsPerPageOptions={[5, 10, 25]}
                   component="div"
-                  count={this.getCountPembelianBarang()}
+                  count={this.getDataPurchaseOrder()}
                   rowsPerPage={this.state.rowsPerPage}
                   page={this.state.setPage}
                   onChangePage={this.handleChangePage}

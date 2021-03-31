@@ -28,6 +28,9 @@
     "flag-icon-css": "^3.4.5",
     "font-awesome": "^4.7.0",
     "graphql": "^14.6.0",
+    "jspdf": "^2.3.1",
+    "jspdf-autotable": "^3.5.14",
+    "jspdf-react": "^1.0.11",
     "lodash.flowright": "^3.5.0",
     "node-sass": "^4.14.1",
     "prop-types": "^15.7.2",
@@ -83,5 +86,5 @@
     "node": ">=8.10",
     "npm": ">=6"
   },
-  "proxy": "localhost:5000/"
+  "proxy": "http://localhost:5000/"
 }

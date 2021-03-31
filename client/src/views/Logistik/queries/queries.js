@@ -47,6 +47,7 @@ const getPermintaanBarangsQuery = gql`
 			username
 			id
 			karyawan{
+				id
 				nama
 				divisi{
 					nama
@@ -189,9 +190,11 @@ const getPurchaseOrdersQuery = gql`
 			id
 			karyawan{
 				nama
+				id
 			}
 		}
 		vendor{
+			id
 			nama
 			jenis_usaha
 		}
@@ -271,6 +274,7 @@ const getPenerimaanBarangsQuery = gql`
 			username
 			id
 			karyawan{
+				id
 				nama
 				jabatan
 			}
@@ -288,6 +292,7 @@ const getPenerimaanBarangsQuery = gql`
 				jenis
 			}
 			vendor{
+				id
 				nama
 			}
 		}
@@ -305,6 +310,7 @@ const getPengeluaranBarangsQuery = gql`
 			username
 			id
 			karyawan{
+				id
 				nama
 				jabatan
 			}
@@ -322,6 +328,7 @@ const getPengeluaranBarangsQuery = gql`
 				username
 				id
 				karyawan{
+					id
 					nama
 					divisi{
 						nama
@@ -729,6 +736,7 @@ const getPermintaanBarangQuery = gql`
 				username
 				id
 				karyawan{
+					id
 					nama
 					divisi{
 						nama
@@ -759,12 +767,16 @@ const getPurchaseOrderQuery = gql`
 			total_harga
 			tanggal_setuju
 			vendor{
+				id
 				nama
+				alamat
 				jenis_usaha
+				noTlp
 			}
 			akun{
 				id
 				karyawan{
+					id
 					nama
 				}
 			}
@@ -851,6 +863,7 @@ const getPenerimaanBarangQuery = gql`
 				username
 				id
 				karyawan{
+					id
 					nama
 					jabatan
 				}
@@ -860,6 +873,7 @@ const getPenerimaanBarangQuery = gql`
 				id
 				tanggal
 				vendor{
+					id
 					nama
 				}
 				listItemPurchaseOrder{
@@ -885,6 +899,7 @@ const getPengeluaranBarangQuery = gql`
 				username
 				id
 				karyawan{
+					id
 					nama
 					jabatan
 				}
@@ -902,6 +917,7 @@ const getPengeluaranBarangQuery = gql`
 					username
 					id
 					karyawan{
+						id
 						nama
 						divisi{
 							nama

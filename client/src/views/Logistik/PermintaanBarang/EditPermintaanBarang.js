@@ -95,7 +95,7 @@ class EditPermintaanBarang extends Component {
                   <Label htmlFor="name">Divisi</Label>
                 </Col>
                 <Col md="9">
-                <Input type="text" name="kode" id="kode" value={permintaanBarang.akun.karyawan.divisi.nama} disabled></Input> 
+                <Input type="text" name="kode" id="kode" value={permintaanBarang.divisi.nama} disabled></Input> 
                 </Col>  
               </FormGroup>
             </Col>
@@ -194,7 +194,7 @@ class EditPermintaanBarang extends Component {
                   <Label htmlFor="name">Divisi</Label>
                 </Col>
                 <Col md="9">
-                <Input type="text" name="kode" id="kode" value={permintaanBarang.akun.karyawan.divisi.nama} disabled></Input> 
+                <Input type="text" name="kode" id="kode" value={permintaanBarang.divisi.nama} disabled></Input> 
                 </Col>  
               </FormGroup>
             </Col>
@@ -394,7 +394,7 @@ onUpdateItem(e){
                 jenis: item.jenis,
                 request_id: request_id,
                 harga: parseInt(item.harga),
-                status: 'Active',
+                status: 'Waiting',
               },
               refetchQueries:[{query:getPermintaanBarangsQuery}, {query:getListRequestsQuery}],
             })

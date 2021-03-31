@@ -22,6 +22,8 @@ class DetailPemeliharaan extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      jabatan: localStorage.getItem("jabatan"),
+      divisi: localStorage.getItem("divisi"),
       nama:'',
       barang_id:'',
       karyawan_id:'',
@@ -99,27 +101,28 @@ class DetailPemeliharaan extends Component {
     }
 
     renderElement(status, inventaris_id, barang_id, jumlah){
-      if(status === 'Diperbaiki'){
-        return(
-          <div align="center">
-            <Button size="sm" color="success" onClick={this.onSelesai.bind(this, inventaris_id)}>
-              <i className="fa fa-check"></i> Selesai
-            </Button>
-            <Button size="sm" color="danger" onClick={this.onRusak.bind(this, inventaris_id,barang_id, jumlah)}>
-              <i className="fa fa-trash"></i> Rusak                
-            </Button>
-          </div>
-        )
-      } else {
-        return(
-          <div align="center">
-            <Button size="sm" color="danger" onClick={this.onDelete.bind(this)}>
-              <i className="fa fa-trash"></i> Hapus
-            </Button>
-          </div>
-        )
-      }
-      
+      if (this.state.jabatan !== "Admin" && this.state.divisi === "Logistic"){
+        if(status === 'Diperbaiki'){
+          return(
+            <div align="center">
+              <Button size="sm" color="success" onClick={this.onSelesai.bind(this, inventaris_id)}>
+                <i className="fa fa-check"></i> Selesai
+              </Button>
+              <Button size="sm" color="danger" onClick={this.onRusak.bind(this, inventaris_id,barang_id, jumlah)}>
+                <i className="fa fa-trash"></i> Rusak                
+              </Button>
+            </div>
+          )
+        } else {
+          return(
+            <div align="center">
+              <Button size="sm" color="danger" onClick={this.onDelete.bind(this)}>
+                <i className="fa fa-trash"></i> Hapus
+              </Button>
+            </div>
+          )
+        }
+      }      
     }
 
     onRusak(inventaris_id, barang_id, jumlah_rusak){

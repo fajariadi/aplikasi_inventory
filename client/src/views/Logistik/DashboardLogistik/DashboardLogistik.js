@@ -236,10 +236,14 @@ class DashboardLogistik extends Component {
     var jumlah = 0;
     if(data.loading){
       return (<div>Loading Permintaan...</div>);
-    } else { // eslint-disable-next-line
-      data.permintaanBarangs.map(permintaan => {
-        jumlah++
-      })
+    } else { 
+      if (data.permintaanBarangs !== undefined) {// eslint-disable-next-line
+        data.permintaanBarangs.map(permintaan => {
+          jumlah++
+        })
+      } else {
+        jumlah = 0;
+      }
     }
     return jumlah;
   }
@@ -249,11 +253,15 @@ class DashboardLogistik extends Component {
     var jumlah = 0;
     if(data.loading){
       return (<div>Loading Pembelian...</div>);
-    } else { // eslint-disable-next-line
-      data.purchaseOrders.map(order => {
-        jumlah++
-      })
-    }
+    } else {
+      if (data.purchaseOrders !== undefined){ // eslint-disable-next-line
+        data.purchaseOrders.map(order => {
+          jumlah++
+        })
+      } else {
+        jumlah = 0;
+      }
+    } 
     return jumlah;
   }
 
@@ -262,11 +270,15 @@ class DashboardLogistik extends Component {
     var jumlah = 0;
     if(data.loading){
       return (<div>Loading Persediaan...</div>);
-    } else { // eslint-disable-next-line
-      data.persediaanBarangs.map(persediaan => {
-        jumlah++
-      })
-    }
+    } else {
+      if (data.persediaanBarangs !== undefined){// eslint-disable-next-line
+        data.persediaanBarangs.map(persediaan => {
+          jumlah++
+        })
+      } else {
+        jumlah = 0;
+      }
+    } 
     return jumlah;
   }
 
@@ -275,11 +287,15 @@ class DashboardLogistik extends Component {
     var jumlah = 0;
     if(data.loading){
       return (<div>Loading Inventaris...</div>);
-    } else { // eslint-disable-next-line
-      data.allInventaris.map(inventaris => {
-        jumlah++
-      })
-    }
+    } else {
+      if (data.allInventaris !== undefined){// eslint-disable-next-line
+        data.allInventaris.map(inventaris => {
+          jumlah++
+        })
+      }else {
+       jumlah = 0;
+      }
+    } 
     return jumlah;
   }
  
@@ -288,20 +304,24 @@ class DashboardLogistik extends Component {
     var no = 0;
     if(data.loading){
       return
-    } else { // eslint-disable-next-line
-      return data.penerimaanBarangs.map(request => {
-        no++;
-        if (no < 6){
-          return(
-            <tr key={request.id}>
-              <td>{no}</td>
-              <td>{request.kode}</td>
-              <td>{request.tanggal}</td>
-              <td>{request.purchaseOrder.vendor.nama}</td>
-            </tr>
-          );
-        }
-      });
+    } else  { 
+      if (data.penerimaanBarangs !== undefined){// eslint-disable-next-line
+        return data.penerimaanBarangs.map(request => {
+          no++;
+          if (no < 6){
+            return(
+              <tr key={request.id}>
+                <td>{no}</td>
+                <td>{request.kode}</td>
+                <td>{request.tanggal}</td>
+                <td>{request.purchaseOrder.vendor.nama}</td>
+              </tr>
+            );
+          }
+        });
+      } else {
+        window.location.reload(false);
+      }
     }
   }
 
@@ -310,20 +330,24 @@ class DashboardLogistik extends Component {
     var no = 0;
     if(data.loading){
       return
-    } else { // eslint-disable-next-line
-      return data.pengeluaranBarangs.map(pengeluaran => {
-        no++;
-        if (no < 6){
-          return(
-            <tr key={pengeluaran.id}>
-              <td>{no}</td>
-              <td>{pengeluaran.kode}</td>
-              <td>{pengeluaran.tanggal}</td>
-              <td>{pengeluaran.permintaanBarang.akun.karyawan.divisi.nama}</td>
-            </tr>
-          );
-        }
-      });
+    } else{ 
+      if ( data.pengeluaranBarangs !== undefined){ // eslint-disable-next-line
+        return data.pengeluaranBarangs.map(pengeluaran => {
+          no++;
+          if (no < 6){
+            return(
+              <tr key={pengeluaran.id}>
+                <td>{no}</td>
+                <td>{pengeluaran.kode}</td>
+                <td>{pengeluaran.tanggal}</td>
+                <td>{pengeluaran.permintaanBarang.akun.karyawan.divisi.nama}</td>
+              </tr>
+            );
+          }
+        });
+      }else {
+        window.location.reload(false);
+      }
     } 
   }
 

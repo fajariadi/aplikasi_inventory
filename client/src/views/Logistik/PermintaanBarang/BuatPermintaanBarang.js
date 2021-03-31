@@ -262,7 +262,6 @@ class BuatPermintaanBarang extends Component {
     
   }
 
-
   submitRequest = (e) => {
     if(this.state.requestItems.length === 0){
       Swal.fire({

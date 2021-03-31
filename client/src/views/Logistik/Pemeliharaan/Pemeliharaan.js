@@ -34,6 +34,8 @@ class Pemeliharaan extends Component {
     super(props);
     this.state = {
       jabatan: localStorage.getItem("jabatan"),
+      divisi: localStorage.getItem("divisi"),
+      sortType:'desc',
       nama:'',
       barang_id:'',
       karyawan_id:'',
@@ -63,32 +65,44 @@ class Pemeliharaan extends Component {
 
   displayPemeliharaan(){
     var data = this.props.getPemeliharaansQuery;
+    var mulai = this.state.setPage*this.state.setRowsPerPage;
+    var akhir = this.state.setPage*this.state.setRowsPerPage+this.state.setRowsPerPage;
     var no = 0;
     if(data.loading){
       return
     } else {
-      return data.pemeliharaans.map(pem => {
-         no++;
-        return(
-          <TableRow key={pem.id}>
-          <TableCell component="th" scope="row">
-            {no}
-          </TableCell>
-          <TableCell align="center">{pem.inventaris.barang.nama_barang}</TableCell>
-          <TableCell align="center">{pem.jumlah}</TableCell>
-          <TableCell align="center">{pem.tanggal}</TableCell>
-          <TableCell align="center">{pem.karyawan.nama}</TableCell>
-          <TableCell align="center">{pem.status}</TableCell>
-          <TableCell align="center">
-          <Link to={`/pemeliharaan/detailPemeliharaan/${pem.id}`}>
-              <Button color="primary" size="sm">
-                <i className="fa fa-file"></i>
-                </Button>
-              </Link>
-          </TableCell>
-        </TableRow>
-        );
-      });
+      if (data.pemeliharaans !== undefined){
+        data.pemeliharaans.sort((a, b) =>{
+          const isReversed = (this.state.sortType === 'asc') ? 1 : -1;
+          return isReversed * a.tanggal.localeCompare(b.tanggal)
+        }); // eslint-disable-next-line
+        return data.pemeliharaans.map(pem => {
+           no++;
+           if (no > mulai && no < akhir+1){
+             return(
+               <TableRow key={pem.id}>
+               <TableCell component="th" scope="row">
+                 {no}
+               </TableCell>
+               <TableCell align="center">{pem.inventaris.barang.nama_barang}</TableCell>
+               <TableCell align="center">{pem.jumlah}</TableCell>
+               <TableCell align="center">{pem.tanggal}</TableCell>
+               <TableCell align="center">{pem.karyawan.nama}</TableCell>
+               <TableCell align="center">{pem.status}</TableCell>
+               <TableCell align="center">
+               <Link to={`/pemeliharaan/detailPemeliharaan/${pem.id}`}>
+                   <Button color="primary" size="sm">
+                     <i className="fa fa-file"></i>
+                     </Button>
+                   </Link>
+               </TableCell>
+             </TableRow>
+             );
+           }
+        });
+      } else {
+        window.location.reload(false);
+      }
     }
   }
 
@@ -211,7 +225,7 @@ class Pemeliharaan extends Component {
   };
 
   displayTombolBuatPemeliharaan(){
-    if (this.state.jabatan !== 'Admin'){
+    if (this.state.jabatan !== 'Admin' && this.state.divisi === "Logistic"){
       return(
         <Button size="sm" color="primary" className="float-right mb-0" onClick={this.toggleModal.bind(this)}>
           <i className="fa fa-plus"></i> Tambah Pemeliharaan

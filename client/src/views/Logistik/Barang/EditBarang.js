@@ -113,6 +113,8 @@ class EditBarang extends Component {
                     <option value="Drum">Drum</option>
                     <option value="Takaran">Takaran</option>
                     <option value="Unit">Unit</option>
+                    <option value="Pack">Pack</option>
+                  <option value="Box">Box</option>
                 </Input>
                 </FormGroup>
                 <FormGroup>

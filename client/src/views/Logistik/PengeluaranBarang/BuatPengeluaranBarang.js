@@ -248,6 +248,12 @@ class BuatPengeluaranBarang extends Component {
       refetchQueries:[{query:getPengeluaranBarangsQuery}],
     });
     this.props.history.push("/pengeluaranBarang/pengeluaranBarang");
+    Swal.fire({
+      position: 'center',
+      icon: 'error',
+      title: 'Pengeluaran Barang Dibatalkan',
+      showConfirmButton: true,
+    });
   }
 
   handlePanel1Change = (panel) => (event) => {
@@ -301,8 +307,6 @@ class BuatPengeluaranBarang extends Component {
             <Button onClick={(e) => { this.Submit(e) }} color="primary" size="sm">Submit</Button>
             <Button color="danger" onClick={this.onDelete.bind(this)} size="sm">Batal</Button>
           </div> 
-              
-            
           </Col>
         </Row>
         

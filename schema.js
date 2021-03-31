@@ -812,15 +812,15 @@ const Mutation = new GraphQLObjectType({
 				return ListRequest.updateMany({request_id: args.id}, {status: args.status})
 			}
 		},
-		updateOneStatusListRequest:{
+		updateOneStatusListRequest:{     
 			type: ListRequestType,
 			args: {
-				id:{type:GraphQLID},
+				id:{type:GraphQLID}, 
 				status: {type: GraphQLString},
 			},
 			resolve(parent, args){
 				return ListRequest.findOneAndUpdate({_id: args.id}, {status: args.status})
-			}
+			} 
 		},
 		updateStatusListRequestOnOrder:{
 			type: ListRequestType,
