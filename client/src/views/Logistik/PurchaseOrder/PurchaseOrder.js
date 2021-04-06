@@ -28,6 +28,7 @@ class PurchaseOrder extends Component {
       akun_id: localStorage.getItem("user_id"),
       jabatan: localStorage.getItem("jabatan"),
       divisi: localStorage.getItem("divisi"),
+      sortType: 'desc',
       page: 0, 
       setPage: 0,
       rowsPerPage: 5,
@@ -109,7 +110,11 @@ class PurchaseOrder extends Component {
     var newKode = 'PO';
     var kode ='';
     var nomor = 1; 
-    var data = this.props.getPurchaseOrdersQuery; // eslint-disable-next-line
+    var data = this.props.getPurchaseOrdersQuery; 
+    data.purchaseOrders.sort((a, b) =>{
+      const isReversed = (this.state.sortType === 'desc') ? 1 : -1;
+      return isReversed * a.kode.localeCompare(b.kode)
+    });// eslint-disable-next-line
     data.purchaseOrders.map(order => {
       if(order.kode !== ''){
         kode = order.kode

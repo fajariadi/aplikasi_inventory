@@ -222,7 +222,7 @@ class Barang extends Component {
     return (
       <div className="animated fadeIn">
         <Row>
-          <Col>
+          <Col> 
             <Card>
               <CardHeader>
                 <i className="fa fa-align-justify"></i> Data Barang

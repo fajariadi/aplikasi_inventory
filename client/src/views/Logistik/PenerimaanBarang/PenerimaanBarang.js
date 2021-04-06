@@ -173,7 +173,11 @@ class PenerimaanBarang extends Component {
     var newKode = 'PB';
     var kode = '';
     var nomor = 1;
-    var data = this.props.getPenerimaanBarangsQuery; // eslint-disable-next-line
+    var data = this.props.getPenerimaanBarangsQuery; 
+    data.penerimaanBarangs.sort((a, b) =>{
+      const isReversed = (this.state.sortType === 'desc') ? 1 : -1;
+      return isReversed * a.kode.localeCompare(b.kode)
+    });// eslint-disable-next-line
     data.penerimaanBarangs.map(request => {
       if (request.kode !== '') {
         kode = request.kode

@@ -118,7 +118,11 @@ class PermintaanBarang extends Component {
     var newKode = 'R';
     var kode = '';
     var nomor = 1;
-    var data = this.props.getPermintaanBarangsQuery; // eslint-disable-next-line
+    var data = this.props.getPermintaanBarangsQuery;
+    data.permintaanBarangs.sort((a, b) =>{
+      const isReversed = (this.state.sortType === 'desc') ? 1 : -1;
+      return isReversed * a.kode.localeCompare(b.kode)
+    }); // eslint-disable-next-line
     data.permintaanBarangs.map(request => {
       if(request.kode !== ''){
         kode = request.kode

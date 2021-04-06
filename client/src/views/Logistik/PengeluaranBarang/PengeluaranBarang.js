@@ -174,7 +174,11 @@ class PengeluaranBarang extends Component {
     var newKode = 'PE';
     var kode = '';
     var nomor = 1;
-    var data = this.props.getPengeluaranBarangsQuery; // eslint-disable-next-line
+    var data = this.props.getPengeluaranBarangsQuery; 
+    data.pengeluaranBarangs.sort((a, b) =>{
+      const isReversed = (this.state.sortType === 'desc') ? 1 : -1;
+      return isReversed * a.kode.localeCompare(b.kode)
+    });// eslint-disable-next-line
     data.pengeluaranBarangs.map(request => {
       if(request.kode !== ''){
         kode = request.kode
