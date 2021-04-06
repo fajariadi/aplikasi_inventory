@@ -340,7 +340,7 @@ class DashboardLogistik extends Component {
                 <td>{no}</td>
                 <td>{pengeluaran.kode}</td>
                 <td>{pengeluaran.tanggal}</td>
-                <td>{pengeluaran.permintaanBarang.akun.karyawan.divisi.nama}</td>
+                <td>{pengeluaran.permintaanBarang.divisi.nama}</td>
               </tr>
             );
           }
