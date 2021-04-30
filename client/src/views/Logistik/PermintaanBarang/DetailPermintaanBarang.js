@@ -259,45 +259,7 @@ class DetailPermintaanBarang extends Component {
         }
       })
     })
-    var items = [];// eslint-disable-next-line
-    data1.listrequests.map(list => {
-      if (list.permintaanBarang.id === permintaan_id){
-        if(items.length === 0){
-          const newItem = { nama: list.nama_barang, list_id: list.id, request_id : list.permintaanBarang.id};
-          items.push(newItem);
-        } else { 
-          var sama = false;// eslint-disable-next-line
-          items.map(item => {
-            if(item.nama === list.nama_barang){
-              sama = true
-            }
-          });
-          if (sama === false){
-            const newItem = { nama: list.nama_barang, list_id: list.id, request_id : list.permintaanBarang.id};
-            items.push(newItem);
-          }
-        }
-      }
-    })// eslint-disable-next-line
-    data2.persediaanBarangs.map( pers => {
-      var i = 0;// eslint-disable-next-line
-      items.map( item => {
-        if (pers.barang.nama_barang !== item.nama){
-          i++;
-        } else {
-          items.splice(i, 1);
-        }
-      })
-    })// eslint-disable-next-line
-    items.map ( item => {
-      this.props.updateOneStatusListRequest({
-        variables:{
-          id:item.list_id,
-          status: 'Active',
-        },
-        refetchQueries:[{query:getListRequestsQuery}],
-      });
-    })
+   
     
     this.props.updateStatusPermintaanBarang({
       variables:{
